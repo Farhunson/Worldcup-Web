@@ -2448,9 +2448,8 @@ footer {
 }
 
 .todays-match-header {
-  position: absolute;
-  top: 8px;
-  left: 12px;
+  padding: 8px 12px;
+  margin-bottom: 4px;
 }
 
 .todays-group-badge {
@@ -2461,6 +2460,7 @@ footer {
   border-radius: 4px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  display: inline-block;
 }
 
 .todays-group-badge.group-A { background: #03E577; }
