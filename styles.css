@@ -2459,6 +2459,12 @@ footer {
   transition: all 0.2s ease;
 }
 
+.today-match-card.upcoming {
+  border-color: var(--primary);
+  background: linear-gradient(135deg, var(--surface) 0%, rgba(59, 130, 246, 0.05) 100%);
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.1);
+}
+
 .today-match-card:hover {
   border-color: var(--primary);
   transform: translateY(-2px);

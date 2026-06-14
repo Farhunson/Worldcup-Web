@@ -1278,6 +1278,7 @@ function buildTodaysMatches() {
           
           // Build match card content based on finished status
           let teamsHtml;
+          let cardClass = 'today-match-card clickable';
           if (isFinished) {
             teamsHtml = `
               <div class="today-team">
@@ -1300,10 +1301,11 @@ function buildTodaysMatches() {
                 ${formatFlag(match.team2)}<span class="today-team-name">${getTeamFifaCode(match.team2)}</span>
               </div>
             `;
+            cardClass += ' upcoming';
           }
           
           return `
-            <div class="today-match-card clickable" data-matchno="${match.matchNo}">
+            <div class="${cardClass}" data-matchno="${match.matchNo}">
               <div class="today-teams">
                 ${teamsHtml}
               </div>
