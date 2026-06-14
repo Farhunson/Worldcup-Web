@@ -4,6 +4,7 @@ const state = {
   collapsedGroups: {},
   lastApiUpdate: null,
   apiSourcedMatches: {}, // Track which matches have scores from API
+  apiMatchTimes: {}, // Store API match times (UTC) for timezone conversion
 };
 loadState();
 
@@ -271,6 +272,87 @@ const stageLabels = {
   final: 'Final',
 };
 
+// Helper function to format API UTC time to browser's local timezone
+function formatApiTime(apiLocalDate) {
+  if (!apiLocalDate) return null;
+  
+  // Parse the API date format: "06/11/2026 13:00"
+  const [datePart, timePart] = apiLocalDate.split(' ');
+  const [month, day, year] = datePart.split('/').map(Number);
+  const [hours, minutes] = timePart.split(':').map(Number);
+  
+  // Create a Date object (API returns UTC time)
+  const utcDate = new Date(Date.UTC(year, month - 1, day, hours, minutes));
+  
+  // Format to local time
+  const monthName = utcDate.toLocaleDateString(undefined, { month: 'short' });
+  const dayNum = utcDate.getDate();
+  const timeStr = utcDate.toLocaleTimeString(undefined, { 
+    hour: '2-digit', 
+    minute: '2-digit',
+    hour12: false 
+  });
+  
+  return {
+    dateLabel: `${monthName} ${dayNum}`,
+    timeLabel: timeStr,
+    fullDate: utcDate.toLocaleDateString(undefined, { 
+      weekday: 'short', 
+      month: 'short', 
+      day: 'numeric' 
+    }),
+    fullTime: utcDate.toLocaleTimeString(undefined, { 
+      hour: '2-digit', 
+      minute: '2-digit' 
+    }),
+    timestamp: utcDate.getTime(),
+    isLocal: true
+  };
+}
+
+// Get match time for display (API time if available, otherwise fallback)
+function getMatchTime(matchNo) {
+  const apiTime = state.apiMatchTimes[matchNo];
+  if (apiTime) {
+    return formatApiTime(apiTime);
+  }
+  return null;
+}
+
+// Get user's browser timezone name
+function getUserTimezone() {
+  return Intl.DateTimeFormat().resolvedOptions().timeZone;
+}
+
+// Generate date/time label for a match (uses API time if available)
+function getMatchDateTimeLabel(matchNo, fallbackDate, fallbackTime) {
+  const apiTime = getMatchTime(matchNo);
+  if (apiTime) {
+    return {
+      dateLabel: apiTime.dateLabel,
+      timeLabel: apiTime.timeLabel,
+      fullDate: apiTime.fullDate,
+      fullTime: apiTime.fullTime
+    };
+  }
+  // Fallback to original schedule data
+  if (fallbackDate) {
+    const date = new Date(fallbackDate);
+    return {
+      dateLabel: date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
+      timeLabel: fallbackTime || '',
+      fullDate: date.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' }),
+      fullTime: fallbackTime || ''
+    };
+  }
+  return {
+    dateLabel: '',
+    timeLabel: fallbackTime || '',
+    fullDate: '',
+    fullTime: fallbackTime || ''
+  };
+}
+
 const groupListElement = document.getElementById('group-list');
 const bracketContainer = document.getElementById('bracket-container');
 const clearButton = document.getElementById('clearButton');
@@ -353,11 +435,13 @@ function loadState() {
       state.scores = stored.scores || stored;
       state.collapsedGroups = stored.collapsedGroups || {};
       state.apiSourcedMatches = stored.apiSourcedMatches || {};
+      state.apiMatchTimes = stored.apiMatchTimes || {};
     }
   } catch {
     state.scores = {};
     state.collapsedGroups = {};
     state.apiSourcedMatches = {};
+    state.apiMatchTimes = {};
   }
 }
 
@@ -366,6 +450,7 @@ function saveState() {
     scores: state.scores,
     collapsedGroups: state.collapsedGroups,
     apiSourcedMatches: state.apiSourcedMatches,
+    apiMatchTimes: state.apiMatchTimes,
   }));
 }
 
@@ -416,6 +501,7 @@ async function fetchLiveScores() {
     const games = data.games || [];
 
     let updatedCount = 0;
+    let timesUpdated = 0;
 
     games.forEach(game => {
       const homeApiName = game.home_team_name_en;
@@ -428,41 +514,47 @@ async function fetchLiveScores() {
       const homeScore = parseInt(game.home_score) || 0;
       const awayScore = parseInt(game.away_score) || 0;
 
-      // Find matching match in our scheduleData
-      const matchingMatch = scheduleData.groupMatches.find(m => {
+      // Find matching match in our scheduleData (both group and knockout matches)
+      const allMatches = [...scheduleData.groupMatches, ...scheduleData.knockoutMatches];
+      
+      const matchingMatch = allMatches.find(m => {
         return (m.team1 === homeProjectName && m.team2 === awayProjectName) ||
           (m.team1 === awayProjectName && m.team2 === homeProjectName);
       });
 
-      // Also check for reverse order
-      const reverseMatch = scheduleData.groupMatches.find(m => {
-        return (m.team1 === awayProjectName && m.team2 === homeProjectName) ||
-          (m.team1 === homeProjectName && m.team2 === awayProjectName);
-      });
+      const targetMatch = matchingMatch;
 
-      const targetMatch = matchingMatch || reverseMatch;
-
-      if (targetMatch && game.finished === 'TRUE') {
-        // Determine correct score order based on which team is home
-        const isHomeTeam = targetMatch.team1 === homeProjectName;
-        const score1 = isHomeTeam ? homeScore : awayScore;
-        const score2 = isHomeTeam ? awayScore : homeScore;
-
-        // Update score if different from current
-        const currentScore = state.scores[targetMatch.matchNo];
-        if (!currentScore ||
-          parseInt(currentScore.score1) !== score1 ||
-          parseInt(currentScore.score2) !== score2) {
-          state.scores[targetMatch.matchNo] = { score1: String(score1), score2: String(score2) };
-          updatedCount++;
+      if (targetMatch) {
+        // Store the API match time (UTC) for timezone conversion
+        if (game.local_date && !state.apiMatchTimes[targetMatch.matchNo]) {
+          state.apiMatchTimes[targetMatch.matchNo] = game.local_date;
+          timesUpdated++;
         }
 
-        // Mark this match as API-sourced (for disabling inputs)
-        state.apiSourcedMatches[targetMatch.matchNo] = true;
+        // Update score if match is finished
+        if (game.finished === 'TRUE') {
+          // Determine correct score order based on which team is home
+          const isHomeTeam = targetMatch.team1 === homeProjectName;
+          const score1 = isHomeTeam ? homeScore : awayScore;
+          const score2 = isHomeTeam ? awayScore : homeScore;
+
+          // Update score if different from current
+          const currentScore = state.scores[targetMatch.matchNo];
+          if (!currentScore ||
+            parseInt(currentScore.score1) !== score1 ||
+            parseInt(currentScore.score2) !== score2) {
+            state.scores[targetMatch.matchNo] = { score1: String(score1), score2: String(score2) };
+            updatedCount++;
+          }
+
+          // Mark this match as API-sourced (for disabling inputs)
+          state.apiSourcedMatches[targetMatch.matchNo] = true;
+        }
       }
     });
 
-    if (updatedCount > 0) {
+    // Save state if any updates were made (scores or times)
+    if (updatedCount > 0 || timesUpdated > 0) {
       saveState();
       render();
     }
@@ -470,7 +562,7 @@ async function fetchLiveScores() {
     state.lastApiUpdate = new Date().toLocaleTimeString();
     updateLiveIndicator(true);
 
-    console.log(`Live scores synced: ${updatedCount} match(es) updated`);
+    console.log(`Live scores synced: ${updatedCount} match(es) updated, ${timesUpdated} time(s) stored`);
 
   } catch (error) {
     console.error('Failed to fetch live scores:', error);
@@ -820,8 +912,7 @@ function buildGroupMatches(group, matches) {
     .filter((match) => match.pos1 && match.pos1[0] === group)
     .sort((a, b) => a.matchNo - b.matchNo)
     .map((match) => {
-      const dateLabel = new Date(match.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-      const timeLabel = match.time;
+      const { dateLabel, timeLabel } = getMatchDateTimeLabel(match.matchNo, match.date, match.time);
       const score1Val = state.scores[match.matchNo]?.score1 ?? '';
       const score2Val = state.scores[match.matchNo]?.score2 ?? '';
       const isApiSourced = isApiSourcedMatch(match.matchNo);
@@ -872,8 +963,7 @@ function renderMatchDetail(matchNo) {
 
   const score1 = state.scores[match.matchNo]?.score1 ?? '';
   const score2 = state.scores[match.matchNo]?.score2 ?? '';
-  const dateLabel = match.date ? new Date(match.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : '';
-  const timeLabel = match.time || '';
+  const { dateLabel, timeLabel, fullDate, fullTime } = getMatchDateTimeLabel(match.matchNo, match.date, match.time);
 
   const teamA = match.team1 ? { name: match.team1 } : resolveTeamPosition(match.pos1 || '', currentRankings, currentThirdPlacers, {}, false, match.matchNo, currentAssignments);
   const teamB = match.team2 ? { name: match.team2 } : resolveTeamPosition(match.pos2 || '', currentRankings, currentThirdPlacers, {}, false, match.matchNo, currentAssignments);
@@ -883,6 +973,7 @@ function renderMatchDetail(matchNo) {
       <div class="match-title">Match ${match.matchNo}</div>
       <h3>${teamA.name} vs ${teamB.name}</h3>
       <div class="meta">${dateLabel} · ${timeLabel} · ${match.venue || ''}</div>
+      <div class="timezone-info">Your timezone: ${getUserTimezone()}</div>
     </div>
     <div class="team-row">
       <div class="team-left">
@@ -1132,6 +1223,7 @@ function buildMatchCardHtml(match, stage, rankings, thirdPlaceTeams, knockoutMap
   const isApiSourced = isApiSourcedMatch(match.matchNo);
   const disabledAttr = isTBDA || isTBDB || isApiSourced ? 'disabled' : '';
   const apiBadge = isApiSourced ? '<span class="api-badge-bracket">Live</span>' : '';
+  const { dateLabel, timeLabel } = getMatchDateTimeLabel(match.matchNo, match.date, match.time);
   return `
     <div class="bracket-match-node" data-matchno="${match.matchNo}" data-stage="${stage}">
       <div class="bracket-match-inner">
@@ -1155,7 +1247,7 @@ function buildMatchCardHtml(match, stage, rankings, thirdPlaceTeams, knockoutMap
         </div>
       </div>
       <div class="bracket-match-meta">
-        <span>${new Date(match.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} · ${match.time} ${apiBadge}</span>
+        <span>${dateLabel} · ${timeLabel} ${apiBadge}</span>
         <span>${match.venue || ''}</span>
       </div>
       <div class="bracket-match-number">M${match.matchNo}</div>

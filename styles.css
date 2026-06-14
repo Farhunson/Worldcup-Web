@@ -2368,3 +2368,13 @@ footer {
     height: 6px;
   }
 }
+/* Timezone info in match detail panel */
+.timezone-info {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-top: 4px;
+  padding: 4px 8px;
+  background: var(--surface-light);
+  border-radius: 4px;
+  display: inline-block;
+}
