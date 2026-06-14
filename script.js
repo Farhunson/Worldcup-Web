@@ -1269,20 +1269,47 @@ function buildTodaysMatches() {
             groupInfo = `<span class="today-group-badge">Group ${match.pos1[0]}</span>`;
           }
           
+          // Check if match is finished (has API scores)
+          const score1Val = state.scores[match.matchNo]?.score1 ?? '';
+          const score2Val = state.scores[match.matchNo]?.score2 ?? '';
+          const isApiSourced = isApiSourcedMatch(match.matchNo);
+          const isFinished = isApiSourced && score1Val !== '' && score2Val !== '';
+          const apiBadge = isFinished ? '<span class="api-badge-small">Full-time</span>' : '';
+          
+          // Build match card content based on finished status
+          let teamsHtml;
+          if (isFinished) {
+            teamsHtml = `
+              <div class="today-team">
+                ${formatFlag(match.team1)}<span class="today-team-name">${getTeamFifaCode(match.team1)}</span>
+              </div>
+              <div class="today-score">${score1Val}</div>
+              <div class="today-score-separator">-</div>
+              <div class="today-score">${score2Val}</div>
+              <div class="today-team">
+                ${formatFlag(match.team2)}<span class="today-team-name">${getTeamFifaCode(match.team2)}</span>
+              </div>
+            `;
+          } else {
+            teamsHtml = `
+              <div class="today-team">
+                ${formatFlag(match.team1)}<span class="today-team-name">${getTeamFifaCode(match.team1)}</span>
+              </div>
+              <div class="today-vs">vs</div>
+              <div class="today-team">
+                ${formatFlag(match.team2)}<span class="today-team-name">${getTeamFifaCode(match.team2)}</span>
+              </div>
+            `;
+          }
+          
           return `
             <div class="today-match-card clickable" data-matchno="${match.matchNo}">
               <div class="today-teams">
-                <div class="today-team">
-                  ${formatFlag(match.team1)}<span class="today-team-name">${getTeamFifaCode(match.team1)}</span>
-                </div>
-                <div class="today-vs">vs</div>
-                <div class="today-team">
-                  ${formatFlag(match.team2)}<span class="today-team-name">${getTeamFifaCode(match.team2)}</span>
-                </div>
+                ${teamsHtml}
               </div>
               <div class="today-meta">
                 ${groupInfo}
-                <span class="today-time">${timeDisplay}</span>
+                <span class="today-time">${timeDisplay} ${apiBadge}</span>
               </div>
               <div class="today-venue">
                 <span class="today-stadium">${getStadiumName(match.venue) || ''}</span>

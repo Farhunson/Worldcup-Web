@@ -2488,6 +2488,21 @@ footer {
   font-size: 0.85rem;
 }
 
+.today-score {
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--text);
+  min-width: 24px;
+  text-align: center;
+}
+
+.today-score-separator {
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--muted);
+  margin: 0 4px;
+}
+
 .today-meta {
   display: flex;
   align-items: center;
