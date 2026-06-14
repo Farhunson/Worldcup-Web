@@ -2465,6 +2465,36 @@ footer {
   box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.1);
 }
 
+.today-match-card.live {
+  border-color: #ef4444;
+  background: linear-gradient(135deg, var(--surface) 0%, rgba(239, 68, 68, 0.08) 100%);
+  box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.2);
+  animation: livePulse 2s ease-in-out infinite;
+}
+
+@keyframes livePulse {
+  0%, 100% {
+    box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.3);
+  }
+}
+
+.live-badge {
+  background: #ef4444 !important;
+  animation: badgePulse 1s ease-in-out infinite;
+}
+
+@keyframes badgePulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
 .today-match-card:hover {
   border-color: var(--primary);
   transform: translateY(-2px);
