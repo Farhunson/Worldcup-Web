@@ -507,12 +507,21 @@ function getMatchDateTimeLabel(matchNo, venue, fallbackDate, fallbackTime) {
   // Fallback to original schedule data
   if (fallbackDate) {
     const date = new Date(fallbackDate);
+    // Get user's timezone abbreviation
+    const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const tzFormatter = new Intl.DateTimeFormat('en-US', {
+      timeZone: localTimezone,
+      timeZoneName: 'short'
+    });
+    const tzParts = tzFormatter.formatToParts(date);
+    const tzAbbr = tzParts.find(p => p.type === 'timeZoneName')?.value || '';
+    const timeWithTz = fallbackTime ? `${fallbackTime} ${tzAbbr}` : '';
     return {
       dateLabel: date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
       timeLabel: fallbackTime || '',
-      tzAbbr: '',
+      tzAbbr: tzAbbr,
       fullDate: date.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' }),
-      fullTime: fallbackTime || ''
+      fullTime: timeWithTz
     };
   }
   return {
