@@ -349,10 +349,68 @@ function getStadiumInfo(venueName) {
   return stadium || null;
 }
 
-// Team FIFA code mapping
-let teamFifaCodeMap = null;
+// Team FIFA code mapping (hardcoded fallback for immediate display)
+const teamFifaCodeMapFallback = {
+  'South Africa': 'RSA',
+  'Brazil': 'BRA',
+  'Scotland': 'SCO',
+  'Turkey': 'TUR',
+  'Ivory Coast': 'CIV',
+  'Netherlands': 'NED',
+  'Cape Verde': 'CPV',
+  'France': 'FRA',
+  'Tunisia': 'TUN',
+  'Egypt': 'EGY',
+  'Iraq': 'IRQ',
+  'Portugal': 'POR',
+  'Uzbekistan': 'UZB',
+  'Colombia': 'COL',
+  'Ecuador': 'ECU',
+  'Japan': 'JPN',
+  'New Zealand': 'NZL',
+  'Saudi Arabia': 'KSA',
+  'Austria': 'AUT',
+  'Ghana': 'GHA',
+  'South Korea': 'KOR',
+  'Spain': 'ESP',
+  'Norway': 'NOR',
+  'Argentina': 'ARG',
+  'Democratic Republic of the Congo': 'COD',
+  'England': 'ENG',
+  'Czech Republic': 'CZE',
+  'Canada': 'CAN',
+  'Qatar': 'QAT',
+  'Switzerland': 'SUI',
+  'Morocco': 'MAR',
+  'Paraguay': 'PAR',
+  'Curaçao': 'CUW',
+  'Sweden': 'SWE',
+  'Algeria': 'ALG',
+  'Jordan': 'JOR',
+  'Haiti': 'HAI',
+  'Germany': 'GER',
+  'Uruguay': 'URU',
+  'Senegal': 'SEN',
+  'Panama': 'PAN',
+  'Mexico': 'MEX',
+  'Bosnia and Herzegovina': 'BIH',
+  'United States': 'USA',
+  'Australia': 'AUS',
+  'Belgium': 'BEL',
+  'Iran': 'IRN',
+  'Croatia': 'CRO',
+  // Abbreviated names
+  'Rep. of Korea': 'KOR',
+  'Czech Rep.': 'CZE',
+  'Bosnia/Herzeg.': 'BIH',
+  'DR Congo': 'COD',
+  'IR Iran': 'IRN',
+  'USA': 'USA'
+};
 
-// Fetch teams data from API
+let teamFifaCodeMap = { ...teamFifaCodeMapFallback };
+
+// Fetch teams data from API (updates mapping if available)
 async function fetchTeamsData() {
   try {
     const response = await fetch('https://worldcup26.ir/get/teams');
@@ -360,29 +418,9 @@ async function fetchTeamsData() {
     const data = await response.json();
     const teams = data.teams || [];
     
-    // Create mapping from team name to FIFA code
-    teamFifaCodeMap = {};
-    
-    // Mapping from abbreviated names in schedule_data.js to FIFA codes
-    const nameMapping = {
-      'Rep. of Korea': 'South Korea',
-      'Czech Rep.': 'Czech Republic',
-      'Bosnia/Herzeg.': 'Bosnia and Herzegovina',
-      'DR Congo': 'Democratic Republic of the Congo',
-      'IR Iran': 'Iran',
-      'USA': 'United States'
-    };
-    
+    // Update mapping with API data
     teams.forEach(team => {
-      // Map from official FIFA name to FIFA code
       teamFifaCodeMap[team.name_en] = team.fifa_code;
-      
-      // Also map from abbreviated names
-      Object.entries(nameMapping).forEach(([abbrev, official]) => {
-        if (team.name_en === official) {
-          teamFifaCodeMap[abbrev] = team.fifa_code;
-        }
-      });
     });
     
     // Re-render after team data is loaded to update team codes
@@ -396,7 +434,6 @@ async function fetchTeamsData() {
 
 // Get FIFA code for a team
 function getTeamFifaCode(teamName) {
-  if (!teamFifaCodeMap) return teamName;
   return teamFifaCodeMap[teamName] || teamName;
 }
 
