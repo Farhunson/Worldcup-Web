@@ -317,14 +317,14 @@ async function fetchStadiumData() {
 // Get stadium info by FIFA name (matches our venue names)
 function getStadiumInfo(venueName) {
   if (!stadiumData) return null;
-  
+
   // Find stadium by fifa_name matching our venue names
   // Our venue names match the pattern "City Stadium" or "City" in fifa_name
   const stadium = stadiumData.find(s => {
     // Try to match by city name in fifa_name
     const fifaName = s.fifa_name.toLowerCase();
     const venueLower = venueName.toLowerCase();
-    
+
     // Direct match with common patterns
     if (fifaName.includes('mexico city') && venueLower.includes('mexico')) return true;
     if (fifaName.includes('guadalajara') && venueLower.includes('guadalajara')) return true;
@@ -342,10 +342,10 @@ function getStadiumInfo(venueName) {
     if (fifaName.includes('miami') && venueLower.includes('miami')) return true;
     if (fifaName.includes('atlanta') && venueLower.includes('atlanta')) return true;
     if (fifaName.includes('monterrey') && venueLower.includes('monterrey')) return true;
-    
+
     return false;
   });
-  
+
   return stadium || null;
 }
 
@@ -470,78 +470,86 @@ function getCityName(venueName) {
 // Helper function to format venue local time to user's local machine timezone
 function formatApiTime(apiLocalDate, venue) {
   if (!apiLocalDate) return null;
-  
+
   // Parse the API date format: "06/11/2026 13:00"
   const [datePart, timePart] = apiLocalDate.split(' ');
   const [month, day, year] = datePart.split('/').map(Number);
   const [hours, minutes] = timePart.split(':').map(Number);
-  
+
   // Get the venue's timezone (default to US Eastern if unknown)
   const venueTimezone = venueTimezones[venue] || 'America/New_York';
-  
+
   // Get user's local machine timezone
   const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  
-  // The API stores UTC times, so create UTC date directly
-  const utcDate = new Date(Date.UTC(year, month - 1, day, hours, minutes));
-  
-  // Format UTC in venue's timezone for display
-  const venueDateFormatter = new Intl.DateTimeFormat('en-US', {
-    timeZone: venueTimezone,
-    month: 'short',
-    day: 'numeric'
-  });
-  
-  const venueTimeFormatter = new Intl.DateTimeFormat('en-US', {
+
+  // Create a formatter to check what time a UTC moment shows in the venue timezone
+  const venueFormatter = new Intl.DateTimeFormat('en-US', {
     timeZone: venueTimezone,
     hour: '2-digit',
     minute: '2-digit',
     hour12: false
   });
-  
-  const venueFullDateFormatter = new Intl.DateTimeFormat('en-US', {
-    timeZone: venueTimezone,
-    weekday: 'short',
-    month: 'short',
-    day: 'numeric'
-  });
-  
-  // Get timezone abbreviation for venue
+
+  // Create a UTC date assuming the time parts are correct
+  // Then adjust until the venue formatter shows the correct local time
+  let correctUTC = null;
+
+  // Try all possible offsets from -12 hours to +14 hours in 15-min increments
+  for (let offsetMinutes = -720; offsetMinutes <= 840; offsetMinutes += 15) {
+    const testUTC = new Date(Date.UTC(year, month - 1, day, hours, minutes) - offsetMinutes * 60 * 1000);
+    const parts = venueFormatter.formatToParts(testUTC);
+    const partMap = {};
+    parts.forEach(p => partMap[p.type] = parseInt(p.value));
+
+    // Check if this UTC time shows the correct local time in venue timezone
+    if (partMap.month === month && partMap.day === day &&
+      partMap.hour === hours && partMap.minute === minutes) {
+      correctUTC = testUTC;
+      break;
+    }
+  }
+
+  // Fallback: just use UTC if no match found
+  if (!correctUTC) {
+    correctUTC = new Date(Date.UTC(year, month - 1, day, hours, minutes));
+  }
+
+  // Get short timezone abbreviation for user's timezone
   const tzFormatter = new Intl.DateTimeFormat('en-US', {
     timeZone: venueTimezone,
     timeZoneName: 'short'
   });
   const tzParts = tzFormatter.formatToParts(utcDate);
   const tzAbbr = tzParts.find(p => p.type === 'timeZoneName')?.value || '';
-  
-  // Also format in user's local timezone
+
+  // Create formatters for the user's local timezone
   const localDateFormatter = new Intl.DateTimeFormat(undefined, {
     timeZone: localTimezone,
     month: 'short',
     day: 'numeric'
   });
-  
+
   const localTimeFormatter = new Intl.DateTimeFormat(undefined, {
     timeZone: localTimezone,
     hour: '2-digit',
     minute: '2-digit',
     hour12: false
   });
-  
+
   const fullDateFormatter = new Intl.DateTimeFormat(undefined, {
     timeZone: localTimezone,
     weekday: 'short',
     month: 'short',
     day: 'numeric'
   });
-  
+
   const fullTimeFormatter = new Intl.DateTimeFormat(undefined, {
     timeZone: localTimezone,
     hour: '2-digit',
     minute: '2-digit'
   });
-  
-  // Return venue's local time for display
+
+  // Format the corrected UTC timestamp in user's local timezone
   return {
     dateLabel: venueDateFormatter.format(utcDate),
     timeLabel: venueTimeFormatter.format(utcDate),
@@ -689,19 +697,19 @@ clearButton.addEventListener('click', () => {
     // Only clear scores that are NOT from the API
     const nonApiScores = {};
     const nonApiMatchNos = Object.keys(state.scores).filter(matchNo => !state.apiSourcedMatches[matchNo]);
-    
+
     // Preserve API-sourced scores
     Object.keys(state.scores).forEach(matchNo => {
       if (state.apiSourcedMatches[matchNo]) {
         nonApiScores[matchNo] = state.scores[matchNo];
       }
     });
-    
+
     state.scores = nonApiScores;
     // Note: We keep apiSourcedMatches intact since those scores are preserved
     saveState();
     render();
-    
+
     const clearedCount = nonApiMatchNos.length;
     if (clearedCount > 0) {
       console.log(`Cleared ${clearedCount} manually entered score(s). API-synced scores preserved.`);
@@ -749,12 +757,12 @@ function initLiveApi() {
   // Get references to existing elements
   refreshButton = document.getElementById('liveRefreshBtn');
   liveIndicator = document.getElementById('liveIndicator');
-  
+
   // Add click listener to refresh button
   if (refreshButton) {
     refreshButton.addEventListener('click', fetchLiveScores);
   }
-  
+
   // Fetch stadium data on init
   fetchStadiumData();
   
@@ -808,7 +816,7 @@ async function fetchLiveScores() {
 
       // Find matching match in our scheduleData (both group and knockout matches)
       const allMatches = [...scheduleData.groupMatches, ...scheduleData.knockoutMatches];
-      
+
       const matchingMatch = allMatches.find(m => {
         return (m.team1 === homeProjectName && m.team2 === awayProjectName) ||
           (m.team1 === awayProjectName && m.team2 === homeProjectName);
@@ -1422,10 +1430,10 @@ function renderMatchDetail(matchNo) {
   const teamB = match.team2 ? { name: match.team2 } : resolveTeamPosition(match.pos2 || '', currentRankings, currentThirdPlacers, {}, false, match.matchNo, currentAssignments);
 
   const apiTime = getMatchTime(match.matchNo, match.venue);
-  const timezoneDisplay = apiTime 
-    ? `Your time (${apiTime.localTimezone})` 
+  const timezoneDisplay = apiTime
+    ? `Your time (${apiTime.localTimezone})`
     : `Local time: ${getLocalTimezone()}`;
-  
+
   container.querySelector('.match-detail-inner').innerHTML = `
     <div class="match-detail-top">
       <div class="match-title">Match ${match.matchNo}</div>
@@ -1462,12 +1470,12 @@ function renderMatchDetail(matchNo) {
 function renderThirdPlaceStandings(thirdPlaceTeams) {
   const qualifyingTeams = thirdPlaceTeams.slice(0, 8);
   const nonQualifyingTeams = thirdPlaceTeams.slice(8);
-  
+
   return `
     <div class="third-place-standings">
       <div class="third-place-header">
         <div class="third-place-title">
-          <h3>🏆 Best 3rd Place Rankings</h3>
+          <h3>Best 3rd Place Rankings</h3>
           <p>Top 8 teams advance to the Round of 32</p>
         </div>
         <div class="third-place-stats">
