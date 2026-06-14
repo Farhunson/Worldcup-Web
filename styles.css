@@ -839,7 +839,7 @@ tr.advancement-best-third td {
   justify-content: center;
   width: 38px;
   min-width: 38px;
-  height: 26px;
+  height: 25px; /* 3:2 ratio for flag images */
   border-radius: 0 12px 0 12px;
   overflow: hidden;
   background: #FFFFFF;
@@ -1031,7 +1031,7 @@ tr.advancement-best-third td {
 .group-card .match-top .team-flag,
 .group-card .team-flag-name .team-flag {
   width: 32px;
-  height: 20px;
+  height: 21px; /* 3:2 ratio for flag images */
 }
 
 /* Prevent horizontal overflow: allow items to shrink and constrain column sizes inside group cards */
