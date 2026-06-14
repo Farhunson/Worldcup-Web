@@ -869,43 +869,229 @@ const scheduleData =
     },
   ],
   "knockoutMatches": [
-    // Round of 32
-    { "matchNo": 73, "stage": "r32", "venue": "Los Angeles", "date": "2026-06-29T02:00:00", "time": "02:00" },
-    { "matchNo": 74, "stage": "r32", "venue": "Boston", "date": "2026-06-30T03:30:00", "time": "03:30" },
-    { "matchNo": 75, "stage": "r32", "venue": "Monterrey", "date": "2026-06-30T08:00:00", "time": "08:00" },
-    { "matchNo": 76, "stage": "r32", "venue": "Houston", "date": "2026-06-30T00:00:00", "time": "00:00" },
-    { "matchNo": 77, "stage": "r32", "venue": "New York/New Jersey", "date": "2026-07-01T04:00:00", "time": "04:00" },
-    { "matchNo": 78, "stage": "r32", "venue": "Dallas", "date": "2026-07-01T00:00:00", "time": "00:00" },
-    { "matchNo": 79, "stage": "r32", "venue": "Mexico City", "date": "2026-07-01T08:00:00", "time": "08:00" },
-    { "matchNo": 80, "stage": "r32", "venue": "Atlanta", "date": "2026-07-01T23:00:00", "time": "23:00" },
-    { "matchNo": 81, "stage": "r32", "venue": "San Francisco Bay Area", "date": "2026-07-02T07:00:00", "time": "07:00" },
-    { "matchNo": 82, "stage": "r32", "venue": "Seattle", "date": "2026-07-02T03:00:00", "time": "03:00" },
-    { "matchNo": 83, "stage": "r32", "venue": "Toronto", "date": "2026-07-03T06:00:00", "time": "06:00" },
-    { "matchNo": 84, "stage": "r32", "venue": "Los Angeles", "date": "2026-07-03T02:00:00", "time": "02:00" },
-    { "matchNo": 85, "stage": "r32", "venue": "Vancouver", "date": "2026-07-03T10:00:00", "time": "10:00" },
-    { "matchNo": 86, "stage": "r32", "venue": "Miami", "date": "2026-07-04T05:00:00", "time": "05:00" },
-    { "matchNo": 87, "stage": "r32", "venue": "Kansas City", "date": "2026-07-04T08:30:00", "time": "08:30" },
-    { "matchNo": 88, "stage": "r32", "venue": "Dallas", "date": "2026-07-04T01:00:00", "time": "01:00" },
-    // Round of 16
-    { "matchNo": 89, "stage": "r16", "venue": "Philadelphia", "date": "2026-07-05T04:00:00", "time": "04:00" },
-    { "matchNo": 90, "stage": "r16", "venue": "Houston", "date": "2026-07-05T00:00:00", "time": "00:00" },
-    { "matchNo": 91, "stage": "r16", "venue": "New York/New Jersey", "date": "2026-07-06T03:00:00", "time": "03:00" },
-    { "matchNo": 92, "stage": "r16", "venue": "Mexico City", "date": "2026-07-06T07:00:00", "time": "07:00" },
-    { "matchNo": 93, "stage": "r16", "venue": "Dallas", "date": "2026-07-07T02:00:00", "time": "02:00" },
-    { "matchNo": 94, "stage": "r16", "venue": "Seattle", "date": "2026-07-07T07:00:00", "time": "07:00" },
-    { "matchNo": 95, "stage": "r16", "venue": "Atlanta", "date": "2026-07-07T23:00:00", "time": "23:00" },
-    { "matchNo": 96, "stage": "r16", "venue": "Vancouver", "date": "2026-07-08T03:00:00", "time": "03:00" },
-    // Quarterfinals
-    { "matchNo": 97, "stage": "qf", "venue": "Boston", "date": "2026-07-10T03:00:00", "time": "03:00" },
-    { "matchNo": 98, "stage": "qf", "venue": "Los Angeles", "date": "2026-07-11T02:00:00", "time": "02:00" },
-    { "matchNo": 99, "stage": "qf", "venue": "Miami", "date": "2026-07-12T04:00:00", "time": "04:00" },
-    { "matchNo": 100, "stage": "qf", "venue": "Kansas City", "date": "2026-07-12T08:00:00", "time": "08:00" },
-    // Semifinals
-    { "matchNo": 101, "stage": "sf", "venue": "Dallas", "date": "2026-07-15T02:00:00", "time": "02:00" },
-    { "matchNo": 102, "stage": "sf", "venue": "Atlanta", "date": "2026-07-16T02:00:00", "time": "02:00" },
-    // Third Place
-    { "matchNo": 103, "stage": "third", "venue": "Miami", "date": "2026-07-19T04:00:00", "time": "04:00" },
-    // Final
-    { "matchNo": 104, "stage": "final", "venue": "New York/New Jersey", "date": "2026-07-20T02:00:00", "time": "02:00" }
+    {
+      "matchNo": 73,
+      "date": "2026-06-28T19:00:00",
+      "time": "19:00",
+      "venue": "Los Angeles",
+      "stage": "r32"
+    },
+    {
+      "matchNo": 74,
+      "date": "2026-06-29T17:00:00",
+      "time": "17:00",
+      "venue": "Houston",
+      "stage": "r32"
+    },
+    {
+      "matchNo": 75,
+      "date": "2026-06-29T20:30:00",
+      "time": "20:30",
+      "venue": "Boston",
+      "stage": "r32"
+    },
+    {
+      "matchNo": 76,
+      "date": "2026-06-30T00:00:00",
+      "time": "00:00",
+      "venue": "Monterrey",
+      "stage": "r32"
+    },
+    {
+      "matchNo": 77,
+      "date": "2026-06-30T17:00:00",
+      "time": "17:00",
+      "venue": "Dallas",
+      "stage": "r32"
+    },
+    {
+      "matchNo": 78,
+      "date": "2026-06-30T21:00:00",
+      "time": "21:00",
+      "venue": "New York/New Jersey",
+      "stage": "r32"
+    },
+    {
+      "matchNo": 79,
+      "date": "2026-07-01T00:00:00",
+      "time": "00:00",
+      "venue": "Mexico City",
+      "stage": "r32"
+    },
+    {
+      "matchNo": 80,
+      "date": "2026-07-01T17:00:00",
+      "time": "17:00",
+      "venue": "Mexico City",
+      "stage": "r32"
+    },
+    {
+      "matchNo": 81,
+      "date": "2026-07-01T20:00:00",
+      "time": "20:00",
+      "venue": "Seattle",
+      "stage": "r32"
+    },
+    {
+      "matchNo": 82,
+      "date": "2026-07-02T00:00:00",
+      "time": "00:00",
+      "venue": "San Francisco Bay Area",
+      "stage": "r32"
+    },
+    {
+      "matchNo": 83,
+      "date": "2026-07-02T19:00:00",
+      "time": "19:00",
+      "venue": "Los Angeles",
+      "stage": "r32"
+    },
+    {
+      "matchNo": 84,
+      "date": "2026-07-02T23:00:00",
+      "time": "23:00",
+      "venue": "Toronto",
+      "stage": "r32"
+    },
+    {
+      "matchNo": 85,
+      "date": "2026-07-03T03:00:00",
+      "time": "03:00",
+      "venue": "Vancouver",
+      "stage": "r32"
+    },
+    {
+      "matchNo": 86,
+      "date": "2026-07-03T18:00:00",
+      "time": "18:00",
+      "venue": "Dallas",
+      "stage": "r32"
+    },
+    {
+      "matchNo": 87,
+      "date": "2026-07-03T22:00:00",
+      "time": "22:00",
+      "venue": "Miami",
+      "stage": "r32"
+    },
+    {
+      "matchNo": 88,
+      "date": "2026-07-04T00:30:00",
+      "time": "00:30",
+      "venue": "Miami",
+      "stage": "r32"
+    },
+    {
+      "matchNo": 89,
+      "date": "2026-07-04T17:00:00",
+      "time": "17:00",
+      "venue": "Houston",
+      "stage": "r16"
+    },
+    {
+      "matchNo": 90,
+      "date": "2026-07-04T21:00:00",
+      "time": "21:00",
+      "venue": "Philadelphia",
+      "stage": "r16"
+    },
+    {
+      "matchNo": 91,
+      "date": "2026-07-05T20:00:00",
+      "time": "20:00",
+      "venue": "New York/New Jersey",
+      "stage": "r16"
+    },
+    {
+      "matchNo": 92,
+      "date": "2026-07-05T23:00:00",
+      "time": "23:00",
+      "venue": "Mexico City",
+      "stage": "r16"
+    },
+    {
+      "matchNo": 93,
+      "date": "2026-07-06T19:00:00",
+      "time": "19:00",
+      "venue": "Dallas",
+      "stage": "r16"
+    },
+    {
+      "matchNo": 94,
+      "date": "2026-07-07T00:00:00",
+      "time": "00:00",
+      "venue": "Seattle",
+      "stage": "r16"
+    },
+    {
+      "matchNo": 95,
+      "date": "2026-07-07T17:00:00",
+      "time": "17:00",
+      "venue": "Mexico City",
+      "stage": "r16"
+    },
+    {
+      "matchNo": 96,
+      "date": "2026-07-07T20:00:00",
+      "time": "20:00",
+      "venue": "Vancouver",
+      "stage": "r16"
+    },
+    {
+      "matchNo": 97,
+      "date": "2026-07-09T20:00:00",
+      "time": "20:00",
+      "venue": "Boston",
+      "stage": "qf"
+    },
+    {
+      "matchNo": 98,
+      "date": "2026-07-10T19:00:00",
+      "time": "19:00",
+      "venue": "Los Angeles",
+      "stage": "qf"
+    },
+    {
+      "matchNo": 99,
+      "date": "2026-07-11T21:00:00",
+      "time": "21:00",
+      "venue": "Miami",
+      "stage": "qf"
+    },
+    {
+      "matchNo": 100,
+      "date": "2026-07-12T00:00:00",
+      "time": "00:00",
+      "venue": "Miami",
+      "stage": "qf"
+    },
+    {
+      "matchNo": 101,
+      "date": "2026-07-14T19:00:00",
+      "time": "19:00",
+      "venue": "Dallas",
+      "stage": "sf"
+    },
+    {
+      "matchNo": 102,
+      "date": "2026-07-15T20:00:00",
+      "time": "20:00",
+      "venue": "Mexico City",
+      "stage": "sf"
+    },
+    {
+      "matchNo": 103,
+      "date": "2026-07-18T21:00:00",
+      "time": "21:00",
+      "venue": "Miami",
+      "stage": "third"
+    },
+    {
+      "matchNo": 104,
+      "date": "2026-07-19T19:00:00",
+      "time": "19:00",
+      "venue": "New York/New Jersey",
+      "stage": "final"
+    },
   ]
 };
