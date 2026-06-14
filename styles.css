@@ -1493,16 +1493,38 @@ tr.advancement-best-third td {
 /* ── Match Meta (date/venue) ───────────────────────────────────────── */
 .bracket-match-meta {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   padding: 5px 12px 6px;
   font-size: 0.72rem;
   color: var(--muted);
   background: var(--surface);
   border-top: 1px solid var(--border);
-  gap: 6px;
+  gap: 4px;
 }
 
-.bracket-match-meta span {
+.bracket-match-meta .bracket-datetime {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bracket-venue {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.bracket-stadium-name {
+  font-size: 0.7rem;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bracket-city-name {
+  font-size: 0.65rem;
+  color: var(--muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
