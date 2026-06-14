@@ -5,6 +5,7 @@ const state = {
   lastApiUpdate: null,
   apiSourcedMatches: {}, // Track which matches have scores from API
   apiMatchTimes: {}, // Store API match times (UTC) for timezone conversion
+  liveMatches: {}, // Track which matches are currently live
 };
 loadState();
 
@@ -617,12 +618,14 @@ function loadState() {
       state.collapsedGroups = stored.collapsedGroups || {};
       state.apiSourcedMatches = stored.apiSourcedMatches || {};
       state.apiMatchTimes = stored.apiMatchTimes || {};
+      state.liveMatches = stored.liveMatches || {};
     }
   } catch {
     state.scores = {};
     state.collapsedGroups = {};
     state.apiSourcedMatches = {};
     state.apiMatchTimes = {};
+    state.liveMatches = {};
   }
 }
 
@@ -632,6 +635,7 @@ function saveState() {
     collapsedGroups: state.collapsedGroups,
     apiSourcedMatches: state.apiSourcedMatches,
     apiMatchTimes: state.apiMatchTimes,
+    liveMatches: state.liveMatches,
   }));
 }
 
@@ -715,24 +719,34 @@ async function fetchLiveScores() {
           timesUpdated++;
         }
 
-        // Update score if match is finished
+        // Update score for both live and finished matches
+        // Determine correct score order based on which team is home
+        const isHomeTeam = targetMatch.team1 === homeProjectName;
+        const score1 = isHomeTeam ? homeScore : awayScore;
+        const score2 = isHomeTeam ? awayScore : homeScore;
+
+        // Update score if different from current
+        const currentScore = state.scores[targetMatch.matchNo];
+        if (!currentScore ||
+          parseInt(currentScore.score1) !== score1 ||
+          parseInt(currentScore.score2) !== score2) {
+          state.scores[targetMatch.matchNo] = { score1: String(score1), score2: String(score2) };
+          updatedCount++;
+        }
+
+        // Check if match is live (not finished, time_elapsed is "live")
         if (game.finished === 'TRUE') {
-          // Determine correct score order based on which team is home
-          const isHomeTeam = targetMatch.team1 === homeProjectName;
-          const score1 = isHomeTeam ? homeScore : awayScore;
-          const score2 = isHomeTeam ? awayScore : homeScore;
-
-          // Update score if different from current
-          const currentScore = state.scores[targetMatch.matchNo];
-          if (!currentScore ||
-            parseInt(currentScore.score1) !== score1 ||
-            parseInt(currentScore.score2) !== score2) {
-            state.scores[targetMatch.matchNo] = { score1: String(score1), score2: String(score2) };
-            updatedCount++;
-          }
-
-          // Mark this match as API-sourced (for disabling inputs)
+          // Mark this match as API-sourced and NOT live (finished)
           state.apiSourcedMatches[targetMatch.matchNo] = true;
+          state.liveMatches[targetMatch.matchNo] = false;
+        } else if (game.time_elapsed === 'live') {
+          // Mark this match as live but NOT finished
+          state.liveMatches[targetMatch.matchNo] = true;
+          state.apiSourcedMatches[targetMatch.matchNo] = true;
+        } else {
+          // Match is not live and not finished (pre-match)
+          state.liveMatches[targetMatch.matchNo] = false;
+          state.apiSourcedMatches[targetMatch.matchNo] = false;
         }
       }
     });
@@ -762,6 +776,11 @@ async function fetchLiveScores() {
 // Helper function to check if a match has API-sourced scores
 function isApiSourcedMatch(matchNo) {
   return state.apiSourcedMatches[matchNo] === true;
+}
+
+// Helper function to check if a match is currently live
+function isLiveMatch(matchNo) {
+  return state.liveMatches[matchNo] === true;
 }
 
 function updateLiveIndicator(success) {
@@ -1600,6 +1619,7 @@ function buildTodaysMatchCard(match) {
   const score2Val = state.scores[match.matchNo]?.score2 ?? '';
   const isPlayed = isMatchPlayed(match.matchNo);
   const isApiSourced = isApiSourcedMatch(match.matchNo);
+  const isLive = isLiveMatch(match.matchNo);
   
   // Get group info if it's a group match
   const group = getGroupFromPos(match.pos1) || getGroupFromPos(match.pos2);
@@ -1609,14 +1629,19 @@ function buildTodaysMatchCard(match) {
   const { dateLabel, timeLabel, tzAbbr } = getMatchDateTimeLabel(match.matchNo, match.venue, match.date, match.time);
   const timeDisplay = tzAbbr ? `${timeLabel} ${tzAbbr}` : timeLabel;
   
-  // Full-time badge if played
-  const statusBadge = isPlayed || isApiSourced ? '<span class="todays-status-badge full-time">Full-time</span>' : '';
+  // Status badge: Live badge (red with dot) takes priority over Full-time badge
+  let statusBadge = '';
+  if (isLive) {
+    statusBadge = '<span class="todays-status-badge live"><span class="live-dot"></span>LIVE</span>';
+  } else if (isPlayed || isApiSourced) {
+    statusBadge = '<span class="todays-status-badge full-time">Full-time</span>';
+  }
   
   // Stadium info
   const venueDisplay = getVenueDisplayName(match.venue) || '';
   
-  // Highlight class for upcoming matches
-  const highlightClass = !isPlayed && !isApiSourced ? 'todays-match-upcoming' : '';
+  // Highlight class for upcoming matches (but not live ones)
+  const highlightClass = !isPlayed && !isApiSourced && !isLive ? 'todays-match-upcoming' : '';
   
   // Build match card content
   const matchContent = `
@@ -1625,11 +1650,11 @@ function buildTodaysMatchCard(match) {
         <div class="team-flag-name">${formatFlag(match.team1)}<div class="team-name">${getTeamInitials(match.team1)}</div></div>
       </div>
       <div class="score-left">
-        ${isPlayed || isApiSourced ? `<span class="todays-score-display">${score1Val}</span>` : ''}
+        ${isPlayed || isApiSourced || isLive ? `<span class="todays-score-display">${score1Val}</span>` : ''}
       </div>
-      <div class="vs">${isPlayed || isApiSourced ? '-' : 'vs'}</div>
+      <div class="vs">${isPlayed || isApiSourced || isLive ? '-' : 'vs'}</div>
       <div class="score-right">
-        ${isPlayed || isApiSourced ? `<span class="todays-score-display">${score2Val}</span>` : ''}
+        ${isPlayed || isApiSourced || isLive ? `<span class="todays-score-display">${score2Val}</span>` : ''}
       </div>
       <div class="team-right">
         <div class="team-flag-name">${formatFlag(match.team2)}<div class="team-name">${getTeamInitials(match.team2)}</div></div>
