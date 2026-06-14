@@ -1656,8 +1656,15 @@ function buildTodaysMatchCard(match) {
   // Show scores if match is played, live, or finished
   const showScores = isPlayed || isLive || isFinished;
   
-  // Highlight class for upcoming matches (but not live ones)
-  const highlightClass = !showScores ? 'todays-match-upcoming' : '';
+  // Highlight class based on match status
+  let statusClass = '';
+  if (isLive) {
+    statusClass = 'todays-match-live';
+  } else if (isFinished) {
+    statusClass = 'todays-match-finished';
+  } else if (!showScores) {
+    statusClass = 'todays-match-upcoming';
+  }
   
   // Build today's match card content
   const matchContent = `
@@ -1687,7 +1694,7 @@ function buildTodaysMatchCard(match) {
     </div>
   `;
   
-  return `<div class="match-card match-compact ${highlightClass}" data-matchno="${match.matchNo}">${matchContent}</div>`;
+  return `<div class="match-card match-compact ${statusClass}" data-matchno="${match.matchNo}">${matchContent}</div>`;
 }
 
 // Render today's matches section
