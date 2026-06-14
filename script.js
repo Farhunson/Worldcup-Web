@@ -272,8 +272,31 @@ const stageLabels = {
   final: 'Final',
 };
 
-// Helper function to format API UTC time to local machine timezone
-function formatApiTime(apiLocalDate) {
+// Venue to IANA timezone mapping for World Cup 2026 host cities
+const venueTimezones = {
+  'Mexico City': 'America/Mexico_City',
+  'Guadalajara': 'America/Bogota', // Guadalajara uses same timezone as Bogota (CST)
+  'Toronto': 'America/Toronto',
+  'Vancouver': 'America/Vancouver',
+  'Los Angeles': 'America/Los_Angeles',
+  'San Francisco Bay Area': 'America/Los_Angeles',
+  'Seattle': 'America/Los_Angeles',
+  'Dallas': 'America/Chicago',
+  'Houston': 'America/Chicago',
+  'Kansas City': 'America/Chicago',
+  'Phoenix': 'America/Phoenix',
+  'Philadelphia': 'America/New_York',
+  'Boston': 'America/New_York',
+  'New York/New Jersey': 'America/New_York',
+  'Miami': 'America/New_York',
+  'Atlanta': 'America/New_York',
+  'Monterrey': 'America/Monterrey',
+  'Denver': 'America/Denver',
+  'Boston': 'America/New_York',
+};
+
+// Helper function to format venue local time to user's local machine timezone
+function formatApiTime(apiLocalDate, venue) {
   if (!apiLocalDate) return null;
   
   // Parse the API date format: "06/11/2026 13:00"
@@ -281,20 +304,33 @@ function formatApiTime(apiLocalDate) {
   const [month, day, year] = datePart.split('/').map(Number);
   const [hours, minutes] = timePart.split(':').map(Number);
   
-  // Create a Date object (API returns UTC time)
-  const utcDate = new Date(Date.UTC(year, month - 1, day, hours, minutes));
+  // Get the venue's timezone (default to US Eastern if unknown)
+  const venueTimezone = venueTimezones[venue] || 'America/New_York';
   
-  // Get the local machine's timezone using Intl.DateTimeFormat
+  // Get user's local machine timezone
   const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   
-  // Format to local time using the explicit timezone
-  const formatter = new Intl.DateTimeFormat(undefined, {
+  // Create a date in the venue's timezone
+  const venueDate = new Date(year, month - 1, day, hours, minutes);
+  
+  // Format to venue's local time
+  const venueFormatter = new Intl.DateTimeFormat(undefined, {
+    timeZone: venueTimezone,
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
+  });
+  
+  // Format to user's local time
+  const localDateFormatter = new Intl.DateTimeFormat(undefined, {
     timeZone: localTimezone,
     month: 'short',
     day: 'numeric'
   });
   
-  const timeFormatter = new Intl.DateTimeFormat(undefined, {
+  const localTimeFormatter = new Intl.DateTimeFormat(undefined, {
     timeZone: localTimezone,
     hour: '2-digit',
     minute: '2-digit',
@@ -315,21 +351,23 @@ function formatApiTime(apiLocalDate) {
   });
   
   return {
-    dateLabel: formatter.format(utcDate),
-    timeLabel: timeFormatter.format(utcDate),
-    fullDate: fullDateFormatter.format(utcDate),
-    fullTime: fullTimeFormatter.format(utcDate),
-    timestamp: utcDate.getTime(),
-    timezone: localTimezone,
+    dateLabel: localDateFormatter.format(venueDate),
+    timeLabel: localTimeFormatter.format(venueDate),
+    fullDate: fullDateFormatter.format(venueDate),
+    fullTime: fullTimeFormatter.format(venueDate),
+    timestamp: venueDate.getTime(),
+    venueTimezone: venueTimezone,
+    localTimezone: localTimezone,
+    venueDisplay: venueFormatter.format(venueDate),
     isLocal: true
   };
 }
 
 // Get match time for display (API time if available, otherwise fallback)
-function getMatchTime(matchNo) {
+function getMatchTime(matchNo, venue) {
   const apiTime = state.apiMatchTimes[matchNo];
   if (apiTime) {
-    return formatApiTime(apiTime);
+    return formatApiTime(apiTime, venue);
   }
   return null;
 }
@@ -340,8 +378,8 @@ function getLocalTimezone() {
 }
 
 // Generate date/time label for a match (uses API time if available)
-function getMatchDateTimeLabel(matchNo, fallbackDate, fallbackTime) {
-  const apiTime = getMatchTime(matchNo);
+function getMatchDateTimeLabel(matchNo, venue, fallbackDate, fallbackTime) {
+  const apiTime = getMatchTime(matchNo, venue);
   if (apiTime) {
     return {
       dateLabel: apiTime.dateLabel,
@@ -927,7 +965,7 @@ function buildGroupMatches(group, matches) {
     .filter((match) => match.pos1 && match.pos1[0] === group)
     .sort((a, b) => a.matchNo - b.matchNo)
     .map((match) => {
-      const { dateLabel, timeLabel } = getMatchDateTimeLabel(match.matchNo, match.date, match.time);
+      const { dateLabel, timeLabel } = getMatchDateTimeLabel(match.matchNo, match.venue, match.date, match.time);
       const score1Val = state.scores[match.matchNo]?.score1 ?? '';
       const score2Val = state.scores[match.matchNo]?.score2 ?? '';
       const isApiSourced = isApiSourcedMatch(match.matchNo);
@@ -978,17 +1016,22 @@ function renderMatchDetail(matchNo) {
 
   const score1 = state.scores[match.matchNo]?.score1 ?? '';
   const score2 = state.scores[match.matchNo]?.score2 ?? '';
-  const { dateLabel, timeLabel, fullDate, fullTime } = getMatchDateTimeLabel(match.matchNo, match.date, match.time);
+  const { dateLabel, timeLabel, fullDate, fullTime } = getMatchDateTimeLabel(match.matchNo, match.venue, match.date, match.time);
 
   const teamA = match.team1 ? { name: match.team1 } : resolveTeamPosition(match.pos1 || '', currentRankings, currentThirdPlacers, {}, false, match.matchNo, currentAssignments);
   const teamB = match.team2 ? { name: match.team2 } : resolveTeamPosition(match.pos2 || '', currentRankings, currentThirdPlacers, {}, false, match.matchNo, currentAssignments);
 
+  const apiTime = getMatchTime(match.matchNo, match.venue);
+  const timezoneDisplay = apiTime 
+    ? `Your time (${apiTime.localTimezone})` 
+    : `Local time: ${getLocalTimezone()}`;
+  
   container.querySelector('.match-detail-inner').innerHTML = `
     <div class="match-detail-top">
       <div class="match-title">Match ${match.matchNo}</div>
       <h3>${teamA.name} vs ${teamB.name}</h3>
       <div class="meta">${dateLabel} · ${timeLabel} · ${match.venue || ''}</div>
-      <div class="timezone-info">Local time: ${getLocalTimezone()}</div>
+      <div class="timezone-info">${timezoneDisplay}</div>
     </div>
     <div class="team-row">
       <div class="team-left">
@@ -1238,7 +1281,7 @@ function buildMatchCardHtml(match, stage, rankings, thirdPlaceTeams, knockoutMap
   const isApiSourced = isApiSourcedMatch(match.matchNo);
   const disabledAttr = isTBDA || isTBDB || isApiSourced ? 'disabled' : '';
   const apiBadge = isApiSourced ? '<span class="api-badge-bracket">Live</span>' : '';
-  const { dateLabel, timeLabel } = getMatchDateTimeLabel(match.matchNo, match.date, match.time);
+  const { dateLabel, timeLabel } = getMatchDateTimeLabel(match.matchNo, match.venue, match.date, match.time);
   return `
     <div class="bracket-match-node" data-matchno="${match.matchNo}" data-stage="${stage}">
       <div class="bracket-match-inner">
