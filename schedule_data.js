@@ -1,4 +1,5 @@
-const scheduleData = {
+const scheduleData = 
+{
   "groups": {
     "A": [
       "Czech Rep.",
@@ -25,7 +26,7 @@ const scheduleData = {
       "Scotland"
     ],
     "E": [
-      "Curaçao",
+      "Cura\u00e7ao",
       "Ecuador",
       "Germany",
       "Ivory Coast"
@@ -119,7 +120,7 @@ const scheduleData = {
       "stage": "group"
     },
     {
-      "matchNo": 8,
+      "matchNo": 5,
       "date": "2026-06-14T02:00:00",
       "time": "02:00",
       "team1": "Qatar",
@@ -130,7 +131,7 @@ const scheduleData = {
       "stage": "group"
     },
     {
-      "matchNo": 7,
+      "matchNo": 6,
       "date": "2026-06-14T05:00:00",
       "time": "05:00",
       "team1": "Brazil",
@@ -141,7 +142,7 @@ const scheduleData = {
       "stage": "group"
     },
     {
-      "matchNo": 5,
+      "matchNo": 7,
       "date": "2026-06-14T08:00:00",
       "time": "08:00",
       "team1": "Haiti",
@@ -152,7 +153,7 @@ const scheduleData = {
       "stage": "group"
     },
     {
-      "matchNo": 6,
+      "matchNo": 8,
       "date": "2026-06-14T11:00:00",
       "time": "11:00",
       "team1": "Australia",
@@ -163,18 +164,18 @@ const scheduleData = {
       "stage": "group"
     },
     {
-      "matchNo": 10,
+      "matchNo": 9,
       "date": "2026-06-15T00:00:00",
       "time": "00:00",
       "team1": "Germany",
-      "team2": "Curaçao",
+      "team2": "Cura\u00e7ao",
       "pos1": "E1",
       "pos2": "E2",
       "venue": "Houston",
       "stage": "group"
     },
     {
-      "matchNo": 11,
+      "matchNo": 10,
       "date": "2026-06-15T03:00:00",
       "time": "03:00",
       "team1": "Netherlands",
@@ -185,7 +186,7 @@ const scheduleData = {
       "stage": "group"
     },
     {
-      "matchNo": 9,
+      "matchNo": 11,
       "date": "2026-06-15T06:00:00",
       "time": "06:00",
       "team1": "Ivory Coast",
@@ -207,7 +208,7 @@ const scheduleData = {
       "stage": "group"
     },
     {
-      "matchNo": 14,
+      "matchNo": 13,
       "date": "2026-06-15T23:00:00",
       "time": "23:00",
       "team1": "Spain",
@@ -218,7 +219,7 @@ const scheduleData = {
       "stage": "group"
     },
     {
-      "matchNo": 16,
+      "matchNo": 14,
       "date": "2026-06-16T02:00:00",
       "time": "02:00",
       "team1": "Belgium",
@@ -229,7 +230,7 @@ const scheduleData = {
       "stage": "group"
     },
     {
-      "matchNo": 13,
+      "matchNo": 15,
       "date": "2026-06-16T05:00:00",
       "time": "05:00",
       "team1": "Saudi Arabia",
@@ -240,7 +241,7 @@ const scheduleData = {
       "stage": "group"
     },
     {
-      "matchNo": 15,
+      "matchNo": 16,
       "date": "2026-06-16T08:00:00",
       "time": "08:00",
       "team1": "IR Iran",
@@ -295,7 +296,7 @@ const scheduleData = {
       "stage": "group"
     },
     {
-      "matchNo": 23,
+      "matchNo": 21,
       "date": "2026-06-18T00:00:00",
       "time": "00:00",
       "team1": "Portugal",
@@ -317,7 +318,7 @@ const scheduleData = {
       "stage": "group"
     },
     {
-      "matchNo": 21,
+      "matchNo": 23,
       "date": "2026-06-18T06:00:00",
       "time": "06:00",
       "team1": "Ghana",
@@ -383,7 +384,7 @@ const scheduleData = {
       "stage": "group"
     },
     {
-      "matchNo": 32,
+      "matchNo": 29,
       "date": "2026-06-20T02:00:00",
       "time": "02:00",
       "team1": "USA",
@@ -405,7 +406,7 @@ const scheduleData = {
       "stage": "group"
     },
     {
-      "matchNo": 29,
+      "matchNo": 31,
       "date": "2026-06-20T07:30:00",
       "time": "07:30",
       "team1": "Brazil",
@@ -416,7 +417,7 @@ const scheduleData = {
       "stage": "group"
     },
     {
-      "matchNo": 31,
+      "matchNo": 32,
       "date": "2026-06-20T10:00:00",
       "time": "10:00",
       "team1": "Turkey",
@@ -427,7 +428,7 @@ const scheduleData = {
       "stage": "group"
     },
     {
-      "matchNo": 35,
+      "matchNo": 33,
       "date": "2026-06-21T00:00:00",
       "time": "00:00",
       "team1": "Netherlands",
@@ -438,7 +439,7 @@ const scheduleData = {
       "stage": "group"
     },
     {
-      "matchNo": 33,
+      "matchNo": 34,
       "date": "2026-06-21T03:00:00",
       "time": "03:00",
       "team1": "Germany",
@@ -449,11 +450,11 @@ const scheduleData = {
       "stage": "group"
     },
     {
-      "matchNo": 34,
+      "matchNo": 35,
       "date": "2026-06-21T07:00:00",
       "time": "07:00",
       "team1": "Ecuador",
-      "team2": "Curaçao",
+      "team2": "Cura\u00e7ao",
       "pos1": "E4",
       "pos2": "E2",
       "venue": "Kansas City",
@@ -471,7 +472,7 @@ const scheduleData = {
       "stage": "group"
     },
     {
-      "matchNo": 38,
+      "matchNo": 37,
       "date": "2026-06-21T23:00:00",
       "time": "23:00",
       "team1": "Spain",
@@ -482,7 +483,7 @@ const scheduleData = {
       "stage": "group"
     },
     {
-      "matchNo": 39,
+      "matchNo": 38,
       "date": "2026-06-22T02:00:00",
       "time": "02:00",
       "team1": "Belgium",
@@ -493,7 +494,7 @@ const scheduleData = {
       "stage": "group"
     },
     {
-      "matchNo": 37,
+      "matchNo": 39,
       "date": "2026-06-22T05:00:00",
       "time": "05:00",
       "team1": "Uruguay",
@@ -515,7 +516,7 @@ const scheduleData = {
       "stage": "group"
     },
     {
-      "matchNo": 43,
+      "matchNo": 41,
       "date": "2026-06-23T00:00:00",
       "time": "00:00",
       "team1": "Argentina",
@@ -537,7 +538,7 @@ const scheduleData = {
       "stage": "group"
     },
     {
-      "matchNo": 41,
+      "matchNo": 43,
       "date": "2026-06-23T07:00:00",
       "time": "07:00",
       "team1": "Norway",
@@ -559,7 +560,7 @@ const scheduleData = {
       "stage": "group"
     },
     {
-      "matchNo": 47,
+      "matchNo": 45,
       "date": "2026-06-24T00:00:00",
       "time": "00:00",
       "team1": "Portugal",
@@ -570,7 +571,7 @@ const scheduleData = {
       "stage": "group"
     },
     {
-      "matchNo": 45,
+      "matchNo": 46,
       "date": "2026-06-24T03:00:00",
       "time": "03:00",
       "team1": "England",
@@ -581,7 +582,7 @@ const scheduleData = {
       "stage": "group"
     },
     {
-      "matchNo": 46,
+      "matchNo": 47,
       "date": "2026-06-24T06:00:00",
       "time": "06:00",
       "team1": "Panama",
@@ -603,7 +604,7 @@ const scheduleData = {
       "stage": "group"
     },
     {
-      "matchNo": 51,
+      "matchNo": 49,
       "date": "2026-06-25T02:00:00",
       "time": "02:00",
       "team1": "Switzerland",
@@ -614,7 +615,7 @@ const scheduleData = {
       "stage": "group"
     },
     {
-      "matchNo": 52,
+      "matchNo": 50,
       "date": "2026-06-25T02:00:00",
       "time": "02:00",
       "team1": "Bosnia/Herzeg.",
@@ -625,7 +626,7 @@ const scheduleData = {
       "stage": "group"
     },
     {
-      "matchNo": 49,
+      "matchNo": 51,
       "date": "2026-06-25T05:00:00",
       "time": "05:00",
       "team1": "Scotland",
@@ -636,7 +637,7 @@ const scheduleData = {
       "stage": "group"
     },
     {
-      "matchNo": 50,
+      "matchNo": 52,
       "date": "2026-06-25T05:00:00",
       "time": "05:00",
       "team1": "Morocco",
@@ -672,7 +673,7 @@ const scheduleData = {
       "matchNo": 55,
       "date": "2026-06-26T03:00:00",
       "time": "03:00",
-      "team1": "Curaçao",
+      "team1": "Cura\u00e7ao",
       "team2": "Ivory Coast",
       "pos1": "E2",
       "pos2": "E3",
@@ -757,7 +758,7 @@ const scheduleData = {
       "stage": "group"
     },
     {
-      "matchNo": 65,
+      "matchNo": 63,
       "date": "2026-06-27T07:00:00",
       "time": "07:00",
       "team1": "Cape Verde",
@@ -768,7 +769,7 @@ const scheduleData = {
       "stage": "group"
     },
     {
-      "matchNo": 66,
+      "matchNo": 64,
       "date": "2026-06-27T07:00:00",
       "time": "07:00",
       "team1": "Uruguay",
@@ -779,7 +780,7 @@ const scheduleData = {
       "stage": "group"
     },
     {
-      "matchNo": 63,
+      "matchNo": 65,
       "date": "2026-06-27T10:00:00",
       "time": "10:00",
       "team1": "Egypt",
@@ -790,7 +791,7 @@ const scheduleData = {
       "stage": "group"
     },
     {
-      "matchNo": 64,
+      "matchNo": 66,
       "date": "2026-06-27T10:00:00",
       "time": "10:00",
       "team1": "New Zealand",
@@ -823,7 +824,7 @@ const scheduleData = {
       "stage": "group"
     },
     {
-      "matchNo": 71,
+      "matchNo": 69,
       "date": "2026-06-28T06:30:00",
       "time": "06:30",
       "team1": "Colombia",
@@ -834,7 +835,7 @@ const scheduleData = {
       "stage": "group"
     },
     {
-      "matchNo": 72,
+      "matchNo": 70,
       "date": "2026-06-28T06:30:00",
       "time": "06:30",
       "team1": "DR Congo",
@@ -845,7 +846,7 @@ const scheduleData = {
       "stage": "group"
     },
     {
-      "matchNo": 69,
+      "matchNo": 71,
       "date": "2026-06-28T09:00:00",
       "time": "09:00",
       "team1": "Algeria",
@@ -856,7 +857,7 @@ const scheduleData = {
       "stage": "group"
     },
     {
-      "matchNo": 70,
+      "matchNo": 72,
       "date": "2026-06-28T09:00:00",
       "time": "09:00",
       "team1": "Jordan",
@@ -1220,5 +1221,12 @@ const scheduleData = {
       "venue": "New York/New Jersey",
       "stage": "final"
     }
-  ]
-};
+  ],
+  "r32Matches": [],
+  "r16Matches": [],
+  "qfMatches": [],
+  "sfMatches": [],
+  "thirdPlaceMatch": [],
+  "finalMatch": []
+}
+;
