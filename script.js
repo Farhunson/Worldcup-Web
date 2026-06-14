@@ -1636,7 +1636,7 @@ function buildTodaysMatchCard(match) {
   
   // Get group info if it's a group match
   const group = getGroupFromPos(match.pos1) || getGroupFromPos(match.pos2);
-  const groupBadge = group ? `<span class="todays-group-badge">Group ${group}</span>` : '';
+  const groupBadge = group ? `<span class="todays-group-badge group-${group}">Group ${group}</span>` : '';
   
   // Get date/time
   const { dateLabel, timeLabel, tzAbbr } = getMatchDateTimeLabel(match.matchNo, match.venue, match.date, match.time);
@@ -1661,6 +1661,9 @@ function buildTodaysMatchCard(match) {
   
   // Build match card content
   const matchContent = `
+    <div class="todays-match-header">
+      ${groupBadge}
+    </div>
     <div class="match-top">
       <div class="team-left">
         <div class="team-flag-name">${formatFlag(match.team1)}<div class="team-name">${getTeamInitials(match.team1)}</div></div>
@@ -1678,7 +1681,6 @@ function buildTodaysMatchCard(match) {
     </div>
     <div class="match-mid">
       ${dateLabel} · ${timeDisplay} ${statusBadge}
-      ${groupBadge}
     </div>
     <div class="match-bottom">
       <div class="stadium-name">${venueDisplay}</div>

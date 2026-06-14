@@ -2447,17 +2447,34 @@ footer {
   border: 2px solid var(--accent);
 }
 
+.todays-match-header {
+  position: absolute;
+  top: 8px;
+  left: 12px;
+}
+
 .todays-group-badge {
   font-size: 0.65rem;
   font-weight: 600;
-  padding: 2px 6px;
-  background: var(--accent);
+  padding: 2px 8px;
   color: white;
   border-radius: 4px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  margin-left: 8px;
 }
+
+.todays-group-badge.group-A { background: #03E577; }
+.todays-group-badge.group-B { background: #F7194C; }
+.todays-group-badge.group-C { background: #FB9002; }
+.todays-group-badge.group-D { background: #3C52F6; }
+.todays-group-badge.group-E { background: #6201E7; }
+.todays-group-badge.group-F { background: #C9FF00; }
+.todays-group-badge.group-G { background: #F16393; }
+.todays-group-badge.group-H { background: #50FFD9; }
+.todays-group-badge.group-I { background: #A648BA; }
+.todays-group-badge.group-J { background: #307187; }
+.todays-group-badge.group-K { background: #FE3B03; }
+.todays-group-badge.group-L { background: #47B5EA; }
 
 .todays-status-badge.full-time {
   background: var(--success);
