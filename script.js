@@ -1432,7 +1432,7 @@ function buildMatchCardHtml(match, stage, rankings, thirdPlaceTeams, knockoutMap
       </div>
       <div class="bracket-match-meta">
         <span>${dateLabel} · ${timeDisplay} ${apiBadge}</span>
-        <span>${getVenueDisplayName(match.venue) || ''}</span>
+        <span>${getCityName(match.venue) || ''}</span>
       </div>
       <div class="bracket-match-number">M${match.matchNo}</div>
     </div>
