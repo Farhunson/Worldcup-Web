@@ -2,8 +2,73 @@ const STORAGE_KEY = 'wc2026Scoreboard';
 const state = {
   scores: {},
   collapsedGroups: {},
+  lastApiUpdate: null,
+  apiSourcedMatches: {}, // Track which matches have scores from API
 };
 loadState();
+
+// API Team Name Mapping (API name -> Project name)
+const apiTeamNameMap = {
+  'Mexico': 'Mexico',
+  'South Africa': 'South Africa',
+  'South Korea': 'Rep. of Korea',
+  'Czech Republic': 'Czech Rep.',
+  'Canada': 'Canada',
+  'Bosnia and Herzegovina': 'Bosnia/Herzeg.',
+  'United States': 'USA',
+  'Paraguay': 'Paraguay',
+  'Qatar': 'Qatar',
+  'Switzerland': 'Switzerland',
+  'Brazil': 'Brazil',
+  'Morocco': 'Morocco',
+  'Haiti': 'Haiti',
+  'Australia': 'Australia',
+  'Turkey': 'Turkey',
+  'Germany': 'Germany',
+  'Curaçao': 'Curaçao',
+  'Netherlands': 'Netherlands',
+  'Japan': 'Japan',
+  'Ivory Coast': 'Ivory Coast',
+  'Ecuador': 'Ecuador',
+  'Sweden': 'Sweden',
+  'Tunisia': 'Tunisia',
+  'Spain': 'Spain',
+  'Cape Verde': 'Cape Verde',
+  'Saudi Arabia': 'Saudi Arabia',
+  'Uruguay': 'Uruguay',
+  'Belgium': 'Belgium',
+  'Egypt': 'Egypt',
+  'Iran': 'IR Iran',
+  'New Zealand': 'New Zealand',
+  'France': 'France',
+  'Iraq': 'Iraq',
+  'Norway': 'Norway',
+  'Senegal': 'Senegal',
+  'Algeria': 'Algeria',
+  'Argentina': 'Argentina',
+  'Austria': 'Austria',
+  'Jordan': 'Jordan',
+  'Colombia': 'Colombia',
+  'Democratic Republic of the Congo': 'DR Congo',
+  'Portugal': 'Portugal',
+  'Uzbekistan': 'Uzbekistan',
+  'Croatia': 'Croatia',
+  'England': 'England',
+  'Ghana': 'Ghana',
+  'Panama': 'Panama',
+  'Scotland': 'Scotland',
+};
+
+// Reverse map (Project name -> API name)
+const projectToApiNameMap = Object.entries(apiTeamNameMap).reduce((acc, [api, proj]) => {
+  acc[proj] = api;
+  return acc;
+}, {});
+
+// API Configuration
+const API_URL = 'https://worldcup26.ir/get/games';
+const API_REFRESH_INTERVAL = 30000; // 30 seconds
+let apiRefreshTimer = null;
 
 const flagCodeMap = {
   'Mexico': 'mx',
@@ -252,7 +317,8 @@ if (themeToggleBtn) {
 clearButton.addEventListener('click', () => {
   if (confirm('Clear all saved scores?')) {
     state.scores = {};
-    saveScores();
+    state.apiSourcedMatches = {};
+    saveState();
     render();
   }
 });
@@ -268,10 +334,12 @@ function loadState() {
     if (stored && typeof stored === 'object') {
       state.scores = stored.scores || stored;
       state.collapsedGroups = stored.collapsedGroups || {};
+      state.apiSourcedMatches = stored.apiSourcedMatches || {};
     }
   } catch {
     state.scores = {};
     state.collapsedGroups = {};
+    state.apiSourcedMatches = {};
   }
 }
 
@@ -279,7 +347,147 @@ function saveState() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify({
     scores: state.scores,
     collapsedGroups: state.collapsedGroups,
+    apiSourcedMatches: state.apiSourcedMatches,
   }));
+}
+
+// ── Live API Integration ──────────────────────────────────────────────
+
+let refreshButton = null;
+let liveIndicator = null;
+
+function createLiveApiButton() {
+  // Add live refresh button
+  const liveBtn = document.createElement('button');
+  liveBtn.id = 'liveRefreshBtn';
+  liveBtn.className = 'btn secondary';
+  liveBtn.innerHTML = '<span class="material-symbols-outlined">refresh</span> <span class="btn-text">Sync Live Scores</span>';
+  liveBtn.addEventListener('click', fetchLiveScores);
+  
+  // Add live indicator
+  const indicator = document.createElement('div');
+  indicator.id = 'liveIndicator';
+  indicator.className = 'live-indicator';
+  indicator.innerHTML = '<span class="live-dot"></span><span class="live-text">Live</span>';
+  
+  // Insert after theme toggle button
+  const themeBtn = document.getElementById('themeToggleBtn');
+  if (themeBtn && themeBtn.parentNode) {
+    themeBtn.parentNode.insertBefore(liveBtn, themeBtn.nextSibling);
+    themeBtn.parentNode.insertBefore(indicator, liveBtn.nextSibling);
+  }
+  
+  refreshButton = liveBtn;
+  liveIndicator = indicator;
+}
+
+async function fetchLiveScores() {
+  if (!refreshButton) return;
+  
+  refreshButton.disabled = true;
+  refreshButton.querySelector('.btn-text').textContent = 'Syncing...';
+  
+  try {
+    const response = await fetch(API_URL);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    
+    const data = await response.json();
+    const games = data.games || [];
+    
+    let updatedCount = 0;
+    
+    games.forEach(game => {
+      const homeApiName = game.home_team_name_en;
+      const awayApiName = game.away_team_name_en;
+      const homeProjectName = apiTeamNameMap[homeApiName];
+      const awayProjectName = apiTeamNameMap[awayApiName];
+      
+      if (!homeProjectName || !awayProjectName) return;
+      
+      const homeScore = parseInt(game.home_score) || 0;
+      const awayScore = parseInt(game.away_score) || 0;
+      
+      // Find matching match in our scheduleData
+      const matchingMatch = scheduleData.groupMatches.find(m => {
+        return (m.team1 === homeProjectName && m.team2 === awayProjectName) ||
+               (m.team1 === awayProjectName && m.team2 === homeProjectName);
+      });
+      
+      // Also check for reverse order
+      const reverseMatch = scheduleData.groupMatches.find(m => {
+        return (m.team1 === awayProjectName && m.team2 === homeProjectName) ||
+               (m.team1 === homeProjectName && m.team2 === awayProjectName);
+      });
+      
+      const targetMatch = matchingMatch || reverseMatch;
+      
+      if (targetMatch && game.finished === 'TRUE') {
+        // Determine correct score order based on which team is home
+        const isHomeTeam = targetMatch.team1 === homeProjectName;
+        const score1 = isHomeTeam ? homeScore : awayScore;
+        const score2 = isHomeTeam ? awayScore : homeScore;
+        
+        // Update score if different from current
+        const currentScore = state.scores[targetMatch.matchNo];
+        if (!currentScore || 
+            parseInt(currentScore.score1) !== score1 || 
+            parseInt(currentScore.score2) !== score2) {
+          state.scores[targetMatch.matchNo] = { score1: String(score1), score2: String(score2) };
+          updatedCount++;
+        }
+        
+        // Mark this match as API-sourced (for disabling inputs)
+        state.apiSourcedMatches[targetMatch.matchNo] = true;
+      }
+    });
+    
+    if (updatedCount > 0) {
+      saveState();
+      render();
+    }
+    
+    state.lastApiUpdate = new Date().toLocaleTimeString();
+    updateLiveIndicator(true);
+    
+    console.log(`Live scores synced: ${updatedCount} match(es) updated`);
+    
+  } catch (error) {
+    console.error('Failed to fetch live scores:', error);
+    updateLiveIndicator(false);
+  } finally {
+    if (refreshButton) {
+      refreshButton.disabled = false;
+      refreshButton.querySelector('.btn-text').textContent = 'Sync Live Scores';
+    }
+  }
+}
+
+// Helper function to check if a match has API-sourced scores
+function isApiSourcedMatch(matchNo) {
+  return state.apiSourcedMatches[matchNo] === true;
+}
+
+function updateLiveIndicator(success) {
+  if (!liveIndicator) return;
+  
+  if (success) {
+    liveIndicator.classList.add('connected');
+    const timeSpan = liveIndicator.querySelector('.live-text');
+    if (timeSpan) {
+      timeSpan.textContent = state.lastApiUpdate ? `Updated ${state.lastApiUpdate}` : 'Connected';
+    }
+  } else {
+    liveIndicator.classList.remove('connected');
+    const timeSpan = liveIndicator.querySelector('.live-text');
+    if (timeSpan) {
+      timeSpan.textContent = 'Offline';
+    }
+  }
+}
+
+function startAutoRefresh() {
+  if (apiRefreshTimer) clearInterval(apiRefreshTimer);
+  apiRefreshTimer = setInterval(fetchLiveScores, API_REFRESH_INTERVAL);
 }
 
 function toTeamLabel(team) {
@@ -535,11 +743,15 @@ function computeKnockoutResults(rankings, thirdPlaceTeams, assignments) {
 
 function buildScoreInputs(match) {
   const scoreData = state.scores[match.matchNo] || { score1: '', score2: '' };
+  const isApiSourced = isApiSourcedMatch(match.matchNo);
+  const disabledAttr = isApiSourced ? 'disabled' : '';
+  const apiBadge = isApiSourced ? '<span class="api-badge">Live</span>' : '';
   return `
     <div class="match-score">
-      <input class="score-input" type="number" min="0" value="${scoreData.score1}" data-match="${match.matchNo}" data-side="score1" />
+      <input class="score-input" type="number" min="0" value="${scoreData.score1}" data-match="${match.matchNo}" data-side="score1" ${disabledAttr} />
       <span class="match-vs">vs</span>
-      <input class="score-input" type="number" min="0" value="${scoreData.score2}" data-match="${match.matchNo}" data-side="score2" />
+      <input class="score-input" type="number" min="0" value="${scoreData.score2}" data-match="${match.matchNo}" data-side="score2" ${disabledAttr} />
+      ${apiBadge}
     </div>
   `;
 }
@@ -591,6 +803,9 @@ function buildGroupMatches(group, matches) {
       const timeLabel = match.time;
       const score1Val = state.scores[match.matchNo]?.score1 ?? '';
       const score2Val = state.scores[match.matchNo]?.score2 ?? '';
+      const isApiSourced = isApiSourcedMatch(match.matchNo);
+      const disabledAttr = isApiSourced ? 'disabled' : '';
+      const apiBadge = isApiSourced ? '<span class="api-badge-small">Live</span>' : '';
       return `
       <div class="match-card match-compact clickable" data-matchno="${match.matchNo}">
         <div class="match-top">
@@ -598,18 +813,18 @@ function buildGroupMatches(group, matches) {
             <div class="team-flag-name">${formatFlag(match.team1)}<div class="team-name">${getTeamInitials(match.team1)}</div></div>
           </div>
           <div class="score-left">
-            <input class="score-input" type="number" min="0" value="${score1Val}" data-match="${match.matchNo}" data-side="score1" />
+            <input class="score-input" type="number" min="0" value="${score1Val}" data-match="${match.matchNo}" data-side="score1" ${disabledAttr} />
           </div>
           <div class="vs">vs</div>
           <div class="score-right">
-            <input class="score-input" type="number" min="0" value="${score2Val}" data-match="${match.matchNo}" data-side="score2" />
+            <input class="score-input" type="number" min="0" value="${score2Val}" data-match="${match.matchNo}" data-side="score2" ${disabledAttr} />
           </div>
           <div class="team-right">
             <div class="team-flag-name">${formatFlag(match.team2)}<div class="team-name">${getTeamInitials(match.team2)}</div></div>
           </div>
         </div>
 
-        <div class="match-mid">${dateLabel} · ${timeLabel}</div>
+        <div class="match-mid">${dateLabel} · ${timeLabel} ${apiBadge}</div>
         <div class="match-bottom">${match.venue || ''}</div>
         <div class="match-number">Match ${match.matchNo}</div>
       </div>
@@ -829,6 +1044,9 @@ function buildMatchCardHtml(match, stage, rankings, thirdPlaceTeams, knockoutMap
   const scoreB = state.scores[match.matchNo]?.score2 ?? '';
   const isTBDA = teamA.name === 'TBD' || teamA.note === 'TBD' || teamA.note.includes('Waiting');
   const isTBDB = teamB.name === 'TBD' || teamB.note === 'TBD' || teamB.note.includes('Waiting');
+  const isApiSourced = isApiSourcedMatch(match.matchNo);
+  const disabledAttr = isTBDA || isTBDB || isApiSourced ? 'disabled' : '';
+  const apiBadge = isApiSourced ? '<span class="api-badge-bracket">Live</span>' : '';
   return `
     <div class="bracket-match-node" data-matchno="${match.matchNo}" data-stage="${stage}">
       <div class="bracket-match-inner">
@@ -839,7 +1057,7 @@ function buildMatchCardHtml(match, stage, rankings, thirdPlaceTeams, knockoutMap
               ${isTBDA ? (teamA.name === 'TBD' ? (teamA.note || match.pos1) : teamA.name) : getTeamInitials(teamA.name)}
             </span>
           </div>
-          <input class="score-input bracket-score" type="number" min="0" value="${scoreA}" data-match="${match.matchNo}" data-side="score1" ${isTBDA ? 'disabled' : ''} />
+          <input class="score-input bracket-score" type="number" min="0" value="${scoreA}" data-match="${match.matchNo}" data-side="score1" ${disabledAttr} />
         </div>
         <div class="bracket-team ${isTBDB ? 'placeholder' : ''}">
           <div class="bracket-team-info">
@@ -848,11 +1066,11 @@ function buildMatchCardHtml(match, stage, rankings, thirdPlaceTeams, knockoutMap
               ${isTBDB ? (teamB.name === 'TBD' ? (teamB.note || match.pos2) : teamB.name) : getTeamInitials(teamB.name)}
             </span>
           </div>
-          <input class="score-input bracket-score" type="number" min="0" value="${scoreB}" data-match="${match.matchNo}" data-side="score2" ${isTBDB ? 'disabled' : ''} />
+          <input class="score-input bracket-score" type="number" min="0" value="${scoreB}" data-match="${match.matchNo}" data-side="score2" ${disabledAttr} />
         </div>
       </div>
       <div class="bracket-match-meta">
-        <span>${new Date(match.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} · ${match.time}</span>
+        <span>${new Date(match.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} · ${match.time} ${apiBadge}</span>
         <span>${match.venue || ''}</span>
       </div>
       <div class="bracket-match-number">M${match.matchNo}</div>
@@ -984,5 +1202,13 @@ function render() {
   renderGroups(rankings, thirdPlaceTeams);
   renderBracket(rankings, thirdPlaceTeams, thirdPlaceAssignments);
 }
+
+// Initialize Live API features
+document.addEventListener('DOMContentLoaded', () => {
+  createLiveApiButton();
+  startAutoRefresh();
+  // Initial fetch on page load
+  fetchLiveScores();
+});
 
 render();

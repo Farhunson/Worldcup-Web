@@ -1925,3 +1925,151 @@ footer {
     align-items: flex-start;
   }
 }
+
+/* ── Live API Indicator ────────────────────────────────────────────── */
+.live-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font-size: 0.8rem;
+  color: var(--muted);
+  transition: all 0.3s ease;
+}
+
+.live-indicator .live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--muted);
+  transition: all 0.3s ease;
+}
+
+.live-indicator.connected {
+  border-color: var(--success);
+  color: var(--success);
+}
+
+.live-indicator.connected .live-dot {
+  background: var(--success);
+  box-shadow: 0 0 8px var(--success);
+  animation: pulse-live 2s infinite;
+}
+
+.live-indicator.disconnected {
+  border-color: var(--secondary);
+  color: var(--secondary);
+}
+
+.live-indicator.disconnected .live-dot {
+  background: var(--secondary);
+}
+
+@keyframes pulse-live {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Live refresh button */
+#liveRefreshBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#liveRefreshBtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+#liveRefreshBtn .material-symbols-outlined {
+  font-size: 18px;
+}
+
+/* API-sourced match badges */
+.api-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  background: var(--success);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  border-radius: 10px;
+  margin-left: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.api-badge-small {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 6px;
+  background: var(--success);
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 700;
+  border-radius: 8px;
+  margin-left: 6px;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+
+.api-badge-bracket {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 5px;
+  background: var(--success);
+  color: white;
+  font-size: 0.6rem;
+  font-weight: 700;
+  border-radius: 6px;
+  margin-left: 6px;
+  text-transform: uppercase;
+}
+
+/* Disabled score inputs for API-sourced matches */
+.score-input:disabled {
+  background: var(--surface-strong) !important;
+  color: var(--text) !important;
+  cursor: not-allowed;
+  opacity: 0.8;
+  border-color: var(--border) !important;
+}
+
+/* Top actions bar adjustments for new button */
+.top-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 24px 32px;
+  background: var(--surface);
+  border-radius: 20px;
+  margin-bottom: 32px;
+  border: 1px solid var(--border);
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .top-actions {
+    justify-content: center;
+    padding: 16px;
+  }
+  
+  .live-indicator {
+    font-size: 0.75rem;
+    padding: 6px 10px;
+  }
+  
+  .live-indicator .live-dot {
+    width: 6px;
+    height: 6px;
+  }
+}
