@@ -272,7 +272,7 @@ const stageLabels = {
   final: 'Final',
 };
 
-// Helper function to format API UTC time to browser's local timezone
+// Helper function to format API UTC time to local machine timezone
 function formatApiTime(apiLocalDate) {
   if (!apiLocalDate) return null;
   
@@ -284,28 +284,43 @@ function formatApiTime(apiLocalDate) {
   // Create a Date object (API returns UTC time)
   const utcDate = new Date(Date.UTC(year, month - 1, day, hours, minutes));
   
-  // Format to local time
-  const monthName = utcDate.toLocaleDateString(undefined, { month: 'short' });
-  const dayNum = utcDate.getDate();
-  const timeStr = utcDate.toLocaleTimeString(undefined, { 
-    hour: '2-digit', 
+  // Get the local machine's timezone using Intl.DateTimeFormat
+  const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  
+  // Format to local time using the explicit timezone
+  const formatter = new Intl.DateTimeFormat(undefined, {
+    timeZone: localTimezone,
+    month: 'short',
+    day: 'numeric'
+  });
+  
+  const timeFormatter = new Intl.DateTimeFormat(undefined, {
+    timeZone: localTimezone,
+    hour: '2-digit',
     minute: '2-digit',
-    hour12: false 
+    hour12: false
+  });
+  
+  const fullDateFormatter = new Intl.DateTimeFormat(undefined, {
+    timeZone: localTimezone,
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric'
+  });
+  
+  const fullTimeFormatter = new Intl.DateTimeFormat(undefined, {
+    timeZone: localTimezone,
+    hour: '2-digit',
+    minute: '2-digit'
   });
   
   return {
-    dateLabel: `${monthName} ${dayNum}`,
-    timeLabel: timeStr,
-    fullDate: utcDate.toLocaleDateString(undefined, { 
-      weekday: 'short', 
-      month: 'short', 
-      day: 'numeric' 
-    }),
-    fullTime: utcDate.toLocaleTimeString(undefined, { 
-      hour: '2-digit', 
-      minute: '2-digit' 
-    }),
+    dateLabel: formatter.format(utcDate),
+    timeLabel: timeFormatter.format(utcDate),
+    fullDate: fullDateFormatter.format(utcDate),
+    fullTime: fullTimeFormatter.format(utcDate),
     timestamp: utcDate.getTime(),
+    timezone: localTimezone,
     isLocal: true
   };
 }
@@ -319,8 +334,8 @@ function getMatchTime(matchNo) {
   return null;
 }
 
-// Get user's browser timezone name
-function getUserTimezone() {
+// Get local machine timezone name
+function getLocalTimezone() {
   return Intl.DateTimeFormat().resolvedOptions().timeZone;
 }
 
@@ -973,7 +988,7 @@ function renderMatchDetail(matchNo) {
       <div class="match-title">Match ${match.matchNo}</div>
       <h3>${teamA.name} vs ${teamB.name}</h3>
       <div class="meta">${dateLabel} · ${timeLabel} · ${match.venue || ''}</div>
-      <div class="timezone-info">Your timezone: ${getUserTimezone()}</div>
+      <div class="timezone-info">Local time: ${getLocalTimezone()}</div>
     </div>
     <div class="team-row">
       <div class="team-left">
