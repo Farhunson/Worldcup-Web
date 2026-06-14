@@ -1626,32 +1626,30 @@ function buildTodaysMatchCard(match) {
         ${groupBadge}
         <span class="todays-match-number">Match ${match.matchNo}</span>
       </div>
-      <div class="todays-match-teams">
-        <div class="todays-team">
-          ${formatFlag(match.team1)}
-          <span class="todays-team-name">${getTeamInitials(match.team1)}</span>
-        </div>
-        <div class="todays-match-center">
-          ${isPlayed || isApiSourced ? `
-            <span class="todays-score">${score1Val}</span>
-            <span class="todays-vs">-</span>
-            <span class="todays-score">${score2Val}</span>
-          ` : `
-            <span class="todays-vs-text">vs</span>
-          `}
-        </div>
-        <div class="todays-team">
-          ${formatFlag(match.team2)}
-          <span class="todays-team-name">${getTeamInitials(match.team2)}</span>
-        </div>
+      <div class="todays-team flag-left">
+        ${formatFlag(match.team1)}
+        <span class="todays-team-name">${getTeamInitials(match.team1)}</span>
+      </div>
+      <div class="todays-match-center">
+        ${isPlayed || isApiSourced ? `
+          <span class="todays-score">${score1Val}</span>
+          <span class="todays-vs-text">-</span>
+          <span class="todays-score">${score2Val}</span>
+        ` : `
+          <span class="todays-vs-text">vs</span>
+        `}
+      </div>
+      <div class="todays-team">
+        ${formatFlag(match.team2)}
+        <span class="todays-team-name">${getTeamInitials(match.team2)}</span>
       </div>
       <div class="todays-match-meta">
         <span class="todays-datetime">${dateLabel} · ${timeDisplay}</span>
         ${statusBadge || apiBadge}
       </div>
       <div class="todays-match-venue">
-        <span class="todays-stadium">${stadiumName}</span>
-        <span class="todays-city">${cityName}</span>
+        <span class="todays-venue-name">${stadiumName}</span>
+        <span class="todays-city-name">${cityName}</span>
       </div>
     </div>
   `;
