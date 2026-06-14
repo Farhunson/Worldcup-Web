@@ -1,0 +1,988 @@
+const STORAGE_KEY = 'wc2026Scoreboard';
+const state = {
+  scores: {},
+  collapsedGroups: {},
+};
+loadState();
+
+const flagCodeMap = {
+  'Mexico': 'mx',
+  'South Africa': 'za',
+  'Rep. of Korea': 'kr',
+  'Czech Rep.': 'cz',
+  'Canada': 'ca',
+  'Bosnia/Herzeg.': 'ba',
+  'USA': 'us',
+  'Paraguay': 'py',
+  'Qatar': 'qa',
+  'Switzerland': 'ch',
+  'Brazil': 'br',
+  'Morocco': 'ma',
+  'Haiti': 'ht',
+  'Australia': 'au',
+  'Turkey': 'tr',
+  'Germany': 'de',
+  'Curaçao': 'cw',
+  'Netherlands': 'nl',
+  'Japan': 'jp',
+  'Ivory Coast': 'ci',
+  'Ecuador': 'ec',
+  'Sweden': 'se',
+  'Tunisia': 'tn',
+  'Spain': 'es',
+  'Cape Verde': 'cv',
+  'Saudi Arabia': 'sa',
+  'Uruguay': 'uy',
+  'Belgium': 'be',
+  'Egypt': 'eg',
+  'IR Iran': 'ir',
+  'New Zealand': 'nz',
+  'France': 'fr',
+  'Iraq': 'iq',
+  'Norway': 'no',
+  'Senegal': 'sn',
+  'Algeria': 'dz',
+  'Argentina': 'ar',
+  'Austria': 'at',
+  'Jordan': 'jo',
+  'Colombia': 'co',
+  'DR Congo': 'cd',
+  'Portugal': 'pt',
+  'Uzbekistan': 'uz',
+  'Croatia': 'hr',
+  'Ghana': 'gh',
+  'Panama': 'pa',
+};
+
+const teamInitialMap = {
+  'Czech Rep.': 'CZE',
+  'Mexico': 'MEX',
+  'Rep. of Korea': 'KOR',
+  'South Africa': 'SAF',
+  'Canada': 'CAN',
+  'Bosnia/Herzeg.': 'BIH',
+  'USA': 'USA',
+  'Paraguay': 'PAR',
+  'Qatar': 'QAT',
+  'Switzerland': 'SWI',
+  'Brazil': 'BRA',
+  'Morocco': 'MAR',
+  'Haiti': 'HAI',
+  'Scotland': 'SCO',
+  'Australia': 'AUS',
+  'Turkey': 'TUR',
+  'Germany': 'GER',
+  'Curaçao': 'CUR',
+  'Netherlands': 'NED',
+  'Japan': 'JPN',
+  'Ivory Coast': 'IVC',
+  'Ecuador': 'ECU',
+  'Sweden': 'SWE',
+  'Tunisia': 'TUN',
+  'Spain': 'ESP',
+  'Cape Verde': 'CPV',
+  'Saudi Arabia': 'SAU',
+  'Uruguay': 'URU',
+  'Belgium': 'BEL',
+  'Egypt': 'EGY',
+  'IR Iran': 'IRI',
+  'New Zealand': 'NZL',
+  'France': 'FRA',
+  'Iraq': 'IRQ',
+  'Norway': 'NOR',
+  'Senegal': 'SEN',
+  'Algeria': 'ALG',
+  'Argentina': 'ARG',
+  'Austria': 'AUT',
+  'Jordan': 'JOR',
+  'Colombia': 'COL',
+  'DR Congo': 'DRC',
+  'Portugal': 'POR',
+  'Uzbekistan': 'UZB',
+  'Croatia': 'CRO',
+  'England': 'ENG',
+  'Ghana': 'GHA',
+  'Panama': 'PAN',
+};
+
+function getTeamInitials(team) {
+  return teamInitialMap[team] || team.split(/[^A-Za-z0-9]+/).map((part) => part[0]).join('').slice(0, 3).toUpperCase();
+}
+
+const localFlagMap = {
+  'Scotland': 'assets/scotland.svg',
+  'England': 'assets/england.png',
+};
+
+const flagMap = {
+  'Mexico': '🇲🇽',
+  'South Africa': '🇿🇦',
+  'Rep. of Korea': '🇰🇷',
+  'Czech Rep.': '🇨🇿',
+  'Canada': '🇨🇦',
+  'Bosnia/Herzeg.': '🇧🇦',
+  'USA': '🇺🇸',
+  'Paraguay': '🇵🇾',
+  'Qatar': '🇶🇦',
+  'Switzerland': '🇨🇭',
+  'Brazil': '🇧🇷',
+  'Morocco': '🇲🇦',
+  'Haiti': '🇭🇹',
+  'Scotland': '🏴',
+  'Australia': '🇦🇺',
+  'Turkey': '🇹🇷',
+  'Germany': '🇩🇪',
+  'Curaçao': '🇨🇼',
+  'Netherlands': '🇳🇱',
+  'Japan': '🇯🇵',
+  'Ivory Coast': '🇨🇮',
+  'Ecuador': '🇪🇨',
+  'Sweden': '🇸🇪',
+  'Tunisia': '🇹🇳',
+  'Spain': '🇪🇸',
+  'Cape Verde': '🇨🇻',
+  'Saudi Arabia': '🇸🇦',
+  'Uruguay': '🇺🇾',
+  'Belgium': '🇧🇪',
+  'Egypt': '🇪🇬',
+  'IR Iran': '🇮🇷',
+  'New Zealand': '🇳🇿',
+  'France': '🇫🇷',
+  'Iraq': '🇮🇶',
+  'Norway': '🇳🇴',
+  'Senegal': '🇸🇳',
+  'Algeria': '🇩🇿',
+  'Argentina': '🇦🇷',
+  'Austria': '🇦🇹',
+  'Jordan': '🇯🇴',
+  'Colombia': '🇨🇴',
+  'DR Congo': '🇨🇩',
+  'Portugal': '🇵🇹',
+  'Uzbekistan': '🇺🇿',
+  'Croatia': '🇭🇷',
+  'England': '🇬🇧',
+  'Ghana': '🇬🇭',
+  'Panama': '🇵🇦',
+};
+
+function getFlagUrl(team, size = 40) {
+  if (localFlagMap[team]) {
+    return localFlagMap[team];
+  }
+  const code = flagCodeMap[team];
+  return code ? `https://flagcdn.com/w${size}/${code.toLowerCase()}.png` : null;
+}
+
+function formatFlag(team) {
+  const url = getFlagUrl(team, 40);
+  if (!url) {
+    return `<span class="team-flag">${flagMap[team] || '🏳️'}</span>`;
+  }
+  const isLocal = Boolean(localFlagMap[team]);
+  const srcset = isLocal ? '' : ` srcset="https://flagcdn.com/w80/${flagCodeMap[team].toLowerCase()}.png 2x"`;
+  return `
+    <span class="team-flag">
+      <img
+        src="${url}"
+        ${srcset}
+        width="20"
+        height="14"
+        alt="${team} flag"
+        loading="lazy"
+        onerror="this.parentNode.textContent='${flagMap[team] || '🏳️'}'"
+      />
+    </span>
+  `;
+}
+
+const stageLabels = {
+  r32: 'Round of 32',
+  r16: 'Round of 16',
+  qf: 'Quarterfinal',
+  sf: 'Semifinal',
+  third: 'Third Place',
+  final: 'Final',
+};
+
+const groupListElement = document.getElementById('group-list');
+const bracketContainer = document.getElementById('bracket-container');
+const clearButton = document.getElementById('clearButton');
+const exportButton = document.getElementById('exportButton');
+const matchDetailElement = document.getElementById('match-detail');
+const themeToggleBtn = document.getElementById('themeToggleBtn');
+
+const THEMES = ['color', 'light', 'dark'];
+const THEME_LABELS = {
+  color: '<span class="material-symbols-outlined">palette</span> Color',
+  light: '<span class="material-symbols-outlined">light_mode</span> Light',
+  dark: '<span class="material-symbols-outlined">dark_mode</span> Dark'
+};
+
+const savedTheme = localStorage.getItem('wc2026Theme') || 'color';
+document.documentElement.setAttribute('data-theme', savedTheme);
+
+const THEME_LOGOS = {
+  light: 'assets/images/fifa-world-cup-2026-logo.png',
+  color: 'assets/images/fifa-world-cup-2026-logo-alt.png',
+  dark: 'assets/images/fifa-world-cup-2026-logo-white.png',
+};
+
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('wc2026Theme', theme);
+  if (themeToggleBtn) {
+    themeToggleBtn.innerHTML = THEME_LABELS[theme];
+  }
+  const heroLogo = document.querySelector('.hero-logo');
+  if (heroLogo && THEME_LOGOS[theme]) {
+    heroLogo.src = THEME_LOGOS[theme];
+  }
+}
+
+applyTheme(savedTheme);
+
+if (themeToggleBtn) {
+  themeToggleBtn.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme') || 'color';
+    const nextIndex = (THEMES.indexOf(current) + 1) % THEMES.length;
+    applyTheme(THEMES[nextIndex]);
+  });
+}
+
+clearButton.addEventListener('click', () => {
+  if (confirm('Clear all saved scores?')) {
+    state.scores = {};
+    saveScores();
+    render();
+  }
+});
+
+exportButton.addEventListener('click', () => {
+  const csv = buildExportCsv();
+  downloadCsv(csv, 'worldcup-2026-scores.csv');
+});
+
+function loadState() {
+  try {
+    const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    if (stored && typeof stored === 'object') {
+      state.scores = stored.scores || stored;
+      state.collapsedGroups = stored.collapsedGroups || {};
+    }
+  } catch {
+    state.scores = {};
+    state.collapsedGroups = {};
+  }
+}
+
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({
+    scores: state.scores,
+    collapsedGroups: state.collapsedGroups,
+  }));
+}
+
+function toTeamLabel(team) {
+  if (!team) return 'TBD';
+  return `${formatFlag(team)} ${team}`;
+}
+
+function parseScore(value) {
+  const normalized = value.trim();
+  if (normalized === '') return null;
+  const parsed = Number(normalized);
+  return Number.isInteger(parsed) && parsed >= 0 ? parsed : null;
+}
+
+function updateScore(matchNo, side, value) {
+  if (!state.scores[matchNo]) {
+    state.scores[matchNo] = { score1: '', score2: '' };
+  }
+  state.scores[matchNo][side] = value;
+  saveState();
+  render();
+}
+
+function toggleGroupCollapse(group) {
+  state.collapsedGroups[group] = !state.collapsedGroups[group];
+  saveState();
+  render();
+}
+
+function computeGroupStandings() {
+  const groups = {};
+  Object.keys(scheduleData.groups).sort().forEach((group) => {
+    groups[group] = scheduleData.groups[group].map((team) => ({
+      team,
+      played: 0,
+      wins: 0,
+      draws: 0,
+      losses: 0,
+      gf: 0,
+      ga: 0,
+      gd: 0,
+      points: 0,
+    }));
+  });
+
+  const teamIndex = {};
+  Object.entries(groups).forEach(([group, rows]) => {
+    rows.forEach((row, index) => {
+      teamIndex[row.team] = { group, index };
+    });
+  });
+
+  scheduleData.groupMatches.forEach((match) => {
+    const score1 = parseScore(state.scores[match.matchNo]?.score1 || '');
+    const score2 = parseScore(state.scores[match.matchNo]?.score2 || '');
+    if (score1 === null || score2 === null) return;
+
+    const teamA = teamIndex[match.team1];
+    const teamB = teamIndex[match.team2];
+    if (!teamA || !teamB) return;
+
+    const rowA = groups[teamA.group][teamA.index];
+    const rowB = groups[teamB.group][teamB.index];
+    rowA.played += 1;
+    rowB.played += 1;
+    rowA.gf += score1;
+    rowA.ga += score2;
+    rowB.gf += score2;
+    rowB.ga += score1;
+    rowA.gd = rowA.gf - rowA.ga;
+    rowB.gd = rowB.gf - rowB.ga;
+
+    if (score1 > score2) {
+      rowA.wins += 1;
+      rowA.points += 3;
+      rowB.losses += 1;
+    } else if (score1 < score2) {
+      rowB.wins += 1;
+      rowB.points += 3;
+      rowA.losses += 1;
+    } else {
+      rowA.draws += 1;
+      rowB.draws += 1;
+      rowA.points += 1;
+      rowB.points += 1;
+    }
+  });
+
+  const rankings = {};
+  Object.entries(groups).forEach(([group, rows]) => {
+    rankings[group] = [...rows].sort((a, b) => {
+      if (b.points !== a.points) return b.points - a.points;
+      if (b.gd !== a.gd) return b.gd - a.gd;
+      if (b.gf !== a.gf) return b.gf - a.gf;
+      return a.team.localeCompare(b.team);
+    });
+  });
+
+  const totalGroups = Object.keys(scheduleData.groups).length;
+  const groupsCompleteCount = Object.keys(rankings).filter(g => isGroupComplete(g)).length;
+  const allGroupsComplete = groupsCompleteCount === totalGroups;
+
+  const thirdPlaceTeams = Object.entries(rankings).map(([group, rows]) => ({
+    group: group,
+    team: rows[2].team,
+    points: rows[2].points,
+    gd: rows[2].gd,
+    gf: rows[2].gf,
+    ga: rows[2].ga,
+  })).sort((a, b) => {
+    // Official ranking tie-breakers + Alphabetical fallback
+    if (b.points !== a.points) return b.points - a.points;
+    if (b.gd !== a.gd) return b.gd - a.gd;
+    if (b.gf !== a.gf) return b.gf - a.gf;
+    return a.team.localeCompare(b.team);
+  });
+
+  // A team is tentatively qualified if it's in the top 8.
+  // We calculate this for the UI markers even if not complete.
+  const qualifyingThirds = thirdPlaceTeams.slice(0, 8);
+  const thirdPlaceAssignments = allocateThirdPlaceTeams(qualifyingThirds);
+
+  return { rankings, thirdPlaceTeams, thirdPlaceAssignments, allGroupsComplete };
+}
+
+/**
+ * Assigns 8 qualifying third-place teams to their 8 bracket slots.
+ * Using a simple backtracking matching algorithm to ensure constraints are met.
+ */
+function allocateThirdPlaceTeams(qualifiers) {
+  if (qualifiers.length < 8) return {};
+
+  const slots = [
+    { matchNo: 74, groups: 'ABCDF' },
+    { matchNo: 77, groups: 'CDFGH' },
+    { matchNo: 79, groups: 'CEFHI' },
+    { matchNo: 80, groups: 'EHIJK' },
+    { matchNo: 81, groups: 'BEFIJ' },
+    { matchNo: 82, groups: 'AEHIJ' },
+    { matchNo: 85, groups: 'EFGIJ' },
+    { matchNo: 87, groups: 'DEIJL' }
+  ];
+
+  const assignment = {};
+  const usedTeams = new Set();
+
+  function backtrack(slotIdx) {
+    if (slotIdx === slots.length) return true;
+
+    const slot = slots[slotIdx];
+    for (const teamObj of qualifiers) {
+      if (usedTeams.has(teamObj.team)) continue;
+      if (slot.groups.includes(teamObj.group)) {
+        assignment[slot.matchNo] = teamObj;
+        usedTeams.add(teamObj.team);
+        if (backtrack(slotIdx + 1)) return true;
+        usedTeams.delete(teamObj.team);
+        delete assignment[slot.matchNo];
+      }
+    }
+    return false;
+  }
+
+  // If no perfect matching found (unlikely with FIFA distributions), fallback to greedily filling
+  if (!backtrack(0)) {
+    console.warn("Could not find perfect 3rd place matching, falling back to greedy.");
+    const used = new Set();
+    slots.forEach(slot => {
+      const match = qualifiers.find(t => !used.has(t.team) && slot.groups.includes(t.group));
+      if (match) {
+        assignment[slot.matchNo] = match;
+        used.add(match.team);
+      }
+    });
+  }
+
+  return assignment;
+}
+
+// Returns true only when every match in a given group has both scores entered
+function isGroupComplete(group) {
+  return scheduleData.groupMatches
+    .filter((m) => m.pos1 && m.pos1[0] === group)
+    .every((m) => {
+      const s1 = parseScore(state.scores[m.matchNo]?.score1 || '');
+      const s2 = parseScore(state.scores[m.matchNo]?.score2 || '');
+      return s1 !== null && s2 !== null;
+    });
+}
+
+function resolveTeamPosition(position, rankings, thirdPlaceTeams, knockoutMap, requireComplete = false, matchNo = null, assignments = {}) {
+  if (!position) return { name: 'TBD', note: 'TBD' };
+
+  if (position.startsWith('1') || position.startsWith('2')) {
+    const group = position.slice(1);
+    if (requireComplete && !isGroupComplete(group)) return { name: 'TBD', note: 'TBD' };
+    const groupRows = rankings[group];
+    if (!groupRows) return { name: position, note: 'TBD' };
+    const idx = Number(position[0]) - 1;
+    return groupRows[idx] ? { name: groupRows[idx].team, note: `${position}` } : { name: position, note: 'TBD' };
+  }
+
+  if (position.startsWith('3-')) {
+    // Always show numbered "Best 3rd place" labels – never resolve to actual teams
+    const slotMatchNos = [74, 77, 79, 80, 81, 82, 85, 87];
+    const slotIndex = slotMatchNos.indexOf(matchNo);
+    const label = slotIndex >= 0 ? `Best 3rd place ${'#'}${slotIndex + 1}` : 'Best 3rd place #';
+    return { name: 'TBD', note: label };
+  }
+
+  if (position.startsWith('W') || position.startsWith('RU')) {
+    const type = position.startsWith('RU') ? 'runner' : 'winner';
+    const matchNoRef = Number(position.replace(/[WRU]/g, ''));
+    const result = knockoutMap[matchNoRef];
+    if (!result) return { name: position, note: 'TBD' };
+    if (type === 'winner') {
+      return { name: result.winner, note: `Winner ${matchNoRef}` };
+    }
+    return { name: result.runner, note: `Runner ${matchNoRef}` };
+  }
+
+  return { name: position, note: position };
+}
+
+function computeKnockoutResults(rankings, thirdPlaceTeams, assignments) {
+  const map = {};
+  scheduleData.knockoutMatches.forEach((match) => {
+    const score1 = parseScore(state.scores[match.matchNo]?.score1 || '');
+    const score2 = parseScore(state.scores[match.matchNo]?.score2 || '');
+    if (score1 === null || score2 === null) return;
+    let name1 = match.team1;
+    let name2 = match.team2;
+
+    if (!name1) {
+      name1 = resolveTeamPosition(match.pos1, rankings, thirdPlaceTeams, map, false, match.matchNo, assignments).name;
+    }
+    if (!name2) {
+      name2 = resolveTeamPosition(match.pos2, rankings, thirdPlaceTeams, map, false, match.matchNo, assignments).name;
+    }
+
+    if (!name1 || !name2) return;
+
+    if (score1 > score2) {
+      map[match.matchNo] = { winner: name1, runner: name2 };
+    } else if (score1 < score2) {
+      map[match.matchNo] = { winner: name2, runner: name1 };
+    } else {
+      map[match.matchNo] = { winner: name1, runner: name2 };
+    }
+  });
+  return map;
+}
+
+function buildScoreInputs(match) {
+  const scoreData = state.scores[match.matchNo] || { score1: '', score2: '' };
+  return `
+    <div class="match-score">
+      <input class="score-input" type="number" min="0" value="${scoreData.score1}" data-match="${match.matchNo}" data-side="score1" />
+      <span class="match-vs">vs</span>
+      <input class="score-input" type="number" min="0" value="${scoreData.score2}" data-match="${match.matchNo}" data-side="score2" />
+    </div>
+  `;
+}
+
+function buildGroupCard(group, teams, rankings) {
+  const rows = rankings[group] || teams.map((team) => ({ team, played: 0, wins: 0, draws: 0, losses: 0, gf: 0, ga: 0, gd: 0, points: 0 }));
+  return `
+    <article class="group-card">
+      <div class="group-card-header">
+        <div>
+          <h3>Group ${group}</h3>
+          <div class="group-label">Teams</div>
+        </div>
+      </div>
+      <div class="match-list">
+        <table class="group-table">
+          <thead>
+            <tr>
+              <th>Team</th>
+              <th>Pts</th>
+              <th>GD</th>
+              <th>GF</th>
+              <th>GA</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map((row) => `
+            <tr>
+              <td class="team-label">${formatFlag(row.team)} ${row.team}</td>
+              <td>${row.points}</td>
+              <td>${row.gd}</td>
+              <td>${row.gf}</td>
+              <td>${row.ga}</td>
+            </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    </article>
+  `;
+}
+
+function buildGroupMatches(group, matches) {
+  return matches
+    .filter((match) => match.pos1 && match.pos1[0] === group)
+    .sort((a, b) => a.matchNo - b.matchNo)
+    .map((match) => {
+      const dateLabel = new Date(match.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+      const timeLabel = match.time;
+      const score1Val = state.scores[match.matchNo]?.score1 ?? '';
+      const score2Val = state.scores[match.matchNo]?.score2 ?? '';
+      return `
+      <div class="match-card match-compact clickable" data-matchno="${match.matchNo}">
+        <div class="match-top">
+          <div class="team-left">
+            <div class="team-flag-name">${formatFlag(match.team1)}<div class="team-name">${getTeamInitials(match.team1)}</div></div>
+          </div>
+          <div class="score-left">
+            <input class="score-input" type="number" min="0" value="${score1Val}" data-match="${match.matchNo}" data-side="score1" />
+          </div>
+          <div class="vs">vs</div>
+          <div class="score-right">
+            <input class="score-input" type="number" min="0" value="${score2Val}" data-match="${match.matchNo}" data-side="score2" />
+          </div>
+          <div class="team-right">
+            <div class="team-flag-name">${formatFlag(match.team2)}<div class="team-name">${getTeamInitials(match.team2)}</div></div>
+          </div>
+        </div>
+
+        <div class="match-mid">${dateLabel} · ${timeLabel}</div>
+        <div class="match-bottom">${match.venue || ''}</div>
+        <div class="match-number">Match ${match.matchNo}</div>
+      </div>
+    `;
+    }).join('');
+}
+
+let selectedMatchNo = null;
+
+function findMatchByNo(matchNo) {
+  matchNo = Number(matchNo);
+  const all = [...scheduleData.groupMatches, ...scheduleData.knockoutMatches];
+  return all.find((m) => Number(m.matchNo) === matchNo) || null;
+}
+
+function renderMatchDetail(matchNo) {
+  const container = matchDetailElement;
+  if (!container) return;
+  const match = findMatchByNo(matchNo);
+  if (!match) {
+    container.querySelector('.match-detail-inner').innerHTML = `<div class="placeholder-detail"><h3>Select a match</h3><p>Click any match to view stadium, date/time and enter scores in the detail panel.</p></div>`;
+    return;
+  }
+
+  const score1 = state.scores[match.matchNo]?.score1 ?? '';
+  const score2 = state.scores[match.matchNo]?.score2 ?? '';
+  const dateLabel = match.date ? new Date(match.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : '';
+  const timeLabel = match.time || '';
+
+  const teamA = match.team1 ? { name: match.team1 } : resolveTeamPosition(match.pos1 || '', currentRankings, currentThirdPlacers, {}, false, match.matchNo, currentAssignments);
+  const teamB = match.team2 ? { name: match.team2 } : resolveTeamPosition(match.pos2 || '', currentRankings, currentThirdPlacers, {}, false, match.matchNo, currentAssignments);
+
+  container.querySelector('.match-detail-inner').innerHTML = `
+    <div class="match-detail-top">
+      <div class="match-title">Match ${match.matchNo}</div>
+      <h3>${teamA.name} vs ${teamB.name}</h3>
+      <div class="meta">${dateLabel} · ${timeLabel} · ${match.venue || ''}</div>
+    </div>
+    <div class="team-row">
+      <div class="team-left">
+        <div class="team-label">${toTeamLabel(teamA.name)}</div>
+      </div>
+      <div class="big-score">
+        <input class="score-input" type="number" min="0" value="${score1}" data-match="${match.matchNo}" data-side="score1" />
+        <div class="match-vs">-</div>
+        <input class="score-input" type="number" min="0" value="${score2}" data-match="${match.matchNo}" data-side="score2" />
+      </div>
+      <div class="team-right">
+        <div class="team-label">${toTeamLabel(teamB.name)}</div>
+      </div>
+    </div>
+    <div class="meta">Stadium: ${match.venue || 'TBD'}</div>
+  `;
+
+  // attach input listeners inside detail
+  container.querySelectorAll('.score-input').forEach((input) => {
+    input.addEventListener('input', (event) => {
+      const matchNo = Number(event.target.dataset.match);
+      const side = event.target.dataset.side;
+      updateScore(matchNo, side, event.target.value);
+    });
+  });
+}
+
+function renderThirdPlaceStandings(thirdPlaceTeams) {
+  return `
+    <div class="third-place-standings">
+      <div class="third-place-header">
+        <h3>Best 3rd Place Rankings</h3>
+        <p>Top 8 qualify for the Round of 32</p>
+      </div>
+      <div class="match-list">
+        <table class="group-table third-place-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Group</th>
+              <th>Team</th>
+              <th>Pts</th>
+              <th>GD</th>
+              <th>GF</th>
+              <th>GA</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${thirdPlaceTeams.map((entry, idx) => {
+    const advClass = idx < 8 ? 'advancement-best-third' : '';
+    return `
+              <tr class="${advClass}">
+                <td class="rank-cell">${idx + 1}</td>
+                <td class="group-cell">${entry.group}</td>
+                <td class="team-label">
+                  <span class="adv-indicator"></span>
+                  ${formatFlag(entry.team)} ${entry.team}
+                </td>
+                <td>${entry.points}</td>
+                <td>${entry.gd}</td>
+                <td>${entry.gf}</td>
+                <td>${entry.ga}</td>
+              </tr>
+              `;
+  }).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+function renderGroups(rankings, thirdPlaceTeams) {
+  const qualifyingThirdTeams = thirdPlaceTeams.slice(0, 8).map(t => t.team);
+
+  const groupHtml = Object.keys(scheduleData.groups).sort().map((group) => {
+    const collapsed = state.collapsedGroups[group] ?? true;
+    const groupRankings = rankings[group];
+
+    return `
+      <div class="group-card group-${group} ${collapsed ? 'collapsed' : ''}" data-group="${group}">
+        <div class="group-card-header">
+          <div>
+            <h3>Group ${group}</h3>
+            <p>${scheduleData.groups[group].length} teams</p>
+            <div class="group-flags">
+              ${scheduleData.groups[group].map((team) => formatFlag(team)).join('')}
+            </div>
+          </div>
+          <div class="header-actions">
+            <div class="group-label">${group}</div>
+            <button class="group-toggle" data-group="${group}" aria-expanded="${!collapsed}" aria-label="${collapsed ? 'Expand group' : 'Collapse group'}">
+              <span class="material-symbols-outlined">${collapsed ? 'expand_more' : 'expand_less'}</span>
+            </button>
+          </div>
+        </div>
+        <div class="group-panel-wrapper">
+          <div class="group-panel">
+            <div class="group-separator">Standings</div>
+            <div class="match-list">
+              <table class="group-table">
+                <thead>
+                  <tr>
+                    <th>Team</th>
+                    <th>Pts</th>
+                    <th>GD</th>
+                    <th>GF</th>
+                    <th>GA</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${groupRankings.map((row, idx) => {
+      let advClass = '';
+      if (idx < 2) advClass = 'advancement-direct';
+      else if (idx === 2 && qualifyingThirdTeams.includes(row.team)) advClass = 'advancement-best-third';
+
+      return `
+                    <tr class="${advClass}">
+                      <td class="team-label">
+                        <span class="adv-indicator"></span>
+                        ${formatFlag(row.team)} ${row.team}
+                      </td>
+                      <td>${row.points}</td>
+                      <td>${row.gd}</td>
+                      <td>${row.gf}</td>
+                      <td>${row.ga}</td>
+                    </tr>
+                    `;
+    }).join('')}
+                </tbody>
+              </table>
+            </div>
+            <div class="group-separator">Matches</div>
+            <div class="match-list">
+              ${buildGroupMatches(group, scheduleData.groupMatches)}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  const legendHtml = `
+    <div class="advancement-legend">
+      <div class="legend-item">
+        <span class="legend-dot advancement-direct"></span>
+        <span class="legend-text">Top 2: Direct Qualification</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-dot advancement-best-third"></span>
+        <span class="legend-text">Best 8 Third-place Teams</span>
+      </div>
+    </div>
+  `;
+
+  const thirdPlaceHtml = renderThirdPlaceStandings(thirdPlaceTeams);
+  groupListElement.innerHTML = groupHtml + legendHtml + thirdPlaceHtml;
+
+  groupListElement.querySelectorAll('.score-input').forEach((input) => {
+    input.addEventListener('input', (event) => {
+      const matchNo = event.target.dataset.match;
+      const side = event.target.dataset.side;
+      updateScore(Number(matchNo), side, event.target.value);
+    });
+  });
+
+  groupListElement.querySelectorAll('.group-toggle').forEach((button) => {
+    button.addEventListener('click', (event) => {
+      const group = event.currentTarget.dataset.group;
+      toggleGroupCollapse(group);
+    });
+  });
+}
+
+function buildMatchCardHtml(match, stage, rankings, thirdPlaceTeams, knockoutMap, assignments) {
+  const isR32 = stage === 'r32';
+  const teamA = match.team1 ? { name: match.team1, note: '' } : resolveTeamPosition(match.pos1, rankings, thirdPlaceTeams, knockoutMap, isR32, match.matchNo, assignments);
+  const teamB = match.team2 ? { name: match.team2, note: '' } : resolveTeamPosition(match.pos2, rankings, thirdPlaceTeams, knockoutMap, isR32, match.matchNo, assignments);
+  const scoreA = state.scores[match.matchNo]?.score1 ?? '';
+  const scoreB = state.scores[match.matchNo]?.score2 ?? '';
+  const isTBDA = teamA.name === 'TBD' || teamA.note === 'TBD' || teamA.note.includes('Waiting');
+  const isTBDB = teamB.name === 'TBD' || teamB.note === 'TBD' || teamB.note.includes('Waiting');
+  return `
+    <div class="bracket-match-node" data-matchno="${match.matchNo}" data-stage="${stage}">
+      <div class="bracket-match-inner">
+        <div class="bracket-team ${isTBDA ? 'placeholder' : ''}">
+          <div class="bracket-team-info">
+            ${isTBDA ? '<span class="team-flag">🏳️</span>' : formatFlag(teamA.name)}
+            <span class="bracket-team-name">
+              ${isTBDA ? (teamA.name === 'TBD' ? (teamA.note || match.pos1) : teamA.name) : getTeamInitials(teamA.name)}
+            </span>
+          </div>
+          <input class="score-input bracket-score" type="number" min="0" value="${scoreA}" data-match="${match.matchNo}" data-side="score1" ${isTBDA ? 'disabled' : ''} />
+        </div>
+        <div class="bracket-team ${isTBDB ? 'placeholder' : ''}">
+          <div class="bracket-team-info">
+            ${isTBDB ? '<span class="team-flag">🏳️</span>' : formatFlag(teamB.name)}
+            <span class="bracket-team-name">
+              ${isTBDB ? (teamB.name === 'TBD' ? (teamB.note || match.pos2) : teamB.name) : getTeamInitials(teamB.name)}
+            </span>
+          </div>
+          <input class="score-input bracket-score" type="number" min="0" value="${scoreB}" data-match="${match.matchNo}" data-side="score2" ${isTBDB ? 'disabled' : ''} />
+        </div>
+      </div>
+      <div class="bracket-match-meta">
+        <span>${new Date(match.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} · ${match.time}</span>
+        <span>${match.venue || ''}</span>
+      </div>
+      <div class="bracket-match-number">M${match.matchNo}</div>
+    </div>
+  `;
+}
+
+function buildStageHtml(stage, matches, rankings, thirdPlaceTeams, knockoutMap, assignments) {
+  const matchCards = matches.map(m => buildMatchCardHtml(m, stage, rankings, thirdPlaceTeams, knockoutMap, assignments));
+
+  // Group matches into pairs for bracket connectors (skip for third/final)
+  let matchesHtml;
+  if (stage === 'third' || stage === 'final') {
+    matchesHtml = matchCards.join('');
+  } else {
+    matchesHtml = '';
+    for (let i = 0; i < matchCards.length; i += 2) {
+      if (i + 1 < matchCards.length) {
+        matchesHtml += `<div class="bracket-pair">${matchCards[i]}${matchCards[i + 1]}</div>`;
+      } else {
+        matchesHtml += matchCards[i];
+      }
+    }
+  }
+
+  return `
+    <div class="bracket-stage bracket-stage-${stage}">
+      <div class="bracket-stage-header">
+        <span class="bracket-stage-label">${stageLabels[stage]}</span>
+        <span class="bracket-stage-count">${matches.length} matches</span>
+      </div>
+      <div class="bracket-stage-matches">
+        ${matchesHtml}
+      </div>
+    </div>
+  `;
+}
+
+function renderBracket(rankings, thirdPlaceTeams, assignments) {
+  const grouped = scheduleData.knockoutMatches.reduce((acc, match) => {
+    acc[match.stage] = acc[match.stage] || [];
+    acc[match.stage].push(match);
+    return acc;
+  }, {});
+
+  const stageOrder = ['r32', 'r16', 'qf', 'sf', 'third', 'final'];
+  let html = '';
+  const resultMap = computeKnockoutResults(rankings, thirdPlaceTeams, assignments);
+
+  stageOrder.forEach((stage) => {
+    if (!grouped[stage]?.length) return;
+    html += buildStageHtml(stage, grouped[stage].sort((a, b) => a.matchNo - b.matchNo), rankings, thirdPlaceTeams, resultMap, assignments);
+  });
+
+  bracketContainer.innerHTML = html;
+
+  bracketContainer.querySelectorAll('.score-input').forEach((input) => {
+    input.addEventListener('input', (event) => {
+      const matchNo = event.target.dataset.match;
+      const side = event.target.dataset.side;
+      updateScore(Number(matchNo), side, event.target.value);
+    });
+  });
+}
+
+function buildExportCsv() {
+  const header = ['Stage', 'Match No', 'Team 1', 'Team 2', 'Score 1', 'Score 2', 'Venue', 'Date', 'Time'];
+  const rows = [];
+  scheduleData.groupMatches.forEach((match) => {
+    const score1 = state.scores[match.matchNo]?.score1 ?? '';
+    const score2 = state.scores[match.matchNo]?.score2 ?? '';
+    const dateLabel = new Date(match.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    rows.push([
+      'Group',
+      match.matchNo,
+      match.team1 || 'TBD',
+      match.team2 || 'TBD',
+      score1,
+      score2,
+      match.venue || '',
+      dateLabel,
+      match.time || '',
+    ]);
+  });
+
+  scheduleData.knockoutMatches.forEach((match) => {
+    const score1 = state.scores[match.matchNo]?.score1 ?? '';
+    const score2 = state.scores[match.matchNo]?.score2 ?? '';
+    const dateLabel = match.date ? new Date(match.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : '';
+    rows.push([
+      stageLabels[match.stage] || match.stage,
+      match.matchNo,
+      match.team1 || '',
+      match.team2 || '',
+      score1,
+      score2,
+      match.venue || '',
+      dateLabel,
+      match.time || '',
+    ]);
+  });
+
+  const csvRows = [header, ...rows].map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(','));
+  return csvRows.join('\n');
+}
+
+function downloadCsv(csv, filename) {
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  const url = URL.createObjectURL(blob);
+  link.setAttribute('href', url);
+  link.setAttribute('download', filename);
+  link.style.visibility = 'hidden';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
+let currentRankings = null;
+let currentThirdPlacers = null;
+let currentAssignments = {};
+
+function render() {
+  const { rankings, thirdPlaceTeams, thirdPlaceAssignments } = computeGroupStandings();
+  currentRankings = rankings;
+  currentThirdPlacers = thirdPlaceTeams;
+  currentAssignments = thirdPlaceAssignments;
+  renderGroups(rankings, thirdPlaceTeams);
+  renderBracket(rankings, thirdPlaceTeams, thirdPlaceAssignments);
+}
+
+render();

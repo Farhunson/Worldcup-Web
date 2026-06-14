@@ -1,0 +1,1927 @@
+:root {
+  color-scheme: dark;
+  --bg: #0F1117;
+  --surface: #181A20;
+  --surface-soft: #1E2028;
+  --surface-strong: #282A33;
+  --text: #E8EAED;
+  --muted: #9BA3AF;
+  --primary: #4D9CFF;
+  --secondary: #E63946;
+  --success: #00A86B;
+  --accent: #E8C547;
+  --border: #2A2D37;
+  --shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+
+  --body-grad-start: #0F1117;
+  --body-grad-end: #141620;
+  --hero-grad-start: #181A20;
+  --hero-grad-end: #1E2028;
+  --glow-1: rgba(232, 197, 71, 0.08);
+  --glow-2: rgba(77, 156, 255, 0.06);
+  --shell-bg: rgba(15, 17, 23, 0.65);
+  --flag-leaf-radius: 0 24px 0 24px;
+}
+
+/* ── Color theme (dark bg + vivid group headers) — explicit alias ─── */
+:root[data-theme="color"] {
+  color-scheme: dark;
+  --bg: #0F1117;
+  --surface: #181A20;
+  --surface-soft: #1E2028;
+  --surface-strong: #282A33;
+  --text: #E8EAED;
+  --muted: #9BA3AF;
+  --primary: #4D9CFF;
+  --secondary: #E63946;
+  --success: #00A86B;
+  --accent: #E8C547;
+  --border: #2A2D37;
+  --shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+  --body-grad-start: #0F1117;
+  --body-grad-end: #141620;
+  --hero-grad-start: #181A20;
+  --hero-grad-end: #1E2028;
+  --glow-1: rgba(232, 197, 71, 0.08);
+  --glow-2: rgba(77, 156, 255, 0.06);
+  --shell-bg: rgba(15, 17, 23, 0.65);
+}
+
+/* ── Full dark theme — everything dark, no vivid headers ─────────── */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #080A0F;
+  --surface: #111318;
+  --surface-soft: #16181F;
+  --surface-strong: #1E2028;
+  --text: #F0F2F5;
+  --muted: #8A919E;
+  --primary: #4D9CFF;
+  --secondary: #E63946;
+  --success: #00A86B;
+  --accent: #E8C547;
+  --border: #222530;
+  --shadow: 0 18px 45px rgba(0, 0, 0, 0.5);
+  --body-grad-start: #080A0F;
+  --body-grad-end: #0C0E14;
+  --hero-grad-start: #111318;
+  --hero-grad-end: #16181F;
+  --glow-1: rgba(77, 156, 255, 0.05);
+  --glow-2: rgba(77, 156, 255, 0.04);
+  --shell-bg: rgba(8, 10, 15, 0.65);
+}
+
+/* Full dark: override the vivid per-group header colours → dark surface */
+:root[data-theme="dark"] .group-A .group-card-header,
+:root[data-theme="dark"] .group-B .group-card-header,
+:root[data-theme="dark"] .group-C .group-card-header,
+:root[data-theme="dark"] .group-D .group-card-header,
+:root[data-theme="dark"] .group-E .group-card-header,
+:root[data-theme="dark"] .group-F .group-card-header,
+:root[data-theme="dark"] .group-G .group-card-header,
+:root[data-theme="dark"] .group-H .group-card-header,
+:root[data-theme="dark"] .group-I .group-card-header,
+:root[data-theme="dark"] .group-J .group-card-header,
+:root[data-theme="dark"] .group-K .group-card-header,
+:root[data-theme="dark"] .group-L .group-card-header {
+  background: var(--surface-strong);
+}
+
+/* Full dark: group panel borders → use theme border token */
+:root[data-theme="dark"] .group-card.group-A .group-panel,
+:root[data-theme="dark"] .group-card.group-B .group-panel,
+:root[data-theme="dark"] .group-card.group-C .group-panel,
+:root[data-theme="dark"] .group-card.group-D .group-panel,
+:root[data-theme="dark"] .group-card.group-E .group-panel,
+:root[data-theme="dark"] .group-card.group-F .group-panel,
+:root[data-theme="dark"] .group-card.group-G .group-panel,
+:root[data-theme="dark"] .group-card.group-H .group-panel,
+:root[data-theme="dark"] .group-card.group-I .group-panel,
+:root[data-theme="dark"] .group-card.group-J .group-panel,
+:root[data-theme="dark"] .group-card.group-K .group-panel,
+:root[data-theme="dark"] .group-card.group-L .group-panel {
+  border-color: var(--border);
+}
+
+/* Full dark: group toggle uses dark-surface border */
+:root[data-theme="dark"] .group-toggle {
+  border-color: rgba(240, 242, 245, 0.5);
+  color: var(--text);
+}
+
+:root[data-theme="dark"] .group-toggle:hover {
+  background: rgba(240, 242, 245, 0.08);
+}
+
+/* ── Light theme ──────────────────────────────────────────────────── */
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #FFFFFF;
+  --surface: #F8F9FA;
+  --surface-soft: #FFFFFF;
+  --surface-strong: #E5E7EB;
+  --text: #111111;
+  --muted: #6B7280;
+  --primary: #0057D9;
+  --secondary: #E63946;
+  --success: #00A86B;
+  --accent: #D4AF37;
+  --border: #E5E7EB;
+  --shadow: 0 18px 45px rgba(17, 24, 39, 0.08);
+
+  --body-grad-start: #FFFFFF;
+  --body-grad-end: #F8F9FA;
+  --hero-grad-start: #FFFFFF;
+  --hero-grad-end: #F8F9FA;
+  --glow-1: rgba(212, 175, 55, 0.14);
+  --glow-2: rgba(0, 87, 217, 0.12);
+  --shell-bg: rgba(255, 255, 255, 0.82);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #0F1117;
+  /* Fallback color */
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+#bg-video {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  z-index: -1;
+  transform: translate(-50%, -50%);
+  object-fit: cover;
+  opacity: 0.6;
+  /* Adjust opacity for better content readability */
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(circle at 20% 10%, var(--glow-1), transparent 22%),
+    radial-gradient(circle at 85% 20%, var(--glow-2), transparent 20%);
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.page-shell {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 26px 22px 52px;
+  background: var(--shell-bg);
+  /* Translucent background from theme */
+  backdrop-filter: blur(12px);
+  border-radius: 32px;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 16px 32px;
+  margin-bottom: 32px;
+  border-radius: var(--flag-leaf-radius);
+  background: linear-gradient(135deg, rgba(4, 74, 128, 0.85) 0%, rgba(4, 74, 128, 0.4) 100%);
+  color: #FFFFFF;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  align-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(16px);
+}
+
+.brand-chip,
+.host-chips {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.brand-chip {
+  color: #FFFFFF;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  font-size: 1.05rem;
+}
+
+.brand-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  height: 54px;
+  background: #FFFFFF;
+  color: #044A80;
+  border-radius: 100px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.host-chips span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 18px;
+  border-radius: 0 12px 0 12px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #FFFFFF;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all 0.2s ease;
+}
+
+.host-chips span:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: 32px;
+  padding: 40px 36px;
+  background: linear-gradient(180deg, var(--hero-grad-start) 0%, var(--hero-grad-end) 100%);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 48px;
+  align-items: center;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: -20px;
+  background: radial-gradient(circle at 20% 35%, var(--glow-1), transparent 22%),
+    radial-gradient(circle at 75% 20%, var(--glow-2), transparent 18%);
+  pointer-events: none;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--primary);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  margin-bottom: 16px;
+}
+
+.hero h1 {
+  margin: 0;
+  font-size: clamp(2.1rem, 4vw, 3.8rem);
+  line-height: 1.02;
+  color: var(--text);
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.hero p {
+  max-width: 640px;
+  color: var(--muted);
+  margin: 18px 0 28px;
+  line-height: 1.7;
+  font-size: 1rem;
+}
+
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.hero-stats div {
+  border-radius: var(--flag-leaf-radius);
+  background: var(--surface-soft);
+  padding: 24px 16px;
+  border: 1px solid var(--border);
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-stats div:hover {
+  transform: translateY(-5px);
+  background: var(--surface-strong);
+  border-color: var(--primary);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+}
+
+.hero-stats div::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--primary);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.hero-stats div:hover::before {
+  opacity: 1;
+}
+
+.hero-stats strong {
+  display: block;
+  font-size: 1.8rem;
+  color: var(--text);
+  font-family: 'FWC2026Condensed', sans-serif;
+  font-weight: 900;
+}
+
+.hero-stats span {
+  display: block;
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+}
+
+.hero-badge {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  min-width: 190px;
+}
+
+.hero-logo {
+  width: 180px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
+}
+
+.badge-head {
+  font-weight: 900;
+  font-size: 1.4rem;
+  letter-spacing: 0.16em;
+  color: var(--text);
+  text-transform: uppercase;
+  font-family: 'FWC2026Condensed', sans-serif;
+  text-align: center;
+}
+
+.badge-sub {
+  font-size: 0.85rem;
+  color: var(--muted);
+  text-align: center;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.section-wrapper {
+  margin-top: 36px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: flex-end;
+  margin-bottom: 20px;
+}
+
+.section-header h2 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.section-header p {
+  margin: 8px 0 0;
+  color: var(--muted);
+}
+
+.top-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 28px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  border-radius: 999px;
+  padding: 12px 20px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, opacity 0.2s ease;
+}
+
+.btn .material-symbols-outlined {
+  font-size: 1.25rem;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn.secondary {
+  background: var(--surface-strong);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.btn.secondary:hover {
+  background: var(--surface);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.btn.accent {
+  background: var(--accent);
+  color: #111111;
+  box-shadow: 0 12px 24px rgba(212, 175, 55, 0.2);
+}
+
+/* Specific styling for the theme toggle override to ensure it matches style */
+#themeToggleBtn.btn.secondary {
+  background: rgba(4, 74, 128, 0.08);
+  /* slight blue hint */
+  color: var(--primary);
+  border-color: rgba(4, 74, 128, 0.15);
+}
+
+.group-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+/* Light-mode: scope light tokens inside group cards / bracket cards */
+:root[data-theme="light"] .group-card,
+:root[data-theme="light"] .bracket-stage,
+:root[data-theme="light"] .bracket-match {
+  --bg: #FFFFFF;
+  --surface: #F8F9FA;
+  --surface-soft: #FFFFFF;
+  --surface-strong: #E5E7EB;
+  --text: #111111;
+  --muted: #6B7280;
+  --accent: #D4AF37;
+  --border: #E5E7EB;
+}
+
+.group-card {
+  background: var(--surface);
+  border: none;
+  border-radius: 28px;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+}
+
+.bracket-stage,
+.bracket-match {
+  background: var(--surface);
+  border: 3px solid var(--border);
+  border-radius: 28px;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+}
+
+.group-panel-wrapper {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
+  overflow: hidden;
+  opacity: 1;
+}
+
+.group-card.collapsed .group-panel-wrapper {
+  grid-template-rows: 0fr;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.group-card.collapsed .group-card-header {
+  padding-bottom: 20px;
+}
+
+/* When collapsed, make header fully rounded on all corners so it appears as a rounded pill */
+.group-card.collapsed .group-card-header {
+  border-bottom-left-radius: 28px;
+  border-bottom-right-radius: 28px;
+}
+
+.group-card-header {
+  padding: 18px 20px;
+  border-bottom: none;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Ensure header respects the parent's rounded corners */
+.group-card .group-card-header {
+  border-top-left-radius: 28px;
+  border-top-right-radius: 28px;
+}
+
+/* Put the visible border only on the panel (body) of the group card, not the header */
+.group-card .group-panel {
+  border: 5px solid var(--border);
+  border-top: 5px solid var(--border);
+  border-radius: 0 0 28px 28px;
+  overflow: hidden;
+  margin-top: 0;
+  min-height: 0;
+  padding-top: 10px;
+}
+
+.group-card-header h3 {
+  margin: 0;
+  font-size: 1.85rem;
+  line-height: 1;
+  color: #FFFFFF;
+  font-family: 'FWC2026Condensed', 'FWC2026', Inter, system-ui, sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+}
+
+.header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.group-toggle {
+  border: 2.5px solid rgba(255, 255, 255, 0.85);
+  background: transparent;
+  color: #FFFFFF;
+  border-radius: 999px;
+  padding: 8px 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.group-toggle .material-symbols-outlined {
+  font-size: 1.3rem;
+  line-height: 1;
+  font-weight: 700;
+}
+
+.group-toggle:hover {
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-1px);
+}
+
+/* Light mode: dark border and icon */
+:root[data-theme="light"] .group-toggle {
+  border-color: rgba(17, 24, 39, 0.55);
+  color: #111111;
+}
+
+:root[data-theme="light"] .group-toggle:hover {
+  background: rgba(17, 24, 39, 0.06);
+}
+
+.group-card-header .group-label {
+  background: rgba(0, 0, 0, 0.18);
+  color: #FFFFFF;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 0.9rem;
+  letter-spacing: 0.06em;
+  -webkit-text-stroke: 0.4px #000;
+}
+
+/* Group header color palette per group letter */
+.group-A .group-card-header {
+  background: #03E577;
+}
+
+.group-B .group-card-header {
+  background: #F7194C;
+}
+
+.group-C .group-card-header {
+  background: #FB9002;
+}
+
+.group-D .group-card-header {
+  background: #3C52F6;
+}
+
+.group-E .group-card-header {
+  background: #6201E7;
+}
+
+.group-F .group-card-header {
+  background: #C9FF00;
+}
+
+.group-G .group-card-header {
+  background: #F16393;
+}
+
+.group-H .group-card-header {
+  background: #50FFD9;
+}
+
+.group-I .group-card-header {
+  background: #A648BA;
+}
+
+.group-J .group-card-header {
+  background: #307187;
+}
+
+.group-K .group-card-header {
+  background: #FE3B03;
+}
+
+.group-L .group-card-header {
+  background: #47B5EA;
+}
+
+/* Ensure header text is white for readability */
+.group-card .group-card-header h3,
+.group-card .group-card-header p,
+.group-card .group-card-header .group-flags,
+.group-card .group-card-header .group-label {
+  color: #FFFFFF;
+}
+
+
+
+/* Match the group card border to the header color for each group */
+.group-card.group-A .group-panel {
+  border: 5px solid #03E577;
+}
+
+.group-card.group-B .group-panel {
+  border: 5px solid #F7194C;
+}
+
+.group-card.group-C .group-panel {
+  border: 5px solid #FB9002;
+}
+
+.group-card.group-D .group-panel {
+  border: 5px solid #3C52F6;
+}
+
+.group-card.group-E .group-panel {
+  border: 5px solid #6201E7;
+}
+
+.group-card.group-F .group-panel {
+  border: 5px solid #C9FF00;
+}
+
+.group-card.group-G .group-panel {
+  border: 5px solid #F16393;
+}
+
+.group-card.group-H .group-panel {
+  border: 5px solid #50FFD9;
+}
+
+.group-card.group-I .group-panel {
+  border: 5px solid #A648BA;
+}
+
+.group-card.group-J .group-panel {
+  border: 5px solid #307187;
+}
+
+.group-card.group-K .group-panel {
+  border: 5px solid #FE3B03;
+}
+
+.group-card.group-L .group-panel {
+  border: 5px solid #47B5EA;
+}
+
+/* When a group card is collapsed, hide its border and shadow for a cleaner minimized look */
+.group-card.collapsed {
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.group-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.group-table th,
+.group-table td {
+  padding: 12px 14px;
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
+.group-table th {
+  text-align: left;
+  color: var(--text);
+  font-weight: 700;
+  font-size: 0.83rem;
+  letter-spacing: 0.08em;
+}
+
+.group-table tr:not(:last-child) {
+  border-bottom: 1px solid var(--border);
+}
+
+.group-table tr {
+  transition: background 0.2s ease;
+}
+
+.team-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text);
+  font-weight: 600;
+  position: relative;
+}
+
+.adv-indicator {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: transparent;
+  flex-shrink: 0;
+  transition: background 0.3s ease;
+}
+
+tr.advancement-direct .adv-indicator {
+  background: var(--success);
+  box-shadow: 0 0 10px var(--success);
+}
+
+tr.advancement-best-third .adv-indicator {
+  background: var(--primary);
+  box-shadow: 0 0 10px var(--primary);
+}
+
+tr.advancement-direct td {
+  background: linear-gradient(90deg, rgba(0, 168, 107, 0.05) 0%, transparent 100%);
+}
+
+tr.advancement-best-third td {
+  background: linear-gradient(90deg, rgba(77, 156, 255, 0.05) 0%, transparent 100%);
+}
+
+.team-label .team-flag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  min-width: 38px;
+  height: 26px;
+  border-radius: 0 12px 0 12px;
+  overflow: hidden;
+  background: #FFFFFF;
+  border: 1.5px solid rgba(17, 24, 39, 0.12);
+  box-shadow: 0 10px 30px rgba(17, 24, 39, 0.08);
+}
+
+.team-label .team-flag img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Apply flag card style inside match cards and team-flag-name containers */
+.team-flag-name .team-flag,
+.match-top .team-flag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  min-width: 38px;
+  height: 26px;
+  border-radius: 0 12px 0 12px;
+  overflow: hidden;
+  background: #FFFFFF;
+  border: 1.5px solid rgba(17, 24, 39, 0.12);
+  box-shadow: 0 10px 30px rgba(17, 24, 39, 0.08);
+}
+
+.team-flag-name .team-flag img,
+.match-top .team-flag img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Invert flag shape for away teams to mirror the home side */
+.team-right .team-flag {
+  border-radius: 12px 0 12px 0;
+}
+
+.group-flags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+/* Ensure header content stacks neatly when space is tight */
+.group-card-header>div:first-child {
+  min-width: 0;
+}
+
+.group-card-header p {
+  margin: 4px 0 0 0;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 0.88rem;
+}
+
+.group-flags .team-flag {
+  width: 30px;
+  min-width: 30px;
+  height: 18px;
+  border-radius: 4px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.group-separator {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--muted);
+  letter-spacing: 0.12em;
+  margin: 4px 20px 16px;
+}
+
+.group-separator::after,
+.group-separator::before {
+  content: '';
+  flex: 1;
+  border-bottom: 2px solid var(--surface-strong);
+}
+
+.group-separator::after {
+  margin-left: 14px;
+}
+
+.group-separator::before {
+  margin-right: 14px;
+}
+
+.match-list {
+  padding: 0 20px 22px;
+  display: grid;
+  gap: 16px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.match-card {
+  display: grid;
+  grid-template-columns: 1fr 160px 1fr;
+  align-items: center;
+  gap: 18px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  position: relative;
+}
+
+.match-compact {
+  grid-template-columns: 1fr;
+  grid-auto-rows: auto;
+  padding: 12px 14px;
+}
+
+.match-top {
+  display: grid;
+  grid-template-columns: 1fr 72px 36px 72px 1fr;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.match-top .team-left,
+.match-top .team-right {
+  display: flex;
+  align-items: center;
+}
+
+.match-top .team-flag-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Left team: reverse so order is  name | flag  instead of  flag | name */
+.match-top .team-left .team-flag-name {
+  flex-direction: row-reverse;
+}
+
+.match-top .vs {
+  text-align: center;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.match-mid {
+  margin-top: 8px;
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+.match-bottom {
+  margin-top: 6px;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+.match-number {
+  position: absolute;
+  right: 10px;
+  bottom: 8px;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.score-left .score-input,
+.score-right .score-input {
+  width: 72px;
+  padding: 6px 0;
+}
+
+/* Reduce font-sizes and input widths for match-cards inside group cards to prevent overflow */
+.group-card .match-card {
+  font-size: 0.95rem;
+}
+
+.group-card .match-card .team-name {
+  font-size: 0.95rem;
+}
+
+.group-card .match-card .match-mid,
+.group-card .match-card .match-bottom {
+  font-size: 0.84rem;
+}
+
+.group-card .match-card .score-input {
+  width: 56px;
+  font-size: 1rem;
+  padding: 6px 0;
+}
+
+.group-card .match-top .team-flag,
+.group-card .team-flag-name .team-flag {
+  width: 32px;
+  height: 20px;
+}
+
+/* Prevent horizontal overflow: allow items to shrink and constrain column sizes inside group cards */
+.group-card .match-card {
+  box-sizing: border-box;
+  overflow: hidden;
+  word-break: break-word;
+}
+
+.group-card .match-top {
+  grid-template-columns: minmax(0, 1fr) 56px 32px 56px minmax(0, 1fr);
+  gap: 6px;
+}
+
+.group-card .match-top>* {
+  min-width: 0;
+}
+
+.group-card .team-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.group-card .match-number {
+  right: 8px;
+  bottom: 6px;
+}
+
+.match-card:nth-child(odd) {
+  background: var(--surface);
+}
+
+.match-info {
+  display: grid;
+  gap: 8px;
+  color: var(--muted);
+  min-width: 0;
+}
+
+.team-label,
+.match-info,
+.match-info span {
+  min-width: 0;
+}
+
+.match-info span {
+  display: block;
+  font-size: 0.88rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.match-info span {
+  display: block;
+  font-size: 0.88rem;
+}
+
+.match-score {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: center;
+}
+
+.team {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-width: 0;
+}
+
+.team-right {
+  justify-content: flex-end;
+}
+
+.team-flag-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.team-name {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.match-left .team-row {
+  grid-column: 1 / 2;
+}
+
+.match-left .team-top {
+  grid-row: 1 / 2;
+}
+
+.match-left .team-bottom {
+  grid-row: 2 / 3;
+}
+
+.score-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.score-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: center;
+}
+
+.score-input {
+  width: 72px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface-soft);
+  color: var(--text);
+  text-align: center;
+  font-size: 1.25rem;
+  padding: 8px 0;
+}
+
+.score-sep {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.match-meta {
+  margin-top: 6px;
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+.match-number {
+  position: absolute;
+  right: 12px;
+  bottom: 8px;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.score-input {
+  width: 64px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface-soft);
+  color: var(--text);
+  text-align: center;
+  font-size: 1.05rem;
+  padding: 10px 0;
+}
+
+.match-vs {
+  color: var(--accent);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+/* ── Bracket Container ─────────────────────────────────────────────── */
+.bracket-container {
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  gap: 28px;
+  padding: 20px 6px 40px;
+  min-height: 400px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--surface-strong) transparent;
+}
+
+.bracket-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.bracket-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.bracket-container::-webkit-scrollbar-thumb {
+  background: var(--surface-strong);
+  border-radius: 4px;
+}
+
+/* ── Bracket Stage Column ──────────────────────────────────────────── */
+.bracket-stage {
+  display: flex;
+  flex-direction: column;
+  min-width: 260px;
+  max-width: 300px;
+  flex-shrink: 0;
+  gap: 0;
+  background: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* ── Stage Header Badge ────────────────────────────────────────────── */
+.bracket-stage-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  font-weight: 800;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  background: var(--surface-soft);
+  color: var(--text);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.bracket-stage-label {
+  font-family: 'FWC2026Condensed', 'FWC2026', Inter, system-ui, sans-serif;
+  font-weight: 900;
+  flex: 1;
+}
+
+.bracket-stage-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.2);
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: 0.02em;
+  text-transform: lowercase;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Stage-specific header colors */
+.bracket-stage-r32 .bracket-stage-header {
+  border-top: 3px solid #3B82F6;
+}
+
+.bracket-stage-r16 .bracket-stage-header {
+  border-top: 3px solid #10B981;
+}
+
+.bracket-stage-qf .bracket-stage-header {
+  border-top: 3px solid #F59E0B;
+}
+
+.bracket-stage-sf .bracket-stage-header {
+  border-top: 3px solid #8B5CF6;
+}
+
+.bracket-stage-third .bracket-stage-header {
+  border-top: 3px solid #6B7280;
+}
+
+.bracket-stage-final .bracket-stage-header {
+  border-top: 3px solid #F59E0B;
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.25);
+}
+
+/* ── Stage Matches Container ───────────────────────────────────────── */
+.bracket-stage-matches {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  gap: 8px;
+  flex: 1;
+}
+
+/* ── Bracket Pair (groups 2 matches for connectors) ────────────────── */
+.bracket-pair {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+}
+
+/* Right-side connector arm: horizontal line from each match node */
+.bracket-stage-r32 .bracket-match-node::after,
+.bracket-stage-r16 .bracket-match-node::after,
+.bracket-stage-qf .bracket-match-node::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -14px;
+  width: 14px;
+  height: 2px;
+  background: var(--border);
+  z-index: 1;
+}
+
+/* Left-side connector arm: horizontal line into each match node */
+.bracket-stage-r16 .bracket-match-node::before,
+.bracket-stage-qf .bracket-match-node::before,
+.bracket-stage-sf .bracket-match-node::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -14px;
+  width: 14px;
+  height: 2px;
+  background: var(--border);
+  z-index: 1;
+}
+
+/* Vertical bracket line connecting paired matches */
+.bracket-stage-r32 .bracket-pair::after,
+.bracket-stage-r16 .bracket-pair::after,
+.bracket-stage-qf .bracket-pair::after {
+  content: '';
+  position: absolute;
+  right: -14px;
+  top: 25%;
+  bottom: 25%;
+  width: 2px;
+  background: var(--border);
+  z-index: 1;
+}
+
+/* ── Match Node Card ───────────────────────────────────────────────── */
+.bracket-match-node {
+  position: relative;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding-top: 12px;
+  overflow: hidden;
+  transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.22s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.22s ease;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.bracket-match-node:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  border-color: var(--primary);
+}
+
+/* Left accent border per stage */
+.bracket-stage-r32 .bracket-match-node {
+  border-left: 3px solid #3B82F6;
+}
+
+.bracket-stage-r16 .bracket-match-node {
+  border-left: 3px solid #10B981;
+}
+
+.bracket-stage-qf .bracket-match-node {
+  border-left: 3px solid #F59E0B;
+}
+
+.bracket-stage-sf .bracket-match-node {
+  border-left: 3px solid #8B5CF6;
+}
+
+.bracket-stage-third .bracket-match-node {
+  border-left: 3px solid #9CA3AF;
+}
+
+.bracket-stage-final .bracket-match-node {
+  border-left: 3px solid #F59E0B;
+  box-shadow: 0 4px 20px rgba(245, 158, 11, 0.15);
+}
+
+.bracket-stage-final .bracket-match-node:hover {
+  box-shadow: 0 8px 30px rgba(245, 158, 11, 0.3);
+}
+
+/* ── Match Inner (Team Rows) ───────────────────────────────────────── */
+.bracket-match-inner {
+  display: flex;
+  flex-direction: column;
+}
+
+.bracket-team {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  gap: 8px;
+  transition: background 0.15s ease;
+}
+
+.bracket-team:first-child {
+  border-bottom: 1px solid var(--border);
+}
+
+.bracket-team:hover {
+  background: var(--surface-strong);
+}
+
+.bracket-team.placeholder {
+  opacity: 0.5;
+}
+
+.bracket-team-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex: 1;
+}
+
+.bracket-team-name {
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bracket-team .team-flag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  min-width: 32px;
+  height: 20px;
+  border-radius: 0 8px 0 8px;
+  overflow: hidden;
+  background: #FFFFFF;
+  border: 1px solid rgba(17, 24, 39, 0.1);
+  flex-shrink: 0;
+}
+
+.bracket-team .team-flag img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Score inputs inside bracket match */
+.bracket-score {
+  width: 44px !important;
+  height: 30px;
+  padding: 4px 0 !important;
+  font-size: 0.9rem !important;
+  border-radius: 8px !important;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* ── Match Meta (date/venue) ───────────────────────────────────────── */
+.bracket-match-meta {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 12px 6px;
+  font-size: 0.72rem;
+  color: var(--muted);
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  gap: 6px;
+}
+
+.bracket-match-meta span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Match Number Badge ────────────────────────────────────────────── */
+.bracket-match-number {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: var(--muted);
+  opacity: 0.6;
+  letter-spacing: 0.05em;
+}
+
+.placeholder {
+  opacity: 0.6;
+}
+
+@media (max-width: 1100px) {
+  .group-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 780px) {
+  .page-shell {
+    margin: 0;
+    border-radius: 0;
+    width: 100%;
+    max-width: 100%;
+    min-height: 100vh;
+    padding: 16px 0px 40px;
+  }
+
+  /* Padding for children of full-screen shell */
+  .top-bar,
+  .hero,
+  .top-actions,
+  .section-wrapper {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+
+  .hero {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .hero-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .hero p {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-badge {
+    margin: 0 auto;
+  }
+
+  .top-actions {
+    justify-content: center;
+  }
+
+  .group-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .match-card,
+  .bracket-match {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .match-info {
+    align-items: center;
+  }
+
+  .match-left {
+    align-items: center;
+  }
+
+  .match-card {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .match-right {
+    justify-content: center;
+  }
+
+  .match-number {
+    right: 14px;
+    bottom: -6px;
+  }
+
+  .match-top .team-flag-name,
+  .match-top .team-left .team-flag-name {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 4px;
+  }
+
+  .match-top .team-left,
+  .match-top .team-right {
+    justify-content: center;
+  }
+
+  .group-table {
+    min-width: 480px;
+    /* Ensure table doesn't shrink too much, triggering scroll */
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .match-vs {
+    display: block;
+  }
+}
+
+/* Font faces from local assets/fonts */
+@font-face {
+  font-family: 'FWC2026';
+  src: url('assets/fonts/FWC2026-NormalRegular.77c3c249.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'FWC2026';
+  src: url('assets/fonts/FWC2026-NormalBlack.2bd896c8.ttf') format('truetype');
+  font-weight: 800 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'FWC2026Condensed';
+  src: url('assets/fonts/FWC2026-UltraCondensedBlack.8e6ba053.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'FWC2026Condensed';
+  src: url('assets/fonts/FWC2026-UltraCondensedBold.0e7149b5.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'FWC2026Condensed';
+  src: url('assets/fonts/FWC2026-UltraCondensedMedium.4da29b9d.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'FWC2026Expanded';
+  src: url('assets/fonts/FWC2026-ExpandedBlack.e49451e9.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Apply site fonts globally, but exclude group tables to preserve layout */
+html,
+body {
+  font-family: 'FWC2026', Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Use condensed variant for headings */
+h1,
+h2,
+h3,
+h4 {
+  font-family: 'FWC2026Condensed', 'FWC2026', Inter, system-ui, sans-serif;
+  letter-spacing: 0.02em;
+}
+
+/* Preserve original UI font for group tables to avoid layout shifts */
+.group-table,
+.group-table * {
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+}
+
+/* Light Mode Group Card Overrides */
+:root[data-theme="light"] .group-card {
+  border: 1px solid var(--border) !important;
+  box-shadow: var(--shadow) !important;
+}
+
+:root[data-theme="light"] .group-card .group-card-header {
+  background: #FFFFFF !important;
+  border-bottom: 1px solid var(--border) !important;
+}
+
+:root[data-theme="light"] .group-card .group-card-header h3,
+:root[data-theme="light"] .group-card .group-card-header p {
+  color: var(--text) !important;
+  -webkit-text-stroke: 0 !important;
+  text-shadow: none !important;
+}
+
+:root[data-theme="light"] .group-card .group-card-header .group-label {
+  background: var(--surface-strong) !important;
+  color: var(--text) !important;
+  -webkit-text-stroke: 0 !important;
+  text-shadow: none !important;
+}
+
+:root[data-theme="light"] .group-card .group-panel {
+  border: none !important;
+  border-top: none !important;
+}
+
+/* ── Footer ────────────────────────────────────────────────────────── */
+footer {
+  margin-top: 60px;
+  border-top: 1px solid var(--border);
+  padding: 48px 20px;
+}
+
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  text-align: center;
+}
+
+.footer-signature p {
+  margin: 5px 0;
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+.footer-signature span {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.footer-socials {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.footer-socials a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 10px 18px;
+  border-radius: 12px;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.footer-socials a svg {
+  width: 18px;
+  height: 18px;
+  color: var(--muted);
+  transition: color 0.25s ease;
+}
+
+.footer-socials a:hover {
+  transform: translateY(-3px);
+  background: var(--surface-strong);
+  border-color: var(--primary);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.footer-socials a:hover svg {
+  color: var(--primary);
+}
+
+@media (max-width: 640px) {
+  .footer-socials {
+    gap: 16px;
+  }
+
+  .footer-socials a span {
+    display: none;
+    /* Icon only on small screens if too crowded */
+  }
+
+  .footer-socials a {
+    padding: 12px;
+  }
+}
+
+/* ── Best 3rd Place Standings ──────────────────────────────────────── */
+.third-place-standings {
+  grid-column: 1 / -1;
+  margin-top: 40px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.third-place-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.third-place-header h3 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text);
+  margin: 0;
+}
+
+.third-place-header p {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin: 0;
+}
+
+.third-place-standings .match-list {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--surface-strong) transparent;
+}
+
+.third-place-table .rank-cell {
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--muted);
+  width: 36px;
+}
+
+.third-place-table .group-cell {
+  text-align: center;
+  font-weight: 800;
+  font-size: 0.9rem;
+  color: var(--primary);
+  width: 48px;
+}
+
+.third-place-table tr.advancement-best-third .rank-cell {
+  color: var(--primary);
+}
+
+@media (max-width: 780px) {
+  .third-place-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 16px 20px 12px;
+  }
+
+  .third-place-table {
+    min-width: 520px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Advancement Legend */
+.advancement-legend {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  margin-top: 40px;
+  padding: 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.legend-dot.advancement-direct {
+  background: var(--success);
+  box-shadow: 0 0 10px var(--success);
+}
+
+.legend-dot.advancement-best-third {
+  background: var(--primary);
+  box-shadow: 0 0 10px var(--primary);
+}
+
+.legend-text {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+@media (max-width: 768px) {
+  .advancement-legend {
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+  }
+}

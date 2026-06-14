@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FIFA World Cup 2026 | Interactive Scoreboard</title>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,400,0,0" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <video autoplay muted loop playsinline id="bg-video">
+    <source src="assets/videos/background.mp4" type="video/mp4" />
+  </video>
+  <div class="page-shell">
+    <nav class="top-bar">
+      <div class="brand-chip">
+        <span class="brand-pill">FIFA</span>
+        <span>World Cup 2026</span>
+      </div>
+      <div class="host-chips">
+        <span>USA</span>
+        <span>Canada</span>
+        <span>Mexico</span>
+      </div>
+    </nav>
+
+    <header class="hero">
+      <div class="hero-content">
+        <div class="hero-label">FIFA World Cup 2026</div>
+        <h1>Interactive Match Scoreboard</h1>
+        <p>Enter group stage results and watch the knockout bracket fill automatically.</p>
+        <div class="hero-stats">
+          <div>
+            <strong>48</strong>
+            <span>Teams</span>
+          </div>
+          <div>
+            <strong>104</strong>
+            <span>Matches</span>
+          </div>
+          <div>
+            <strong>3</strong>
+            <span>Host countries</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-badge">
+        <img class="hero-logo" src="assets/2026_FIFA_World_Cup_emblem.webp" alt="World Cup 2026 logo" />
+        <div class="badge-head">World Cup 2026</div>
+        <div class="badge-sub">USA • Canada • Mexico</div>
+      </div>
+    </header>
+
+    <main>
+      <section class="top-actions">
+        <button id="themeToggleBtn" class="btn secondary"><span class="material-symbols-outlined">palette</span> Toggle
+          Theme</button>
+        <button id="clearButton" class="btn secondary"><span class="material-symbols-outlined">delete_sweep</span> Clear
+          all scores</button>
+        <button id="exportButton" class="btn accent"><span class="material-symbols-outlined">download</span> Download
+          results</button>
+      </section>
+
+      <section id="group-stage" class="section-wrapper">
+        <div class="section-header">
+          <div>
+            <h2>Group Stage</h2>
+            <p>Review all groups and enter the score for each match.</p>
+          </div>
+        </div>
+        <div id="group-list" class="group-grid"></div>
+      </section>
+
+      <section id="knockout-stage" class="section-wrapper">
+        <div class="section-header">
+          <div>
+            <h2>Knockout Stage</h2>
+            <p>Bracket positions are automatically resolved from group standings and match winners.</p>
+          </div>
+        </div>
+        <div id="bracket-container" class="bracket-container"></div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer-content">
+        <div class="footer-signature">
+          <p>Handcrafted with ❤️ by <span>Farhunson</span></p>
+          <p>All FIFA World Cup 2026 trademarks and assets belong to <span>FIFA<sup>TM</sup></span>.</p>
+        </div>
+        <div class="footer-socials">
+          <a href="https://www.instagram.com/farhunson/" target="_blank" title="Instagram">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+            </svg>
+            <span>Instagram</span>
+          </a>
+          <a href="https://github.com/Farhunson" target="_blank" title="GitHub">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path
+                d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22">
+              </path>
+            </svg>
+            <span>GitHub</span>
+          </a>
+          <a href="https://www.linkedin.com/in/mfarhanw/" target="_blank" title="LinkedIn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+              <rect x="2" y="9" width="4" height="12"></rect>
+              <circle cx="4" cy="4" r="2"></circle>
+            </svg>
+            <span>LinkedIn</span>
+          </a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="schedule_data.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>
