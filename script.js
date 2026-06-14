@@ -276,7 +276,7 @@ const stageLabels = {
 // Venue to IANA timezone mapping for World Cup 2026 host cities
 const venueTimezones = {
   'Mexico City': 'America/Mexico_City',
-  'Guadalajara': 'America/Bogota', // Guadalajara uses same timezone as Bogota (CST)
+  'Guadalajara': 'America/Mexico_City',
   'Toronto': 'America/Toronto',
   'Vancouver': 'America/Vancouver',
   'Los Angeles': 'America/Los_Angeles',
@@ -293,7 +293,6 @@ const venueTimezones = {
   'Atlanta': 'America/New_York',
   'Monterrey': 'America/Monterrey',
   'Denver': 'America/Denver',
-  'Boston': 'America/New_York',
 };
 
 // Stadium data cache (fetched from API)
@@ -483,50 +482,39 @@ function formatApiTime(apiLocalDate, venue) {
   // Get user's local machine timezone
   const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   
-  // Create a formatter to check what time a UTC moment shows in the venue timezone
-  const venueFormatter = new Intl.DateTimeFormat('en-US', {
+  // The API stores UTC times, so create UTC date directly
+  const utcDate = new Date(Date.UTC(year, month - 1, day, hours, minutes));
+  
+  // Format UTC in venue's timezone for display
+  const venueDateFormatter = new Intl.DateTimeFormat('en-US', {
     timeZone: venueTimezone,
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
+    month: 'short',
+    day: 'numeric'
+  });
+  
+  const venueTimeFormatter = new Intl.DateTimeFormat('en-US', {
+    timeZone: venueTimezone,
     hour: '2-digit',
     minute: '2-digit',
     hour12: false
   });
   
-  // Create a UTC date assuming the time parts are correct
-  // Then adjust until the venue formatter shows the correct local time
-  let correctUTC = null;
+  const venueFullDateFormatter = new Intl.DateTimeFormat('en-US', {
+    timeZone: venueTimezone,
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric'
+  });
   
-  // Try all possible offsets from -12 hours to +14 hours in 15-min increments
-  for (let offsetMinutes = -720; offsetMinutes <= 840; offsetMinutes += 15) {
-    const testUTC = new Date(Date.UTC(year, month - 1, day, hours, minutes) - offsetMinutes * 60 * 1000);
-    const parts = venueFormatter.formatToParts(testUTC);
-    const partMap = {};
-    parts.forEach(p => partMap[p.type] = parseInt(p.value));
-    
-    // Check if this UTC time shows the correct local time in venue timezone
-    if (partMap.month === month && partMap.day === day && 
-        partMap.hour === hours && partMap.minute === minutes) {
-      correctUTC = testUTC;
-      break;
-    }
-  }
-  
-  // Fallback: just use UTC if no match found
-  if (!correctUTC) {
-    correctUTC = new Date(Date.UTC(year, month - 1, day, hours, minutes));
-  }
-  
-  // Get short timezone abbreviation for user's timezone
+  // Get timezone abbreviation for venue
   const tzFormatter = new Intl.DateTimeFormat('en-US', {
-    timeZone: localTimezone,
+    timeZone: venueTimezone,
     timeZoneName: 'short'
   });
-  const tzParts = tzFormatter.formatToParts(correctUTC);
+  const tzParts = tzFormatter.formatToParts(utcDate);
   const tzAbbr = tzParts.find(p => p.type === 'timeZoneName')?.value || '';
   
-  // Create formatters for the user's local timezone
+  // Also format in user's local timezone
   const localDateFormatter = new Intl.DateTimeFormat(undefined, {
     timeZone: localTimezone,
     month: 'short',
@@ -553,16 +541,20 @@ function formatApiTime(apiLocalDate, venue) {
     minute: '2-digit'
   });
   
-  // Format the corrected UTC timestamp in user's local timezone
+  // Return venue's local time for display
   return {
-    dateLabel: localDateFormatter.format(correctUTC),
-    timeLabel: localTimeFormatter.format(correctUTC),
+    dateLabel: venueDateFormatter.format(utcDate),
+    timeLabel: venueTimeFormatter.format(utcDate),
     tzAbbr: tzAbbr,
-    fullDate: fullDateFormatter.format(correctUTC),
-    fullTime: fullTimeFormatter.format(correctUTC),
-    timestamp: correctUTC.getTime(),
+    fullDate: venueFullDateFormatter.format(utcDate),
+    fullTime: `${venueTimeFormatter.format(utcDate)} ${tzAbbr}`,
+    timestamp: utcDate.getTime(),
     venueTimezone: venueTimezone,
     localTimezone: localTimezone,
+    localDateLabel: localDateFormatter.format(utcDate),
+    localTimeLabel: localTimeFormatter.format(utcDate),
+    localFullDate: fullDateFormatter.format(utcDate),
+    localFullTime: fullTimeFormatter.format(utcDate),
     isLocal: true
   };
 }
@@ -593,24 +585,49 @@ function getMatchDateTimeLabel(matchNo, venue, fallbackDate, fallbackTime) {
       fullTime: apiTime.fullTime
     };
   }
-  // Fallback to original schedule data
-  if (fallbackDate) {
-    const date = new Date(fallbackDate);
-    // Get user's timezone abbreviation
-    const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  // Fallback: convert UTC time from schedule_data.js to venue's local time
+  if (fallbackDate && fallbackTime) {
+    // Get venue timezone
+    const venueTimezone = getVenueTimezone(venue);
+    
+    // Create a UTC date from the stored date/time
+    const utcDate = new Date(fallbackDate);
+    
+    // Format in venue's timezone to get local date/time
+    const venueDateFormatter = new Intl.DateTimeFormat('en-US', {
+      timeZone: venueTimezone,
+      month: 'short',
+      day: 'numeric'
+    });
+    
+    const venueTimeFormatter = new Intl.DateTimeFormat('en-US', {
+      timeZone: venueTimezone,
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
+    
+    const venueFullDateFormatter = new Intl.DateTimeFormat('en-US', {
+      timeZone: venueTimezone,
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric'
+    });
+    
+    // Get timezone abbreviation for venue
     const tzFormatter = new Intl.DateTimeFormat('en-US', {
-      timeZone: localTimezone,
+      timeZone: venueTimezone,
       timeZoneName: 'short'
     });
-    const tzParts = tzFormatter.formatToParts(date);
+    const tzParts = tzFormatter.formatToParts(utcDate);
     const tzAbbr = tzParts.find(p => p.type === 'timeZoneName')?.value || '';
-    const timeWithTz = fallbackTime ? `${fallbackTime} ${tzAbbr}` : '';
+    
     return {
-      dateLabel: date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
-      timeLabel: fallbackTime || '',
+      dateLabel: venueDateFormatter.format(utcDate),
+      timeLabel: venueTimeFormatter.format(utcDate),
       tzAbbr: tzAbbr,
-      fullDate: date.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' }),
-      fullTime: timeWithTz
+      fullDate: venueFullDateFormatter.format(utcDate),
+      fullTime: `${venueTimeFormatter.format(utcDate)} ${tzAbbr}`
     };
   }
   return {
