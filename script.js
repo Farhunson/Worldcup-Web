@@ -5,6 +5,7 @@ const state = {
   lastApiUpdate: null,
   apiSourcedMatches: {}, // Track which matches have scores from API
   apiMatchTimes: {}, // Store API match times (UTC) for timezone conversion
+  liveMatches: {}, // Track live match status: { matchNo: '1st half', '2nd half', 'HT', etc. }
 };
 loadState();
 
@@ -805,6 +806,10 @@ async function fetchLiveScores() {
           timesUpdated++;
         }
 
+        // Track live match status
+        const timeElapsed = game.time_elapsed || 'notstarted';
+        state.liveMatches[targetMatch.matchNo] = timeElapsed;
+
         // Update score if match is finished
         if (game.finished === 'TRUE') {
           // Determine correct score order based on which team is home
@@ -827,10 +832,13 @@ async function fetchLiveScores() {
       }
     });
 
-    // Save state if any updates were made (scores or times)
+    // Save state if any updates were made (scores, times, or live status)
     if (updatedCount > 0 || timesUpdated > 0) {
       saveState();
       render();
+    } else {
+      // Still render if live status changed
+      renderTodaysMatchesSection();
     }
 
     state.lastApiUpdate = new Date().toLocaleTimeString();
@@ -852,6 +860,31 @@ async function fetchLiveScores() {
 // Helper function to check if a match has API-sourced scores
 function isApiSourcedMatch(matchNo) {
   return state.apiSourcedMatches[matchNo] === true;
+}
+
+// Helper function to check if a match is currently live
+function isLiveMatch(matchNo) {
+  const liveStatus = state.liveMatches[matchNo];
+  return liveStatus && liveStatus !== 'finished' && liveStatus !== 'notstarted';
+}
+
+// Helper function to get live status display text
+function getLiveStatusText(matchNo) {
+  const liveStatus = state.liveMatches[matchNo];
+  if (!liveStatus) return '';
+  
+  // Convert API status to display text
+  const statusMap = {
+    '1st half': '1st Half',
+    '2nd half': '2nd Half',
+    'HT': 'Halftime',
+    'ET': 'Extra Time',
+    'Pen': 'Penalties',
+    'FT': 'Full-time',
+    'notstarted': ''
+  };
+  
+  return statusMap[liveStatus] || liveStatus;
 }
 
 function updateLiveIndicator(success) {
@@ -1269,20 +1302,71 @@ function buildTodaysMatches() {
             groupInfo = `<span class="today-group-badge">Group ${match.pos1[0]}</span>`;
           }
           
+          // Check match status
+          const score1Val = state.scores[match.matchNo]?.score1 ?? '';
+          const score2Val = state.scores[match.matchNo]?.score2 ?? '';
+          const isApiSourced = isApiSourcedMatch(match.matchNo);
+          const isFinished = isApiSourced && score1Val !== '' && score2Val !== '';
+          const isLive = isLiveMatch(match.matchNo);
+          const liveStatus = getLiveStatusText(match.matchNo);
+          
+          // Build match card content based on status
+          let teamsHtml;
+          let cardClass = 'today-match-card clickable';
+          let statusBadge = '';
+          
+          if (isFinished) {
+            teamsHtml = `
+              <div class="today-team">
+                ${formatFlag(match.team1)}<span class="today-team-name">${getTeamFifaCode(match.team1)}</span>
+              </div>
+              <div class="today-score">${score1Val}</div>
+              <div class="today-score-separator">-</div>
+              <div class="today-score">${score2Val}</div>
+              <div class="today-team">
+                ${formatFlag(match.team2)}<span class="today-team-name">${getTeamFifaCode(match.team2)}</span>
+              </div>
+            `;
+            statusBadge = '<span class="api-badge-small">Full-time</span>';
+          } else if (isLive) {
+            // Live match - show scores if available
+            const liveScore1 = score1Val || '0';
+            const liveScore2 = score2Val || '0';
+            teamsHtml = `
+              <div class="today-team">
+                ${formatFlag(match.team1)}<span class="today-team-name">${getTeamFifaCode(match.team1)}</span>
+              </div>
+              <div class="today-score">${liveScore1}</div>
+              <div class="today-score-separator">-</div>
+              <div class="today-score">${liveScore2}</div>
+              <div class="today-team">
+                ${formatFlag(match.team2)}<span class="today-team-name">${getTeamFifaCode(match.team2)}</span>
+              </div>
+            `;
+            statusBadge = `<span class="api-badge-small live-badge">LIVE ${liveStatus}</span>`;
+            cardClass += ' live';
+          } else {
+            // Upcoming match
+            teamsHtml = `
+              <div class="today-team">
+                ${formatFlag(match.team1)}<span class="today-team-name">${getTeamFifaCode(match.team1)}</span>
+              </div>
+              <div class="today-vs">vs</div>
+              <div class="today-team">
+                ${formatFlag(match.team2)}<span class="today-team-name">${getTeamFifaCode(match.team2)}</span>
+              </div>
+            `;
+            cardClass += ' upcoming';
+          }
+          
           return `
-            <div class="today-match-card clickable" data-matchno="${match.matchNo}">
+            <div class="${cardClass}" data-matchno="${match.matchNo}">
               <div class="today-teams">
-                <div class="today-team">
-                  ${formatFlag(match.team1)}<span class="today-team-name">${getTeamFifaCode(match.team1)}</span>
-                </div>
-                <div class="today-vs">vs</div>
-                <div class="today-team">
-                  ${formatFlag(match.team2)}<span class="today-team-name">${getTeamFifaCode(match.team2)}</span>
-                </div>
+                ${teamsHtml}
               </div>
               <div class="today-meta">
                 ${groupInfo}
-                <span class="today-time">${timeDisplay}</span>
+                <span class="today-time">${timeDisplay} ${statusBadge}</span>
               </div>
               <div class="today-venue">
                 <span class="today-stadium">${getStadiumName(match.venue) || ''}</span>
