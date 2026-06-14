@@ -534,6 +534,7 @@ function getMatchDateTimeLabel(matchNo, venue, fallbackDate, fallbackTime) {
 }
 
 const groupListElement = document.getElementById('group-list');
+const todaysMatchesElement = document.getElementById('todays-matches-list');
 const bracketContainer = document.getElementById('bracket-container');
 const clearButton = document.getElementById('clearButton');
 const exportButton = document.getElementById('exportButton');
@@ -1567,11 +1568,142 @@ let currentRankings = null;
 let currentThirdPlacers = null;
 let currentAssignments = {};
 
+// Get matches for today
+function getTodaysMatches() {
+  const today = new Date();
+  const todayStr = today.toISOString().split('T')[0];
+  
+  const allMatches = [...scheduleData.groupMatches, ...scheduleData.knockoutMatches];
+  
+  return allMatches.filter(match => {
+    const matchDate = new Date(match.date);
+    const matchDateStr = matchDate.toISOString().split('T')[0];
+    return matchDateStr === todayStr;
+  }).sort((a, b) => new Date(a.date) - new Date(b.date));
+}
+
+// Check if a match has been played (has scores entered)
+function isMatchPlayed(matchNo) {
+  const score = state.scores[matchNo];
+  return score && (score.score1 !== '' && score.score2 !== '');
+}
+
+// Get group letter from position (e.g., "A1" -> "A")
+function getGroupFromPos(pos) {
+  if (!pos) return '';
+  return pos.charAt(0);
+}
+
+// Build today's match card HTML
+function buildTodaysMatchCard(match) {
+  const score1Val = state.scores[match.matchNo]?.score1 ?? '';
+  const score2Val = state.scores[match.matchNo]?.score2 ?? '';
+  const isPlayed = isMatchPlayed(match.matchNo);
+  const isApiSourced = isApiSourcedMatch(match.matchNo);
+  
+  // Get group info if it's a group match
+  const group = getGroupFromPos(match.pos1) || getGroupFromPos(match.pos2);
+  const groupBadge = group ? `<span class="todays-group-badge">Group ${group}</span>` : '';
+  
+  // Get date/time
+  const { dateLabel, timeLabel, tzAbbr } = getMatchDateTimeLabel(match.matchNo, match.venue, match.date, match.time);
+  const timeDisplay = tzAbbr ? `${timeLabel} ${tzAbbr}` : timeLabel;
+  
+  // Full-time badge if played
+  const statusBadge = isPlayed ? '<span class="todays-status-badge full-time">Full-time</span>' : '';
+  const apiBadge = isApiSourced ? '<span class="todays-status-badge full-time">Full-time</span>' : '';
+  
+  // Stadium info
+  const stadiumName = getStadiumName(match.venue) || '';
+  const cityName = getCityName(match.venue) || '';
+  
+  // Highlight class for upcoming matches
+  const highlightClass = !isPlayed && !isApiSourced ? 'todays-match-upcoming' : '';
+  
+  return `
+    <div class="todays-match-card ${highlightClass}" data-matchno="${match.matchNo}">
+      <div class="todays-match-header">
+        ${groupBadge}
+        <span class="todays-match-number">Match ${match.matchNo}</span>
+      </div>
+      <div class="todays-match-teams">
+        <div class="todays-team">
+          ${formatFlag(match.team1)}
+          <span class="todays-team-name">${getTeamInitials(match.team1)}</span>
+        </div>
+        <div class="todays-match-center">
+          ${isPlayed || isApiSourced ? `
+            <span class="todays-score">${score1Val}</span>
+            <span class="todays-vs">-</span>
+            <span class="todays-score">${score2Val}</span>
+          ` : `
+            <span class="todays-vs-text">vs</span>
+          `}
+        </div>
+        <div class="todays-team">
+          ${formatFlag(match.team2)}
+          <span class="todays-team-name">${getTeamInitials(match.team2)}</span>
+        </div>
+      </div>
+      <div class="todays-match-meta">
+        <span class="todays-datetime">${dateLabel} · ${timeDisplay}</span>
+        ${statusBadge || apiBadge}
+      </div>
+      <div class="todays-match-venue">
+        <span class="todays-stadium">${stadiumName}</span>
+        <span class="todays-city">${cityName}</span>
+      </div>
+    </div>
+  `;
+}
+
+// Render today's matches section
+function renderTodaysMatches() {
+  if (!todaysMatchesElement) return;
+  
+  const todaysMatches = getTodaysMatches();
+  
+  if (todaysMatches.length === 0) {
+    todaysMatchesElement.innerHTML = '';
+    todaysMatchesElement.style.display = 'none';
+    return;
+  }
+  
+  todaysMatchesElement.style.display = 'block';
+  
+  const matchCardsHtml = todaysMatches.map(match => buildTodaysMatchCard(match)).join('');
+  
+  todaysMatchesElement.innerHTML = `
+    <div class="todays-matches-grid">
+      ${matchCardsHtml}
+    </div>
+  `;
+  
+  // Add click handlers to match cards
+  todaysMatchesElement.querySelectorAll('.todays-match-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const matchNo = card.dataset.matchno;
+      scrollToMatch(matchNo);
+    });
+  });
+}
+
+// Scroll to a specific match
+function scrollToMatch(matchNo) {
+  const matchElement = document.querySelector(`[data-matchno="${matchNo}"]`);
+  if (matchElement) {
+    matchElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    matchElement.classList.add('match-highlight');
+    setTimeout(() => matchElement.classList.remove('match-highlight'), 2000);
+  }
+}
+
 function render() {
   const { rankings, thirdPlaceTeams, thirdPlaceAssignments } = computeGroupStandings();
   currentRankings = rankings;
   currentThirdPlacers = thirdPlaceTeams;
   currentAssignments = thirdPlaceAssignments;
+  renderTodaysMatches();
   renderGroups(rankings, thirdPlaceTeams);
   renderBracket(rankings, thirdPlaceTeams, thirdPlaceAssignments);
 }

@@ -2411,3 +2411,179 @@ footer {
   border-radius: 4px;
   display: inline-block;
 }
+
+/* ============================================
+   Today's Matches Section
+   ============================================ */
+#todays-matches-list {
+  display: none;
+}
+
+#todays-matches-list.visible {
+  display: block;
+}
+
+.todays-section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.todays-section-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.todays-section-header .todays-date {
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+.todays-matches-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.todays-match-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.todays-match-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-color: var(--accent);
+}
+
+.todays-match-upcoming {
+  border-left: 3px solid var(--accent);
+}
+
+.todays-match-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.todays-group-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 4px 8px;
+  background: var(--accent);
+  color: white;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.todays-match-number {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.todays-match-teams {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.todays-team {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+}
+
+.todays-team .team-flag {
+  width: 32px;
+  height: auto;
+}
+
+.todays-team-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.todays-match-center {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+}
+
+.todays-score {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.todays-vs,
+.todays-vs-text {
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+.todays-match-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.todays-datetime {
+  font-weight: 500;
+}
+
+.todays-status-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.todays-status-badge.full-time {
+  background: var(--success);
+  color: white;
+}
+
+.todays-match-venue {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--muted);
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.todays-stadium,
+.todays-city {
+  font-weight: 500;
+}
+
+/* Match highlight animation */
+.match-highlight {
+  animation: matchHighlight 2s ease-out;
+}
+
+@keyframes matchHighlight {
+  0%, 100% {
+    box-shadow: none;
+  }
+  10%, 90% {
+    box-shadow: 0 0 0 4px var(--accent);
+  }
+}
