@@ -1222,6 +1222,80 @@ function buildGroupMatches(group, matches) {
     }).join('');
 }
 
+// Build today's matches (no score field)
+function buildTodaysMatches() {
+  // Get today's date in UTC
+  const today = new Date();
+  const todayUTC = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate()));
+  const todayStr = todayUTC.toISOString().split('T')[0];
+  
+  // Filter matches for today
+  const allMatches = [...scheduleData.groupMatches, ...scheduleData.knockoutMatches];
+  const todaysMatches = allMatches.filter(match => {
+    const matchDate = match.date.split('T')[0];
+    return matchDate === todayStr;
+  }).sort((a, b) => a.matchNo - b.matchNo);
+  
+  if (todaysMatches.length === 0) {
+    return `
+      <div class="today-section">
+        <div class="today-header">
+          <h2>Today's Matches</h2>
+          <span class="today-date">${todayUTC.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}</span>
+        </div>
+        <div class="today-no-matches">
+          <span class="material-symbols-outlined">event_busy</span>
+          <p>No matches scheduled for today</p>
+        </div>
+      </div>
+    `;
+  }
+  
+  return `
+    <div class="today-section">
+      <div class="today-header">
+        <h2>Today's Matches</h2>
+        <span class="today-date">${todayUTC.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}</span>
+      </div>
+      <div class="today-count">${todaysMatches.length} match${todaysMatches.length > 1 ? 'es' : ''}</div>
+      <div class="today-matches">
+        ${todaysMatches.map(match => {
+          const { dateLabel, timeLabel, tzAbbr } = getMatchDateTimeLabel(match.matchNo, match.venue, match.date, match.time);
+          const timeDisplay = tzAbbr ? `${timeLabel} ${tzAbbr}` : timeLabel;
+          
+          // Get group info for group stage matches
+          let groupInfo = '';
+          if (match.stage === 'group' && match.pos1) {
+            groupInfo = `<span class="today-group-badge">Group ${match.pos1[0]}</span>`;
+          }
+          
+          return `
+            <div class="today-match-card clickable" data-matchno="${match.matchNo}">
+              <div class="today-teams">
+                <div class="today-team">
+                  ${formatFlag(match.team1)}<span class="today-team-name">${getTeamFifaCode(match.team1)}</span>
+                </div>
+                <div class="today-vs">vs</div>
+                <div class="today-team">
+                  ${formatFlag(match.team2)}<span class="today-team-name">${getTeamFifaCode(match.team2)}</span>
+                </div>
+              </div>
+              <div class="today-meta">
+                ${groupInfo}
+                <span class="today-time">${timeDisplay}</span>
+              </div>
+              <div class="today-venue">
+                <span class="today-stadium">${getStadiumName(match.venue) || ''}</span>
+                <span class="today-city">${getCityName(match.venue) || ''}</span>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </div>
+  `;
+}
+
 let selectedMatchNo = null;
 
 function findMatchByNo(matchNo) {
@@ -1495,6 +1569,21 @@ function renderGroups(rankings, thirdPlaceTeams) {
   });
 }
 
+function renderTodaysMatchesSection() {
+  const todaysSection = document.getElementById('todays-matches');
+  if (todaysSection) {
+    todaysSection.innerHTML = buildTodaysMatches();
+    
+    // Add click handlers for today's match cards
+    todaysSection.querySelectorAll('.today-match-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const matchNo = card.dataset.matchno;
+        openMatchModal(matchNo);
+      });
+    });
+  }
+}
+
 function buildMatchCardHtml(match, stage, rankings, thirdPlaceTeams, knockoutMap, assignments) {
   const isR32 = stage === 'r32';
   const teamA = match.team1 ? { name: match.team1, note: '' } : resolveTeamPosition(match.pos1, rankings, thirdPlaceTeams, knockoutMap, isR32, match.matchNo, assignments);
@@ -1663,6 +1752,7 @@ function render() {
   currentRankings = rankings;
   currentThirdPlacers = thirdPlaceTeams;
   currentAssignments = thirdPlaceAssignments;
+  renderTodaysMatchesSection();
   renderGroups(rankings, thirdPlaceTeams);
   renderBracket(rankings, thirdPlaceTeams, thirdPlaceAssignments);
 }
