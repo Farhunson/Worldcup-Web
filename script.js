@@ -295,6 +295,11 @@ const venueTimezones = {
   'Denver': 'America/Denver',
 };
 
+// Get timezone for a venue
+function getVenueTimezone(venue) {
+  return venueTimezones[venue] || 'America/New_York';
+}
+
 // Stadium data cache (fetched from API)
 let stadiumData = null;
 
@@ -514,12 +519,12 @@ function formatApiTime(apiLocalDate, venue) {
     correctUTC = new Date(Date.UTC(year, month - 1, day, hours, minutes));
   }
 
-  // Get short timezone abbreviation for user's timezone
+  // Get short timezone abbreviation for the venue timezone
   const tzFormatter = new Intl.DateTimeFormat('en-US', {
     timeZone: venueTimezone,
     timeZoneName: 'short'
   });
-  const tzParts = tzFormatter.formatToParts(utcDate);
+  const tzParts = tzFormatter.formatToParts(correctUTC);
   const tzAbbr = tzParts.find(p => p.type === 'timeZoneName')?.value || '';
 
   // Create formatters for the user's local timezone
@@ -549,20 +554,41 @@ function formatApiTime(apiLocalDate, venue) {
     minute: '2-digit'
   });
 
+  // Create formatters for the venue's local timezone (to get venue labels)
+  const venueDateFormatter = new Intl.DateTimeFormat('en-US', {
+    timeZone: venueTimezone,
+    month: 'short',
+    day: 'numeric'
+  });
+
+  const venueTimeFormatter = new Intl.DateTimeFormat('en-US', {
+    timeZone: venueTimezone,
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
+  });
+
+  const venueFullDateFormatter = new Intl.DateTimeFormat('en-US', {
+    timeZone: venueTimezone,
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric'
+  });
+
   // Format the corrected UTC timestamp in user's local timezone
   return {
-    dateLabel: venueDateFormatter.format(utcDate),
-    timeLabel: venueTimeFormatter.format(utcDate),
+    dateLabel: venueDateFormatter.format(correctUTC),
+    timeLabel: venueTimeFormatter.format(correctUTC),
     tzAbbr: tzAbbr,
-    fullDate: venueFullDateFormatter.format(utcDate),
-    fullTime: `${venueTimeFormatter.format(utcDate)} ${tzAbbr}`,
-    timestamp: utcDate.getTime(),
+    fullDate: venueFullDateFormatter.format(correctUTC),
+    fullTime: `${venueTimeFormatter.format(correctUTC)} ${tzAbbr}`,
+    timestamp: correctUTC.getTime(),
     venueTimezone: venueTimezone,
     localTimezone: localTimezone,
-    localDateLabel: localDateFormatter.format(utcDate),
-    localTimeLabel: localTimeFormatter.format(utcDate),
-    localFullDate: fullDateFormatter.format(utcDate),
-    localFullTime: fullTimeFormatter.format(utcDate),
+    localDateLabel: localDateFormatter.format(correctUTC),
+    localTimeLabel: localTimeFormatter.format(correctUTC),
+    localFullDate: fullDateFormatter.format(correctUTC),
+    localFullTime: fullTimeFormatter.format(correctUTC),
     isLocal: true
   };
 }
@@ -648,6 +674,9 @@ function getMatchDateTimeLabel(matchNo, venue, fallbackDate, fallbackTime) {
 }
 
 const groupListElement = document.getElementById('group-list');
+if (!groupListElement) {
+  console.error('group-list element not found!');
+}
 const bracketContainer = document.getElementById('bracket-container');
 const clearButton = document.getElementById('clearButton');
 const exportButton = document.getElementById('exportButton');
@@ -1660,6 +1689,7 @@ function renderGroups(rankings, thirdPlaceTeams) {
   `;
 
   const thirdPlaceHtml = renderThirdPlaceStandings(thirdPlaceTeams);
+  
   groupListElement.innerHTML = groupHtml + legendHtml + thirdPlaceHtml;
 
   groupListElement.querySelectorAll('.score-input').forEach((input) => {
@@ -1858,10 +1888,11 @@ let currentAssignments = {};
 
 function render() {
   const { rankings, thirdPlaceTeams, thirdPlaceAssignments } = computeGroupStandings();
+  
   currentRankings = rankings;
   currentThirdPlacers = thirdPlaceTeams;
   currentAssignments = thirdPlaceAssignments;
-  renderTodaysMatchesSection();
+  
   renderGroups(rankings, thirdPlaceTeams);
   renderBracket(rankings, thirdPlaceTeams, thirdPlaceAssignments);
 }
