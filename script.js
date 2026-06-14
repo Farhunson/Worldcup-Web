@@ -1407,7 +1407,7 @@ function buildMatchCardHtml(match, stage, rankings, thirdPlaceTeams, knockoutMap
   const disabledAttr = isTBDA || isTBDB || isApiSourced ? 'disabled' : '';
   const apiBadge = isApiSourced ? '<span class="api-badge-bracket">Live</span>' : '';
   const { dateLabel, timeLabel, tzAbbr } = getMatchDateTimeLabel(match.matchNo, match.venue, match.date, match.time);
-      const timeDisplay = tzAbbr ? `${timeLabel} ${tzAbbr}` : timeLabel;
+  const timeDisplay = tzAbbr ? `${timeLabel} ${tzAbbr}` : timeLabel;
   return `
     <div class="bracket-match-node" data-matchno="${match.matchNo}" data-stage="${stage}">
       <div class="bracket-match-inner">
@@ -1431,8 +1431,11 @@ function buildMatchCardHtml(match, stage, rankings, thirdPlaceTeams, knockoutMap
         </div>
       </div>
       <div class="bracket-match-meta">
-        <span>${dateLabel} · ${timeDisplay} ${apiBadge}</span>
-        <span>${getCityName(match.venue) || ''}</span>
+        <span class="bracket-datetime">${dateLabel} · ${timeDisplay} ${apiBadge}</span>
+        <div class="bracket-venue">
+          <div class="bracket-stadium-name">${getStadiumName(match.venue) || ''}</div>
+          <div class="bracket-city-name">${getCityName(match.venue) || ''}</div>
+        </div>
       </div>
       <div class="bracket-match-number">M${match.matchNo}</div>
     </div>
