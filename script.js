@@ -295,6 +295,81 @@ const venueTimezones = {
   'Boston': 'America/New_York',
 };
 
+// Stadium data cache (fetched from API)
+let stadiumData = null;
+
+// Fetch stadium data from API
+async function fetchStadiumData() {
+  try {
+    const response = await fetch('https://worldcup26.ir/get/stadiums');
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data = await response.json();
+    stadiumData = data.stadiums || [];
+    // Re-render after stadium data is loaded to update venue names
+    render();
+    return stadiumData;
+  } catch (error) {
+    console.error('Failed to fetch stadium data:', error);
+    return null;
+  }
+}
+
+// Get stadium info by FIFA name (matches our venue names)
+function getStadiumInfo(venueName) {
+  if (!stadiumData) return null;
+  
+  // Find stadium by fifa_name matching our venue names
+  // Our venue names match the pattern "City Stadium" or "City" in fifa_name
+  const stadium = stadiumData.find(s => {
+    // Try to match by city name in fifa_name
+    const fifaName = s.fifa_name.toLowerCase();
+    const venueLower = venueName.toLowerCase();
+    
+    // Direct match with common patterns
+    if (fifaName.includes('mexico city') && venueLower.includes('mexico')) return true;
+    if (fifaName.includes('guadalajara') && venueLower.includes('guadalajara')) return true;
+    if (fifaName.includes('toronto') && venueLower.includes('toronto')) return true;
+    if (fifaName.includes('vancouver') && venueLower.includes('vancouver')) return true;
+    if (fifaName.includes('los angeles') && venueLower.includes('los angeles')) return true;
+    if (fifaName.includes('san francisco') && venueLower.includes('san francisco')) return true;
+    if (fifaName.includes('seattle') && venueLower.includes('seattle')) return true;
+    if (fifaName.includes('dallas') && venueLower.includes('dallas')) return true;
+    if (fifaName.includes('houston') && venueLower.includes('houston')) return true;
+    if (fifaName.includes('kansas city') && venueLower.includes('kansas')) return true;
+    if (fifaName.includes('philadelphia') && venueLower.includes('philadelphia')) return true;
+    if (fifaName.includes('boston') && venueLower.includes('boston')) return true;
+    if (fifaName.includes('new york') && venueLower.includes('new york')) return true;
+    if (fifaName.includes('miami') && venueLower.includes('miami')) return true;
+    if (fifaName.includes('atlanta') && venueLower.includes('atlanta')) return true;
+    if (fifaName.includes('monterrey') && venueLower.includes('monterrey')) return true;
+    
+    return false;
+  });
+  
+  return stadium || null;
+}
+
+// Get display name for a venue (stadium name + city)
+function getVenueDisplayName(venueName) {
+  const info = getStadiumInfo(venueName);
+  if (info) {
+    // Extract city name (remove parenthetical details)
+    const cityName = info.city_en.split('(')[0].trim();
+    return `${info.name_en}, ${cityName}`;
+  }
+  return venueName || '';
+}
+
+// Get city name for a venue
+function getCityName(venueName) {
+  const info = getStadiumInfo(venueName);
+  if (info) {
+    // Extract city name (remove parenthetical details)
+    return info.city_en.split('(')[0].trim();
+  }
+  return venueName || '';
+}
+
 // Helper function to format venue local time to user's local machine timezone
 function formatApiTime(apiLocalDate, venue) {
   if (!apiLocalDate) return null;
@@ -555,6 +630,9 @@ function initLiveApi() {
   if (refreshButton) {
     refreshButton.addEventListener('click', fetchLiveScores);
   }
+  
+  // Fetch stadium data on init
+  fetchStadiumData();
 }
 
 async function fetchLiveScores() {
@@ -1025,7 +1103,7 @@ function buildGroupMatches(group, matches) {
         </div>
 
         <div class="match-mid">${dateLabel} · ${timeDisplay} ${apiBadge}</div>
-        <div class="match-bottom">${match.venue || ''}</div>
+        <div class="match-bottom">${getVenueDisplayName(match.venue) || ''}</div>
         <div class="match-number">Match ${match.matchNo}</div>
       </div>
     `;
@@ -1065,7 +1143,7 @@ function renderMatchDetail(matchNo) {
     <div class="match-detail-top">
       <div class="match-title">Match ${match.matchNo}</div>
       <h3>${teamA.name} vs ${teamB.name}</h3>
-      <div class="meta">${dateLabel} · ${timeLabel} · ${match.venue || ''}</div>
+      <div class="meta">${dateLabel} · ${timeLabel} · ${getVenueDisplayName(match.venue) || ''}</div>
       <div class="timezone-info">${timezoneDisplay}</div>
     </div>
     <div class="team-row">
@@ -1081,7 +1159,7 @@ function renderMatchDetail(matchNo) {
         <div class="team-label">${toTeamLabel(teamB.name)}</div>
       </div>
     </div>
-    <div class="meta">Stadium: ${match.venue || 'TBD'}</div>
+    <div class="meta">Stadium: ${getVenueDisplayName(match.venue) || 'TBD'}</div>
   `;
 
   // attach input listeners inside detail
@@ -1342,7 +1420,7 @@ function buildMatchCardHtml(match, stage, rankings, thirdPlaceTeams, knockoutMap
       </div>
       <div class="bracket-match-meta">
         <span>${dateLabel} · ${timeDisplay} ${apiBadge}</span>
-        <span>${match.venue || ''}</span>
+        <span>${getVenueDisplayName(match.venue) || ''}</span>
       </div>
       <div class="bracket-match-number">M${match.matchNo}</div>
     </div>
