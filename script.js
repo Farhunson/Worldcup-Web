@@ -349,6 +349,57 @@ function getStadiumInfo(venueName) {
   return stadium || null;
 }
 
+// Team FIFA code mapping
+let teamFifaCodeMap = null;
+
+// Fetch teams data from API
+async function fetchTeamsData() {
+  try {
+    const response = await fetch('https://worldcup26.ir/get/teams');
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data = await response.json();
+    const teams = data.teams || [];
+    
+    // Create mapping from team name to FIFA code
+    teamFifaCodeMap = {};
+    
+    // Mapping from abbreviated names in schedule_data.js to FIFA codes
+    const nameMapping = {
+      'Rep. of Korea': 'South Korea',
+      'Czech Rep.': 'Czech Republic',
+      'Bosnia/Herzeg.': 'Bosnia and Herzegovina',
+      'DR Congo': 'Democratic Republic of the Congo',
+      'IR Iran': 'Iran',
+      'USA': 'United States'
+    };
+    
+    teams.forEach(team => {
+      // Map from official FIFA name to FIFA code
+      teamFifaCodeMap[team.name_en] = team.fifa_code;
+      
+      // Also map from abbreviated names
+      Object.entries(nameMapping).forEach(([abbrev, official]) => {
+        if (team.name_en === official) {
+          teamFifaCodeMap[abbrev] = team.fifa_code;
+        }
+      });
+    });
+    
+    // Re-render after team data is loaded to update team codes
+    render();
+    return teamFifaCodeMap;
+  } catch (error) {
+    console.error('Failed to fetch teams data:', error);
+    return null;
+  }
+}
+
+// Get FIFA code for a team
+function getTeamFifaCode(teamName) {
+  if (!teamFifaCodeMap) return teamName;
+  return teamFifaCodeMap[teamName] || teamName;
+}
+
 // Get display name for a venue (stadium name + city)
 function getVenueDisplayName(venueName) {
   const info = getStadiumInfo(venueName);
@@ -651,6 +702,9 @@ function initLiveApi() {
 
   // Fetch stadium data on init
   fetchStadiumData();
+  
+  // Fetch teams data on init
+  fetchTeamsData();
 }
 
 async function fetchLiveScores() {
@@ -1106,7 +1160,7 @@ function buildGroupMatches(group, matches) {
       <div class="match-card match-compact clickable" data-matchno="${match.matchNo}">
         <div class="match-top">
           <div class="team-left">
-            <div class="team-flag-name">${formatFlag(match.team1)}<div class="team-name">${getTeamInitials(match.team1)}</div></div>
+            <div class="team-flag-name">${formatFlag(match.team1)}<div class="team-name">${getTeamFifaCode(match.team1)}</div></div>
           </div>
           <div class="score-left">
             <input class="score-input" type="number" min="0" value="${score1Val}" data-match="${match.matchNo}" data-side="score1" ${disabledAttr} />
@@ -1116,7 +1170,7 @@ function buildGroupMatches(group, matches) {
             <input class="score-input" type="number" min="0" value="${score2Val}" data-match="${match.matchNo}" data-side="score2" ${disabledAttr} />
           </div>
           <div class="team-right">
-            <div class="team-flag-name">${formatFlag(match.team2)}<div class="team-name">${getTeamInitials(match.team2)}</div></div>
+            <div class="team-flag-name">${formatFlag(match.team2)}<div class="team-name">${getTeamFifaCode(match.team2)}</div></div>
           </div>
         </div>
 
@@ -1424,7 +1478,7 @@ function buildMatchCardHtml(match, stage, rankings, thirdPlaceTeams, knockoutMap
           <div class="bracket-team-info">
             ${isTBDA ? '<span class="team-flag">🏳️</span>' : formatFlag(teamA.name)}
             <span class="bracket-team-name">
-              ${isTBDA ? (teamA.name === 'TBD' ? (teamA.note || match.pos1) : teamA.name) : getTeamInitials(teamA.name)}
+              ${isTBDA ? (teamA.name === 'TBD' ? (teamA.note || match.pos1) : teamA.name) : getTeamFifaCode(teamA.name)}
             </span>
           </div>
           <input class="score-input bracket-score" type="number" min="0" value="${scoreA}" data-match="${match.matchNo}" data-side="score1" ${disabledAttr} />
@@ -1433,7 +1487,7 @@ function buildMatchCardHtml(match, stage, rankings, thirdPlaceTeams, knockoutMap
           <div class="bracket-team-info">
             ${isTBDB ? '<span class="team-flag">🏳️</span>' : formatFlag(teamB.name)}
             <span class="bracket-team-name">
-              ${isTBDB ? (teamB.name === 'TBD' ? (teamB.note || match.pos2) : teamB.name) : getTeamInitials(teamB.name)}
+              ${isTBDB ? (teamB.name === 'TBD' ? (teamB.note || match.pos2) : teamB.name) : getTeamFifaCode(teamB.name)}
             </span>
           </div>
           <input class="score-input bracket-score" type="number" min="0" value="${scoreB}" data-match="${match.matchNo}" data-side="score2" ${disabledAttr} />
