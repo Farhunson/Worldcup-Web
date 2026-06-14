@@ -1132,8 +1132,20 @@ function buildGroupMatches(group, matches) {
       const score1Val = state.scores[match.matchNo]?.score1 ?? '';
       const score2Val = state.scores[match.matchNo]?.score2 ?? '';
       const isApiSourced = isApiSourcedMatch(match.matchNo);
-      const disabledAttr = isApiSourced ? 'disabled' : '';
-      const apiBadge = isApiSourced ? '<span class="api-badge-small">Full-time</span>' : '';
+      const isLive = isLiveMatch(match.matchNo);
+      const isFinished = isFinishedMatch(match.matchNo);
+      
+      // Disable inputs for API-sourced, live, or finished matches
+      const disabledAttr = (isApiSourced || isLive || isFinished) ? 'disabled' : '';
+      
+      // Show LIVE badge for live matches, Full-time for finished matches
+      let statusBadge = '';
+      if (isLive) {
+        statusBadge = '<span class="api-badge-small live-badge"><span class="live-dot"></span>LIVE</span>';
+      } else if (isApiSourced || isFinished) {
+        statusBadge = '<span class="api-badge-small">Full-time</span>';
+      }
+      
       return `
       <div class="match-card match-compact clickable" data-matchno="${match.matchNo}">
         <div class="match-top">
@@ -1152,7 +1164,7 @@ function buildGroupMatches(group, matches) {
           </div>
         </div>
 
-        <div class="match-mid">${dateLabel} · ${timeDisplay} ${apiBadge}</div>
+        <div class="match-mid">${dateLabel} · ${timeDisplay} ${statusBadge}</div>
         <div class="match-bottom">
           <div class="stadium-name">${getStadiumName(match.venue) || ''}</div>
           <div class="city-name">${getCityName(match.venue) || ''}</div>
