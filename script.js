@@ -911,45 +911,109 @@ function renderMatchDetail(matchNo) {
 }
 
 function renderThirdPlaceStandings(thirdPlaceTeams) {
+  const qualifyingTeams = thirdPlaceTeams.slice(0, 8);
+  const nonQualifyingTeams = thirdPlaceTeams.slice(8);
+  
   return `
     <div class="third-place-standings">
       <div class="third-place-header">
-        <h3>Best 3rd Place Rankings</h3>
-        <p>Top 8 qualify for the Round of 32</p>
+        <div class="third-place-title">
+          <h3>🏆 Best 3rd Place Rankings</h3>
+          <p>Top 8 teams advance to the Round of 32</p>
+        </div>
+        <div class="third-place-stats">
+          <div class="stat-qualifying">
+            <span class="stat-number">${qualifyingTeams.length}</span>
+            <span class="stat-label">Qualifying</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-waiting">
+            <span class="stat-number">${nonQualifyingTeams.length}</span>
+            <span class="stat-label">Waiting</span>
+          </div>
+        </div>
       </div>
-      <div class="match-list">
-        <table class="group-table third-place-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Group</th>
-              <th>Team</th>
-              <th>Pts</th>
-              <th>GD</th>
-              <th>GF</th>
-              <th>GA</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${thirdPlaceTeams.map((entry, idx) => {
-    const advClass = idx < 8 ? 'advancement-best-third' : '';
-    return `
-              <tr class="${advClass}">
-                <td class="rank-cell">${idx + 1}</td>
-                <td class="group-cell">${entry.group}</td>
-                <td class="team-label">
-                  <span class="adv-indicator"></span>
-                  ${formatFlag(entry.team)} ${entry.team}
-                </td>
-                <td>${entry.points}</td>
-                <td>${entry.gd}</td>
-                <td>${entry.gf}</td>
-                <td>${entry.ga}</td>
-              </tr>
-              `;
-  }).join('')}
-          </tbody>
-        </table>
+      
+      <div class="third-place-content">
+        <div class="qualifying-section">
+          <div class="section-badge qualifying-badge">
+            <svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 12l2 2 4-4"/>
+              <circle cx="12" cy="12" r="10"/>
+            </svg>
+            Qualifying for Round of 32
+          </div>
+          <div class="third-place-grid qualifying-grid">
+            ${qualifyingTeams.map((entry, idx) => `
+              <div class="third-place-card qualifying-card" data-rank="${idx + 1}">
+                <div class="card-rank">${idx + 1}</div>
+                <div class="card-team">
+                  ${formatFlag(entry.team)}
+                  <span class="team-name">${entry.team}</span>
+                </div>
+                <div class="card-stats">
+                  <div class="stat">
+                    <span class="stat-value">${entry.points}</span>
+                    <span class="stat-name">Pts</span>
+                  </div>
+                  <div class="stat">
+                    <span class="stat-value">${entry.gd > 0 ? '+' : ''}${entry.gd}</span>
+                    <span class="stat-name">GD</span>
+                  </div>
+                  <div class="stat">
+                    <span class="stat-value">${entry.gf}</span>
+                    <span class="stat-name">GF</span>
+                  </div>
+                </div>
+                <div class="card-group">Group ${entry.group}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+        
+        ${nonQualifyingTeams.length > 0 ? `
+        <div class="cutoff-divider">
+          <span class="cutoff-line"></span>
+          <span class="cutoff-text">Cutoff Line</span>
+          <span class="cutoff-line"></span>
+        </div>
+        
+        <div class="waiting-section">
+          <div class="section-badge waiting-badge">
+            <svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 6v6l4 2"/>
+            </svg>
+            Waiting for Results
+          </div>
+          <div class="third-place-grid waiting-grid">
+            ${nonQualifyingTeams.map((entry, idx) => `
+              <div class="third-place-card waiting-card" data-rank="${qualifyingTeams.length + idx + 1}">
+                <div class="card-rank">${qualifyingTeams.length + idx + 1}</div>
+                <div class="card-team">
+                  ${formatFlag(entry.team)}
+                  <span class="team-name">${entry.team}</span>
+                </div>
+                <div class="card-stats">
+                  <div class="stat">
+                    <span class="stat-value">${entry.points}</span>
+                    <span class="stat-name">Pts</span>
+                  </div>
+                  <div class="stat">
+                    <span class="stat-value">${entry.gd > 0 ? '+' : ''}${entry.gd}</span>
+                    <span class="stat-name">GD</span>
+                  </div>
+                  <div class="stat">
+                    <span class="stat-value">${entry.gf}</span>
+                    <span class="stat-name">GF</span>
+                  </div>
+                </div>
+                <div class="card-group">Group ${entry.group}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+        ` : ''}
       </div>
     </div>
   `;
