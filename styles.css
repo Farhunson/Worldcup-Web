@@ -1008,6 +1008,20 @@ tr.advancement-best-third td {
   padding: 6px 0;
 }
 
+.score-left,
+.score-right {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.todays-score-display {
+  font-size: 1.5rem;
+  font-weight: 700;
+  min-width: 40px;
+  text-align: center;
+}
+
 /* Reduce font-sizes and input widths for match-cards inside group cards to prevent overflow */
 .group-card .match-card {
   font-size: 0.95rem;
@@ -2488,8 +2502,10 @@ footer {
 }
 
 .todays-score-display {
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   font-weight: 700;
+  min-width: 40px;
+  text-align: center;
 }
 
 /* Match highlight animation */
