@@ -310,20 +310,42 @@ function formatApiTime(apiLocalDate, venue) {
   // Get user's local machine timezone
   const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   
-  // Create a date in the venue's timezone
-  const venueDate = new Date(year, month - 1, day, hours, minutes);
-  
-  // Format to venue's local time
-  const venueFormatter = new Intl.DateTimeFormat(undefined, {
+  // Create a formatter to check what time a UTC moment shows in the venue timezone
+  const venueFormatter = new Intl.DateTimeFormat('en-US', {
     timeZone: venueTimezone,
-    month: 'short',
-    day: 'numeric',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
     hour: '2-digit',
     minute: '2-digit',
     hour12: false
   });
   
-  // Format to user's local time
+  // Create a UTC date assuming the time parts are correct
+  // Then adjust until the venue formatter shows the correct local time
+  let correctUTC = null;
+  
+  // Try all possible offsets from -12 hours to +14 hours in 15-min increments
+  for (let offsetMinutes = -720; offsetMinutes <= 840; offsetMinutes += 15) {
+    const testUTC = new Date(Date.UTC(year, month - 1, day, hours, minutes) - offsetMinutes * 60 * 1000);
+    const parts = venueFormatter.formatToParts(testUTC);
+    const partMap = {};
+    parts.forEach(p => partMap[p.type] = parseInt(p.value));
+    
+    // Check if this UTC time shows the correct local time in venue timezone
+    if (partMap.month === month && partMap.day === day && 
+        partMap.hour === hours && partMap.minute === minutes) {
+      correctUTC = testUTC;
+      break;
+    }
+  }
+  
+  // Fallback: just use UTC if no match found
+  if (!correctUTC) {
+    correctUTC = new Date(Date.UTC(year, month - 1, day, hours, minutes));
+  }
+  
+  // Create formatters for the user's local timezone
   const localDateFormatter = new Intl.DateTimeFormat(undefined, {
     timeZone: localTimezone,
     month: 'short',
@@ -350,15 +372,15 @@ function formatApiTime(apiLocalDate, venue) {
     minute: '2-digit'
   });
   
+  // Format the corrected UTC timestamp in user's local timezone
   return {
-    dateLabel: localDateFormatter.format(venueDate),
-    timeLabel: localTimeFormatter.format(venueDate),
-    fullDate: fullDateFormatter.format(venueDate),
-    fullTime: fullTimeFormatter.format(venueDate),
-    timestamp: venueDate.getTime(),
+    dateLabel: localDateFormatter.format(correctUTC),
+    timeLabel: localTimeFormatter.format(correctUTC),
+    fullDate: fullDateFormatter.format(correctUTC),
+    fullTime: fullTimeFormatter.format(correctUTC),
+    timestamp: correctUTC.getTime(),
     venueTimezone: venueTimezone,
     localTimezone: localTimezone,
-    venueDisplay: venueFormatter.format(venueDate),
     isLocal: true
   };
 }
