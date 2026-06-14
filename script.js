@@ -6,6 +6,7 @@ const state = {
   apiSourcedMatches: {}, // Track which matches have scores from API
   apiMatchTimes: {}, // Store API match times (UTC) for timezone conversion
   liveMatches: {}, // Track which matches are currently live
+  finishedMatches: {}, // Track which matches are finished from API
 };
 loadState();
 
@@ -619,6 +620,7 @@ function loadState() {
       state.apiSourcedMatches = stored.apiSourcedMatches || {};
       state.apiMatchTimes = stored.apiMatchTimes || {};
       state.liveMatches = stored.liveMatches || {};
+      state.finishedMatches = stored.finishedMatches || {};
     }
   } catch {
     state.scores = {};
@@ -626,6 +628,7 @@ function loadState() {
     state.apiSourcedMatches = {};
     state.apiMatchTimes = {};
     state.liveMatches = {};
+    state.finishedMatches = {};
   }
 }
 
@@ -636,6 +639,7 @@ function saveState() {
     apiSourcedMatches: state.apiSourcedMatches,
     apiMatchTimes: state.apiMatchTimes,
     liveMatches: state.liveMatches,
+    finishedMatches: state.finishedMatches,
   }));
 }
 
@@ -736,17 +740,20 @@ async function fetchLiveScores() {
 
         // Check if match is live (not finished, time_elapsed is "live")
         if (game.finished === 'TRUE') {
-          // Mark this match as API-sourced and NOT live (finished)
+          // Mark this match as API-sourced and finished
           state.apiSourcedMatches[targetMatch.matchNo] = true;
           state.liveMatches[targetMatch.matchNo] = false;
+          state.finishedMatches[targetMatch.matchNo] = true;
         } else if (game.time_elapsed === 'live') {
           // Mark this match as live but NOT finished
           state.liveMatches[targetMatch.matchNo] = true;
           state.apiSourcedMatches[targetMatch.matchNo] = true;
+          state.finishedMatches[targetMatch.matchNo] = false;
         } else {
           // Match is not live and not finished (pre-match)
           state.liveMatches[targetMatch.matchNo] = false;
           state.apiSourcedMatches[targetMatch.matchNo] = false;
+          state.finishedMatches[targetMatch.matchNo] = false;
         }
       }
     });
@@ -781,6 +788,11 @@ function isApiSourcedMatch(matchNo) {
 // Helper function to check if a match is currently live
 function isLiveMatch(matchNo) {
   return state.liveMatches[matchNo] === true;
+}
+
+// Helper function to check if a match is finished (from API)
+function isFinishedMatch(matchNo) {
+  return state.finishedMatches[matchNo] === true;
 }
 
 function updateLiveIndicator(success) {
@@ -1620,6 +1632,7 @@ function buildTodaysMatchCard(match) {
   const isPlayed = isMatchPlayed(match.matchNo);
   const isApiSourced = isApiSourcedMatch(match.matchNo);
   const isLive = isLiveMatch(match.matchNo);
+  const isFinished = isFinishedMatch(match.matchNo);
   
   // Get group info if it's a group match
   const group = getGroupFromPos(match.pos1) || getGroupFromPos(match.pos2);
@@ -1633,15 +1646,18 @@ function buildTodaysMatchCard(match) {
   let statusBadge = '';
   if (isLive) {
     statusBadge = '<span class="todays-status-badge live"><span class="live-dot"></span>LIVE</span>';
-  } else if (isPlayed || isApiSourced) {
+  } else if (isFinished) {
     statusBadge = '<span class="todays-status-badge full-time">Full-time</span>';
   }
   
   // Stadium info
   const venueDisplay = getVenueDisplayName(match.venue) || '';
   
+  // Show scores if match is played, live, or finished
+  const showScores = isPlayed || isLive || isFinished;
+  
   // Highlight class for upcoming matches (but not live ones)
-  const highlightClass = !isPlayed && !isApiSourced && !isLive ? 'todays-match-upcoming' : '';
+  const highlightClass = !showScores ? 'todays-match-upcoming' : '';
   
   // Build match card content
   const matchContent = `
@@ -1650,11 +1666,11 @@ function buildTodaysMatchCard(match) {
         <div class="team-flag-name">${formatFlag(match.team1)}<div class="team-name">${getTeamInitials(match.team1)}</div></div>
       </div>
       <div class="score-left">
-        ${isPlayed || isApiSourced || isLive ? `<span class="todays-score-display">${score1Val}</span>` : ''}
+        ${showScores ? `<span class="todays-score-display">${score1Val}</span>` : ''}
       </div>
-      <div class="vs">${isPlayed || isApiSourced || isLive ? '-' : 'vs'}</div>
+      <div class="vs">${showScores ? '-' : 'vs'}</div>
       <div class="score-right">
-        ${isPlayed || isApiSourced || isLive ? `<span class="todays-score-display">${score2Val}</span>` : ''}
+        ${showScores ? `<span class="todays-score-display">${score2Val}</span>` : ''}
       </div>
       <div class="team-right">
         <div class="team-flag-name">${formatFlag(match.team2)}<div class="team-name">${getTeamInitials(match.team2)}</div></div>
