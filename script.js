@@ -1659,7 +1659,7 @@ function buildTodaysMatchCard(match) {
   // Highlight class for upcoming matches (but not live ones)
   const highlightClass = !showScores ? 'todays-match-upcoming' : '';
   
-  // Build match card content
+  // Build today's match card content
   const matchContent = `
     <div class="todays-match-header">
       ${groupBadge}
@@ -1685,7 +1685,6 @@ function buildTodaysMatchCard(match) {
     <div class="match-bottom">
       <div class="stadium-name">${venueDisplay}</div>
     </div>
-    <div class="match-number">Match ${match.matchNo}</div>
   `;
   
   return `<div class="match-card match-compact ${highlightClass}" data-matchno="${match.matchNo}">${matchContent}</div>`;
