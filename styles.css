@@ -2429,112 +2429,25 @@ footer {
   gap: 12px;
 }
 
-.todays-match-card {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 16px;
-  border-radius: 14px;
-  background: var(--surface-soft);
-  border: 1px solid var(--border);
-  position: relative;
-  transition: all 0.2s ease;
-  cursor: pointer;
-}
-
-.todays-match-card:hover {
-  border-color: var(--accent);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.todays-match-card.todays-match-upcoming {
-  border-color: var(--accent);
-  border-width: 2px;
-}
-
-.todays-match-header {
-  position: absolute;
-  top: 8px;
-  left: 12px;
-  display: flex;
-  gap: 8px;
+.todays-match-upcoming {
+  border: 2px solid var(--accent);
 }
 
 .todays-group-badge {
   font-size: 0.65rem;
   font-weight: 600;
-  padding: 3px 8px;
+  padding: 2px 6px;
   background: var(--accent);
   color: white;
   border-radius: 4px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  margin-left: 8px;
 }
 
-.todays-match-number {
-  font-size: 0.65rem;
-  color: var(--muted);
-}
-
-.todays-team {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.todays-team.flag-left {
-  flex-direction: row-reverse;
-}
-
-.todays-team-flag {
-  width: 36px;
-  height: auto;
-}
-
-.todays-team-name {
-  font-size: 1rem;
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-.todays-match-center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  min-width: 100px;
-}
-
-.todays-score {
-  font-size: 1.5rem;
-  font-weight: 700;
-  min-width: 28px;
-  text-align: center;
-}
-
-.todays-vs-text {
-  color: var(--muted);
-  font-weight: 700;
-  font-size: 0.9rem;
-}
-
-.todays-match-meta {
-  position: absolute;
-  bottom: 8px;
-  left: 12px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 0.85rem;
-  color: var(--muted);
-}
-
-.todays-datetime {
-  font-weight: 500;
-}
-
-.todays-status-badge {
+.todays-status-badge.full-time {
+  background: var(--success);
+  color: white;
   font-size: 0.65rem;
   font-weight: 600;
   padding: 2px 6px;
@@ -2543,26 +2456,9 @@ footer {
   letter-spacing: 0.5px;
 }
 
-.todays-status-badge.full-time {
-  background: var(--success);
-  color: white;
-}
-
-.todays-match-venue {
-  position: absolute;
-  bottom: 8px;
-  right: 12px;
-  font-size: 0.75rem;
-  color: var(--muted);
-  text-align: right;
-}
-
-.todays-venue-name {
-  font-weight: 500;
-}
-
-.todays-city-name {
-  font-size: 0.85em;
+.todays-score-display {
+  font-size: 1.25rem;
+  font-weight: 700;
 }
 
 /* Match highlight animation */
