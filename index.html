@@ -56,12 +56,27 @@
 
     <main>
       <section class="top-actions">
-        <button id="themeToggleBtn" class="btn secondary"><span class="material-symbols-outlined">palette</span> Toggle
-          Theme</button>
-        <button id="clearButton" class="btn secondary"><span class="material-symbols-outlined">delete_sweep</span> Clear
-          all scores</button>
-        <button id="exportButton" class="btn accent"><span class="material-symbols-outlined">download</span> Download
-          results</button>
+        <div class="actions-left">
+          <button id="themeToggleBtn" class="btn secondary icon-only" title="Toggle Theme">
+            <span class="material-symbols-outlined">palette</span>
+          </button>
+          <button id="clearButton" class="btn secondary icon-only" title="Clear scores">
+            <span class="material-symbols-outlined">delete_sweep</span>
+          </button>
+          <button id="exportButton" class="btn accent icon-only" title="Download results">
+            <span class="material-symbols-outlined">download</span>
+          </button>
+        </div>
+        <div class="actions-right">
+          <button id="liveRefreshBtn" class="btn secondary">
+            <span class="material-symbols-outlined">sync</span>
+            <span class="btn-text">Sync Live</span>
+          </button>
+          <div id="liveIndicator" class="live-indicator">
+            <span class="live-dot"></span>
+            <span class="live-text">Live</span>
+          </div>
+        </div>
       </section>
 
       <section id="group-stage" class="section-wrapper">

@@ -315,11 +315,27 @@ if (themeToggleBtn) {
 }
 
 clearButton.addEventListener('click', () => {
-  if (confirm('Clear all saved scores?')) {
-    state.scores = {};
-    state.apiSourcedMatches = {};
+  if (confirm('Clear all manually entered scores? API-synced scores will be preserved.')) {
+    // Only clear scores that are NOT from the API
+    const nonApiScores = {};
+    const nonApiMatchNos = Object.keys(state.scores).filter(matchNo => !state.apiSourcedMatches[matchNo]);
+    
+    // Preserve API-sourced scores
+    Object.keys(state.scores).forEach(matchNo => {
+      if (state.apiSourcedMatches[matchNo]) {
+        nonApiScores[matchNo] = state.scores[matchNo];
+      }
+    });
+    
+    state.scores = nonApiScores;
+    // Note: We keep apiSourcedMatches intact since those scores are preserved
     saveState();
     render();
+    
+    const clearedCount = nonApiMatchNos.length;
+    if (clearedCount > 0) {
+      console.log(`Cleared ${clearedCount} manually entered score(s). API-synced scores preserved.`);
+    }
   }
 });
 
@@ -356,29 +372,15 @@ function saveState() {
 let refreshButton = null;
 let liveIndicator = null;
 
-function createLiveApiButton() {
-  // Add live refresh button
-  const liveBtn = document.createElement('button');
-  liveBtn.id = 'liveRefreshBtn';
-  liveBtn.className = 'btn secondary';
-  liveBtn.innerHTML = '<span class="material-symbols-outlined">refresh</span> <span class="btn-text">Sync Live Scores</span>';
-  liveBtn.addEventListener('click', fetchLiveScores);
-
-  // Add live indicator
-  const indicator = document.createElement('div');
-  indicator.id = 'liveIndicator';
-  indicator.className = 'live-indicator';
-  indicator.innerHTML = '<span class="live-dot"></span><span class="live-text">Live</span>';
-
-  // Insert after theme toggle button
-  const themeBtn = document.getElementById('themeToggleBtn');
-  if (themeBtn && themeBtn.parentNode) {
-    themeBtn.parentNode.insertBefore(liveBtn, themeBtn.nextSibling);
-    themeBtn.parentNode.insertBefore(indicator, liveBtn.nextSibling);
+function initLiveApi() {
+  // Get references to existing elements
+  refreshButton = document.getElementById('liveRefreshBtn');
+  liveIndicator = document.getElementById('liveIndicator');
+  
+  // Add click listener to refresh button
+  if (refreshButton) {
+    refreshButton.addEventListener('click', fetchLiveScores);
   }
-
-  refreshButton = liveBtn;
-  liveIndicator = indicator;
 }
 
 async function fetchLiveScores() {
@@ -1205,7 +1207,7 @@ function render() {
 
 // Initialize Live API features
 document.addEventListener('DOMContentLoaded', () => {
-  createLiveApiButton();
+  initLiveApi();
   startAutoRefresh();
   // Initial fetch on page load
   fetchLiveScores();

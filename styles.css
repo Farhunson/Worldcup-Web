@@ -2044,23 +2044,79 @@ footer {
   border-color: var(--border) !important;
 }
 
-/* Top actions bar adjustments for new button */
+/* Top actions bar with two sections */
 .top-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
-  padding: 24px 32px;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 24px;
   background: var(--surface);
   border-radius: 20px;
   margin-bottom: 32px;
   border: 1px solid var(--border);
-  align-items: center;
 }
 
-@media (max-width: 768px) {
+.actions-left,
+.actions-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.actions-left {
+  flex-wrap: wrap;
+}
+
+.actions-right {
+  flex-wrap: wrap;
+}
+
+/* Icon-only buttons */
+.btn.icon-only {
+  padding: 10px;
+  min-width: 40px;
+  justify-content: center;
+}
+
+.btn.icon-only .material-symbols-outlined {
+  margin: 0;
+}
+
+/* Sync Live button styling */
+#liveRefreshBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  font-size: 0.9rem;
+}
+
+#liveRefreshBtn .material-symbols-outlined {
+  font-size: 18px;
+}
+
+#liveRefreshBtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Live indicator positioning */
+.live-indicator {
+  order: 1;
+}
+
+@media (max-width: 640px) {
   .top-actions {
     justify-content: center;
-    padding: 16px;
+    padding: 12px 16px;
+  }
+  
+  .actions-left,
+  .actions-right {
+    justify-content: center;
+    width: 100%;
   }
   
   .live-indicator {
