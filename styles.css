@@ -983,6 +983,17 @@ tr.advancement-best-third td {
   color: var(--text);
 }
 
+.match-bottom .stadium-name {
+  font-size: inherit;
+  line-height: 1.2;
+}
+
+.match-bottom .city-name {
+  font-size: 0.85em;
+  color: var(--muted);
+  line-height: 1.2;
+}
+
 .match-number {
   position: absolute;
   right: 10px;
