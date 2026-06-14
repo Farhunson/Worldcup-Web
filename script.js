@@ -363,94 +363,94 @@ function createLiveApiButton() {
   liveBtn.className = 'btn secondary';
   liveBtn.innerHTML = '<span class="material-symbols-outlined">refresh</span> <span class="btn-text">Sync Live Scores</span>';
   liveBtn.addEventListener('click', fetchLiveScores);
-  
+
   // Add live indicator
   const indicator = document.createElement('div');
   indicator.id = 'liveIndicator';
   indicator.className = 'live-indicator';
   indicator.innerHTML = '<span class="live-dot"></span><span class="live-text">Live</span>';
-  
+
   // Insert after theme toggle button
   const themeBtn = document.getElementById('themeToggleBtn');
   if (themeBtn && themeBtn.parentNode) {
     themeBtn.parentNode.insertBefore(liveBtn, themeBtn.nextSibling);
     themeBtn.parentNode.insertBefore(indicator, liveBtn.nextSibling);
   }
-  
+
   refreshButton = liveBtn;
   liveIndicator = indicator;
 }
 
 async function fetchLiveScores() {
   if (!refreshButton) return;
-  
+
   refreshButton.disabled = true;
   refreshButton.querySelector('.btn-text').textContent = 'Syncing...';
-  
+
   try {
     const response = await fetch(API_URL);
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    
+
     const data = await response.json();
     const games = data.games || [];
-    
+
     let updatedCount = 0;
-    
+
     games.forEach(game => {
       const homeApiName = game.home_team_name_en;
       const awayApiName = game.away_team_name_en;
       const homeProjectName = apiTeamNameMap[homeApiName];
       const awayProjectName = apiTeamNameMap[awayApiName];
-      
+
       if (!homeProjectName || !awayProjectName) return;
-      
+
       const homeScore = parseInt(game.home_score) || 0;
       const awayScore = parseInt(game.away_score) || 0;
-      
+
       // Find matching match in our scheduleData
       const matchingMatch = scheduleData.groupMatches.find(m => {
         return (m.team1 === homeProjectName && m.team2 === awayProjectName) ||
-               (m.team1 === awayProjectName && m.team2 === homeProjectName);
+          (m.team1 === awayProjectName && m.team2 === homeProjectName);
       });
-      
+
       // Also check for reverse order
       const reverseMatch = scheduleData.groupMatches.find(m => {
         return (m.team1 === awayProjectName && m.team2 === homeProjectName) ||
-               (m.team1 === homeProjectName && m.team2 === awayProjectName);
+          (m.team1 === homeProjectName && m.team2 === awayProjectName);
       });
-      
+
       const targetMatch = matchingMatch || reverseMatch;
-      
+
       if (targetMatch && game.finished === 'TRUE') {
         // Determine correct score order based on which team is home
         const isHomeTeam = targetMatch.team1 === homeProjectName;
         const score1 = isHomeTeam ? homeScore : awayScore;
         const score2 = isHomeTeam ? awayScore : homeScore;
-        
+
         // Update score if different from current
         const currentScore = state.scores[targetMatch.matchNo];
-        if (!currentScore || 
-            parseInt(currentScore.score1) !== score1 || 
-            parseInt(currentScore.score2) !== score2) {
+        if (!currentScore ||
+          parseInt(currentScore.score1) !== score1 ||
+          parseInt(currentScore.score2) !== score2) {
           state.scores[targetMatch.matchNo] = { score1: String(score1), score2: String(score2) };
           updatedCount++;
         }
-        
+
         // Mark this match as API-sourced (for disabling inputs)
         state.apiSourcedMatches[targetMatch.matchNo] = true;
       }
     });
-    
+
     if (updatedCount > 0) {
       saveState();
       render();
     }
-    
+
     state.lastApiUpdate = new Date().toLocaleTimeString();
     updateLiveIndicator(true);
-    
+
     console.log(`Live scores synced: ${updatedCount} match(es) updated`);
-    
+
   } catch (error) {
     console.error('Failed to fetch live scores:', error);
     updateLiveIndicator(false);
@@ -469,7 +469,7 @@ function isApiSourcedMatch(matchNo) {
 
 function updateLiveIndicator(success) {
   if (!liveIndicator) return;
-  
+
   if (success) {
     liveIndicator.classList.add('connected');
     const timeSpan = liveIndicator.querySelector('.live-text');
@@ -805,7 +805,7 @@ function buildGroupMatches(group, matches) {
       const score2Val = state.scores[match.matchNo]?.score2 ?? '';
       const isApiSourced = isApiSourcedMatch(match.matchNo);
       const disabledAttr = isApiSourced ? 'disabled' : '';
-      const apiBadge = isApiSourced ? '<span class="api-badge-small">Live</span>' : '';
+      const apiBadge = isApiSourced ? '<span class="api-badge-small">Full-time</span>' : '';
       return `
       <div class="match-card match-compact clickable" data-matchno="${match.matchNo}">
         <div class="match-top">
