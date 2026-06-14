@@ -315,11 +315,27 @@ if (themeToggleBtn) {
 }
 
 clearButton.addEventListener('click', () => {
-  if (confirm('Clear all saved scores?')) {
-    state.scores = {};
-    state.apiSourcedMatches = {};
+  if (confirm('Clear all manually entered scores? API-synced scores will be preserved.')) {
+    // Only clear scores that are NOT from the API
+    const nonApiScores = {};
+    const nonApiMatchNos = Object.keys(state.scores).filter(matchNo => !state.apiSourcedMatches[matchNo]);
+    
+    // Preserve API-sourced scores
+    Object.keys(state.scores).forEach(matchNo => {
+      if (state.apiSourcedMatches[matchNo]) {
+        nonApiScores[matchNo] = state.scores[matchNo];
+      }
+    });
+    
+    state.scores = nonApiScores;
+    // Note: We keep apiSourcedMatches intact since those scores are preserved
     saveState();
     render();
+    
+    const clearedCount = nonApiMatchNos.length;
+    if (clearedCount > 0) {
+      console.log(`Cleared ${clearedCount} manually entered score(s). API-synced scores preserved.`);
+    }
   }
 });
 
