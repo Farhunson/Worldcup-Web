@@ -68,7 +68,9 @@ const projectToApiNameMap = Object.entries(apiTeamNameMap).reduce((acc, [api, pr
 // API Configuration
 const API_URL = 'https://worldcup26.ir/get/games';
 const API_REFRESH_INTERVAL = 30000; // 30 seconds
+const API_SYNC_COOLDOWN = 10000; // 10 seconds cooldown between manual syncs
 let apiRefreshTimer = null;
+let lastSyncTime = 0; // Track last sync timestamp
 
 const flagCodeMap = {
   'Mexico': 'mx',
@@ -386,6 +388,23 @@ function initLiveApi() {
 async function fetchLiveScores() {
   if (!refreshButton) return;
 
+  // Check cooldown for manual syncs (not auto-refresh)
+  const now = Date.now();
+  const timeSinceLastSync = now - lastSyncTime;
+
+  if (timeSinceLastSync < API_SYNC_COOLDOWN) {
+    const remainingSeconds = Math.ceil((API_SYNC_COOLDOWN - timeSinceLastSync) / 1000);
+    console.log(`Please wait ${remainingSeconds} seconds before syncing again.`);
+    refreshButton.querySelector('.btn-text').textContent = `Wait ${remainingSeconds}s`;
+    setTimeout(() => {
+      if (refreshButton) {
+        refreshButton.querySelector('.btn-text').textContent = 'Sync Live';
+      }
+    }, remainingSeconds * 1000);
+    return;
+  }
+
+  lastSyncTime = now;
   refreshButton.disabled = true;
   refreshButton.querySelector('.btn-text').textContent = 'Syncing...';
 
