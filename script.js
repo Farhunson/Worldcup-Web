@@ -360,6 +360,15 @@ function getVenueDisplayName(venueName) {
   return venueName || '';
 }
 
+// Get stadium name only
+function getStadiumName(venueName) {
+  const info = getStadiumInfo(venueName);
+  if (info) {
+    return info.name_en;
+  }
+  return '';
+}
+
 // Get city name for a venue
 function getCityName(venueName) {
   const info = getStadiumInfo(venueName);
@@ -1103,7 +1112,10 @@ function buildGroupMatches(group, matches) {
         </div>
 
         <div class="match-mid">${dateLabel} · ${timeDisplay} ${apiBadge}</div>
-        <div class="match-bottom">${getVenueDisplayName(match.venue) || ''}</div>
+        <div class="match-bottom">
+          <div class="stadium-name">${getStadiumName(match.venue) || ''}</div>
+          <div class="city-name">${getCityName(match.venue) || ''}</div>
+        </div>
         <div class="match-number">Match ${match.matchNo}</div>
       </div>
     `;
