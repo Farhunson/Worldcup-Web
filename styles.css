@@ -2453,6 +2453,16 @@ footer {
   border: 2px solid var(--accent);
 }
 
+.todays-match-live {
+  border: 3px solid #dc3545;
+  box-shadow: 0 0 12px rgba(220, 53, 69, 0.4);
+}
+
+.todays-match-finished {
+  border: 2px solid var(--muted);
+  opacity: 0.85;
+}
+
 .todays-match-header {
   padding: 3px 3px;
   margin-bottom: 4px;
