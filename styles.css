@@ -1988,11 +1988,34 @@ footer {
 }
 
 .card-team img {
-  width: 28px;
-  height: 20px;
+  width: 38px;
+  height: 26px;
   object-fit: contain;
-  border-radius: 2px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  border-radius: 0 12px 0 12px;
+  overflow: hidden;
+  background: #FFFFFF;
+  border: 1.5px solid rgba(17, 24, 39, 0.12);
+  box-shadow: 0 10px 30px rgba(17, 24, 39, 0.08);
+}
+
+.card-team .team-flag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  min-width: 38px;
+  height: 26px;
+  border-radius: 0 12px 0 12px;
+  overflow: hidden;
+  background: #FFFFFF;
+  border: 1.5px solid rgba(17, 24, 39, 0.12);
+  box-shadow: 0 10px 30px rgba(17, 24, 39, 0.08);
+}
+
+.card-team .team-flag img {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .card-team .team-name {
