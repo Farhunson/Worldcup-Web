@@ -1610,49 +1610,42 @@ function buildTodaysMatchCard(match) {
   const timeDisplay = tzAbbr ? `${timeLabel} ${tzAbbr}` : timeLabel;
   
   // Full-time badge if played
-  const statusBadge = isPlayed ? '<span class="todays-status-badge full-time">Full-time</span>' : '';
-  const apiBadge = isApiSourced ? '<span class="todays-status-badge full-time">Full-time</span>' : '';
+  const statusBadge = isPlayed || isApiSourced ? '<span class="todays-status-badge full-time">Full-time</span>' : '';
   
   // Stadium info
-  const stadiumName = getStadiumName(match.venue) || '';
-  const cityName = getCityName(match.venue) || '';
+  const venueDisplay = getVenueDisplayName(match.venue) || '';
   
   // Highlight class for upcoming matches
   const highlightClass = !isPlayed && !isApiSourced ? 'todays-match-upcoming' : '';
   
-  return `
-    <div class="todays-match-card ${highlightClass}" data-matchno="${match.matchNo}">
-      <div class="todays-match-header">
-        ${groupBadge}
-        <span class="todays-match-number">Match ${match.matchNo}</span>
+  // Build match card content
+  const matchContent = `
+    <div class="match-top">
+      <div class="team-left">
+        <div class="team-flag-name">${formatFlag(match.team1)}<div class="team-name">${getTeamInitials(match.team1)}</div></div>
       </div>
-      <div class="todays-team flag-left">
-        ${formatFlag(match.team1)}
-        <span class="todays-team-name">${getTeamInitials(match.team1)}</span>
+      <div class="score-left">
+        ${isPlayed || isApiSourced ? `<span class="todays-score-display">${score1Val}</span>` : ''}
       </div>
-      <div class="todays-match-center">
-        ${isPlayed || isApiSourced ? `
-          <span class="todays-score">${score1Val}</span>
-          <span class="todays-vs-text">-</span>
-          <span class="todays-score">${score2Val}</span>
-        ` : `
-          <span class="todays-vs-text">vs</span>
-        `}
+      <div class="vs">${isPlayed || isApiSourced ? '-' : 'vs'}</div>
+      <div class="score-right">
+        ${isPlayed || isApiSourced ? `<span class="todays-score-display">${score2Val}</span>` : ''}
       </div>
-      <div class="todays-team">
-        ${formatFlag(match.team2)}
-        <span class="todays-team-name">${getTeamInitials(match.team2)}</span>
-      </div>
-      <div class="todays-match-meta">
-        <span class="todays-datetime">${dateLabel} · ${timeDisplay}</span>
-        ${statusBadge || apiBadge}
-      </div>
-      <div class="todays-match-venue">
-        <span class="todays-venue-name">${stadiumName}</span>
-        <span class="todays-city-name">${cityName}</span>
+      <div class="team-right">
+        <div class="team-flag-name">${formatFlag(match.team2)}<div class="team-name">${getTeamInitials(match.team2)}</div></div>
       </div>
     </div>
+    <div class="match-mid">
+      ${dateLabel} · ${timeDisplay} ${statusBadge}
+      ${groupBadge}
+    </div>
+    <div class="match-bottom">
+      <div class="stadium-name">${venueDisplay}</div>
+    </div>
+    <div class="match-number">Match ${match.matchNo}</div>
   `;
+  
+  return `<div class="match-card match-compact ${highlightClass}" data-matchno="${match.matchNo}">${matchContent}</div>`;
 }
 
 // Render today's matches section
