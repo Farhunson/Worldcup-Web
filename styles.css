@@ -2313,6 +2313,20 @@ footer {
   vertical-align: middle;
 }
 
+.api-badge-small.live-badge {
+  background: #dc3545;
+  padding: 1px 6px 1px 4px;
+}
+
+.api-badge-small.live-badge .live-dot {
+  width: 6px;
+  height: 6px;
+  background: white;
+  border-radius: 50%;
+  margin-right: 4px;
+  animation: pulse 1.5s infinite;
+}
+
 .api-badge-bracket {
   display: inline-flex;
   align-items: center;
