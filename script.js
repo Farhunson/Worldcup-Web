@@ -345,6 +345,14 @@ function formatApiTime(apiLocalDate, venue) {
     correctUTC = new Date(Date.UTC(year, month - 1, day, hours, minutes));
   }
   
+  // Get short timezone abbreviation for user's timezone
+  const tzFormatter = new Intl.DateTimeFormat('en-US', {
+    timeZone: localTimezone,
+    timeZoneName: 'short'
+  });
+  const tzParts = tzFormatter.formatToParts(correctUTC);
+  const tzAbbr = tzParts.find(p => p.type === 'timeZoneName')?.value || '';
+  
   // Create formatters for the user's local timezone
   const localDateFormatter = new Intl.DateTimeFormat(undefined, {
     timeZone: localTimezone,
@@ -376,6 +384,7 @@ function formatApiTime(apiLocalDate, venue) {
   return {
     dateLabel: localDateFormatter.format(correctUTC),
     timeLabel: localTimeFormatter.format(correctUTC),
+    tzAbbr: tzAbbr,
     fullDate: fullDateFormatter.format(correctUTC),
     fullTime: fullTimeFormatter.format(correctUTC),
     timestamp: correctUTC.getTime(),
@@ -406,6 +415,7 @@ function getMatchDateTimeLabel(matchNo, venue, fallbackDate, fallbackTime) {
     return {
       dateLabel: apiTime.dateLabel,
       timeLabel: apiTime.timeLabel,
+      tzAbbr: apiTime.tzAbbr,
       fullDate: apiTime.fullDate,
       fullTime: apiTime.fullTime
     };
@@ -416,6 +426,7 @@ function getMatchDateTimeLabel(matchNo, venue, fallbackDate, fallbackTime) {
     return {
       dateLabel: date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
       timeLabel: fallbackTime || '',
+      tzAbbr: '',
       fullDate: date.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' }),
       fullTime: fallbackTime || ''
     };
@@ -423,6 +434,7 @@ function getMatchDateTimeLabel(matchNo, venue, fallbackDate, fallbackTime) {
   return {
     dateLabel: '',
     timeLabel: fallbackTime || '',
+    tzAbbr: '',
     fullDate: '',
     fullTime: fallbackTime || ''
   };
@@ -987,7 +999,8 @@ function buildGroupMatches(group, matches) {
     .filter((match) => match.pos1 && match.pos1[0] === group)
     .sort((a, b) => a.matchNo - b.matchNo)
     .map((match) => {
-      const { dateLabel, timeLabel } = getMatchDateTimeLabel(match.matchNo, match.venue, match.date, match.time);
+      const { dateLabel, timeLabel, tzAbbr } = getMatchDateTimeLabel(match.matchNo, match.venue, match.date, match.time);
+      const timeDisplay = tzAbbr ? `${timeLabel} ${tzAbbr}` : timeLabel;
       const score1Val = state.scores[match.matchNo]?.score1 ?? '';
       const score2Val = state.scores[match.matchNo]?.score2 ?? '';
       const isApiSourced = isApiSourcedMatch(match.matchNo);
@@ -1011,7 +1024,7 @@ function buildGroupMatches(group, matches) {
           </div>
         </div>
 
-        <div class="match-mid">${dateLabel} · ${timeLabel} ${apiBadge}</div>
+        <div class="match-mid">${dateLabel} · ${timeDisplay} ${apiBadge}</div>
         <div class="match-bottom">${match.venue || ''}</div>
         <div class="match-number">Match ${match.matchNo}</div>
       </div>
@@ -1303,7 +1316,8 @@ function buildMatchCardHtml(match, stage, rankings, thirdPlaceTeams, knockoutMap
   const isApiSourced = isApiSourcedMatch(match.matchNo);
   const disabledAttr = isTBDA || isTBDB || isApiSourced ? 'disabled' : '';
   const apiBadge = isApiSourced ? '<span class="api-badge-bracket">Live</span>' : '';
-  const { dateLabel, timeLabel } = getMatchDateTimeLabel(match.matchNo, match.venue, match.date, match.time);
+  const { dateLabel, timeLabel, tzAbbr } = getMatchDateTimeLabel(match.matchNo, match.venue, match.date, match.time);
+      const timeDisplay = tzAbbr ? `${timeLabel} ${tzAbbr}` : timeLabel;
   return `
     <div class="bracket-match-node" data-matchno="${match.matchNo}" data-stage="${stage}">
       <div class="bracket-match-inner">
@@ -1327,7 +1341,7 @@ function buildMatchCardHtml(match, stage, rankings, thirdPlaceTeams, knockoutMap
         </div>
       </div>
       <div class="bracket-match-meta">
-        <span>${dateLabel} · ${timeLabel} ${apiBadge}</span>
+        <span>${dateLabel} · ${timeDisplay} ${apiBadge}</span>
         <span>${match.venue || ''}</span>
       </div>
       <div class="bracket-match-number">M${match.matchNo}</div>
