@@ -506,9 +506,11 @@ function getMatchDateTimeLabel(matchNo, venue, fallbackDate, fallbackTime) {
       fullTime: apiTime.fullTime
     };
   }
-  // Fallback to original schedule data
+  // Fallback to original schedule data (stored in UTC)
   if (fallbackDate) {
-    const date = new Date(fallbackDate);
+    // Parse as UTC by appending 'Z' or using Date.UTC
+    const date = new Date(fallbackDate.endsWith('Z') ? fallbackDate : fallbackDate + 'Z');
+    
     // Get user's timezone abbreviation
     const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const tzFormatter = new Intl.DateTimeFormat('en-US', {
@@ -517,12 +519,22 @@ function getMatchDateTimeLabel(matchNo, venue, fallbackDate, fallbackTime) {
     });
     const tzParts = tzFormatter.formatToParts(date);
     const tzAbbr = tzParts.find(p => p.type === 'timeZoneName')?.value || '';
-    const timeWithTz = fallbackTime ? `${fallbackTime} ${tzAbbr}` : '';
+    
+    // Format time in user's local timezone
+    const timeFormatter = new Intl.DateTimeFormat('en-US', {
+      timeZone: localTimezone,
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
+    const localTimeStr = timeFormatter.format(date);
+    const timeWithTz = localTimeStr ? `${localTimeStr} ${tzAbbr}` : '';
+    
     return {
-      dateLabel: date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
-      timeLabel: fallbackTime || '',
+      dateLabel: date.toLocaleDateString(undefined, { timeZone: localTimezone, month: 'short', day: 'numeric' }),
+      timeLabel: localTimeStr || '',
       tzAbbr: tzAbbr,
-      fullDate: date.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' }),
+      fullDate: date.toLocaleDateString(undefined, { timeZone: localTimezone, weekday: 'short', month: 'short', day: 'numeric' }),
       fullTime: timeWithTz
     };
   }
