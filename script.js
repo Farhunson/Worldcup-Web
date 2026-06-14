@@ -5,7 +5,6 @@ const state = {
   lastApiUpdate: null,
   apiSourcedMatches: {}, // Track which matches have scores from API
   apiMatchTimes: {}, // Store API match times (UTC) for timezone conversion
-  liveMatches: {}, // Track live match status: { matchNo: '1st half', '2nd half', 'HT', etc. }
 };
 loadState();
 
@@ -276,7 +275,7 @@ const stageLabels = {
 // Venue to IANA timezone mapping for World Cup 2026 host cities
 const venueTimezones = {
   'Mexico City': 'America/Mexico_City',
-  'Guadalajara': 'America/Mexico_City',
+  'Guadalajara': 'America/Bogota', // Guadalajara uses same timezone as Bogota (CST)
   'Toronto': 'America/Toronto',
   'Vancouver': 'America/Vancouver',
   'Los Angeles': 'America/Los_Angeles',
@@ -293,12 +292,8 @@ const venueTimezones = {
   'Atlanta': 'America/New_York',
   'Monterrey': 'America/Monterrey',
   'Denver': 'America/Denver',
+  'Boston': 'America/New_York',
 };
-
-// Get timezone for a venue
-function getVenueTimezone(venue) {
-  return venueTimezones[venue] || 'America/New_York';
-}
 
 // Stadium data cache (fetched from API)
 let stadiumData = null;
@@ -354,94 +349,6 @@ function getStadiumInfo(venueName) {
   return stadium || null;
 }
 
-// Team FIFA code mapping (hardcoded fallback for immediate display)
-const teamFifaCodeMapFallback = {
-  'South Africa': 'RSA',
-  'Brazil': 'BRA',
-  'Scotland': 'SCO',
-  'Turkey': 'TUR',
-  'Ivory Coast': 'CIV',
-  'Netherlands': 'NED',
-  'Cape Verde': 'CPV',
-  'France': 'FRA',
-  'Tunisia': 'TUN',
-  'Egypt': 'EGY',
-  'Iraq': 'IRQ',
-  'Portugal': 'POR',
-  'Uzbekistan': 'UZB',
-  'Colombia': 'COL',
-  'Ecuador': 'ECU',
-  'Japan': 'JPN',
-  'New Zealand': 'NZL',
-  'Saudi Arabia': 'KSA',
-  'Austria': 'AUT',
-  'Ghana': 'GHA',
-  'South Korea': 'KOR',
-  'Spain': 'ESP',
-  'Norway': 'NOR',
-  'Argentina': 'ARG',
-  'Democratic Republic of the Congo': 'COD',
-  'England': 'ENG',
-  'Czech Republic': 'CZE',
-  'Canada': 'CAN',
-  'Qatar': 'QAT',
-  'Switzerland': 'SUI',
-  'Morocco': 'MAR',
-  'Paraguay': 'PAR',
-  'Curaçao': 'CUW',
-  'Sweden': 'SWE',
-  'Algeria': 'ALG',
-  'Jordan': 'JOR',
-  'Haiti': 'HAI',
-  'Germany': 'GER',
-  'Uruguay': 'URU',
-  'Senegal': 'SEN',
-  'Panama': 'PAN',
-  'Mexico': 'MEX',
-  'Bosnia and Herzegovina': 'BIH',
-  'United States': 'USA',
-  'Australia': 'AUS',
-  'Belgium': 'BEL',
-  'Iran': 'IRN',
-  'Croatia': 'CRO',
-  // Abbreviated names
-  'Rep. of Korea': 'KOR',
-  'Czech Rep.': 'CZE',
-  'Bosnia/Herzeg.': 'BIH',
-  'DR Congo': 'COD',
-  'IR Iran': 'IRN',
-  'USA': 'USA'
-};
-
-let teamFifaCodeMap = { ...teamFifaCodeMapFallback };
-
-// Fetch teams data from API (updates mapping if available)
-async function fetchTeamsData() {
-  try {
-    const response = await fetch('https://worldcup26.ir/get/teams');
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const data = await response.json();
-    const teams = data.teams || [];
-    
-    // Update mapping with API data
-    teams.forEach(team => {
-      teamFifaCodeMap[team.name_en] = team.fifa_code;
-    });
-    
-    // Re-render after team data is loaded to update team codes
-    render();
-    return teamFifaCodeMap;
-  } catch (error) {
-    console.error('Failed to fetch teams data:', error);
-    return null;
-  }
-}
-
-// Get FIFA code for a team
-function getTeamFifaCode(teamName) {
-  return teamFifaCodeMap[teamName] || teamName;
-}
-
 // Get display name for a venue (stadium name + city)
 function getVenueDisplayName(venueName) {
   const info = getStadiumInfo(venueName);
@@ -490,6 +397,9 @@ function formatApiTime(apiLocalDate, venue) {
   // Create a formatter to check what time a UTC moment shows in the venue timezone
   const venueFormatter = new Intl.DateTimeFormat('en-US', {
     timeZone: venueTimezone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
     hour: '2-digit',
     minute: '2-digit',
     hour12: false
@@ -519,9 +429,9 @@ function formatApiTime(apiLocalDate, venue) {
     correctUTC = new Date(Date.UTC(year, month - 1, day, hours, minutes));
   }
 
-  // Get short timezone abbreviation for the venue timezone
+  // Get short timezone abbreviation for user's timezone
   const tzFormatter = new Intl.DateTimeFormat('en-US', {
-    timeZone: venueTimezone,
+    timeZone: localTimezone,
     timeZoneName: 'short'
   });
   const tzParts = tzFormatter.formatToParts(correctUTC);
@@ -554,41 +464,16 @@ function formatApiTime(apiLocalDate, venue) {
     minute: '2-digit'
   });
 
-  // Create formatters for the venue's local timezone (to get venue labels)
-  const venueDateFormatter = new Intl.DateTimeFormat('en-US', {
-    timeZone: venueTimezone,
-    month: 'short',
-    day: 'numeric'
-  });
-
-  const venueTimeFormatter = new Intl.DateTimeFormat('en-US', {
-    timeZone: venueTimezone,
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false
-  });
-
-  const venueFullDateFormatter = new Intl.DateTimeFormat('en-US', {
-    timeZone: venueTimezone,
-    weekday: 'short',
-    month: 'short',
-    day: 'numeric'
-  });
-
   // Format the corrected UTC timestamp in user's local timezone
   return {
-    dateLabel: venueDateFormatter.format(correctUTC),
-    timeLabel: venueTimeFormatter.format(correctUTC),
+    dateLabel: localDateFormatter.format(correctUTC),
+    timeLabel: localTimeFormatter.format(correctUTC),
     tzAbbr: tzAbbr,
-    fullDate: venueFullDateFormatter.format(correctUTC),
-    fullTime: `${venueTimeFormatter.format(correctUTC)} ${tzAbbr}`,
+    fullDate: fullDateFormatter.format(correctUTC),
+    fullTime: fullTimeFormatter.format(correctUTC),
     timestamp: correctUTC.getTime(),
     venueTimezone: venueTimezone,
     localTimezone: localTimezone,
-    localDateLabel: localDateFormatter.format(correctUTC),
-    localTimeLabel: localTimeFormatter.format(correctUTC),
-    localFullDate: fullDateFormatter.format(correctUTC),
-    localFullTime: fullTimeFormatter.format(correctUTC),
     isLocal: true
   };
 }
@@ -619,49 +504,24 @@ function getMatchDateTimeLabel(matchNo, venue, fallbackDate, fallbackTime) {
       fullTime: apiTime.fullTime
     };
   }
-  // Fallback: convert UTC time from schedule_data.js to venue's local time
-  if (fallbackDate && fallbackTime) {
-    // Get venue timezone
-    const venueTimezone = getVenueTimezone(venue);
-    
-    // Create a UTC date from the stored date/time
-    const utcDate = new Date(fallbackDate);
-    
-    // Format in venue's timezone to get local date/time
-    const venueDateFormatter = new Intl.DateTimeFormat('en-US', {
-      timeZone: venueTimezone,
-      month: 'short',
-      day: 'numeric'
-    });
-    
-    const venueTimeFormatter = new Intl.DateTimeFormat('en-US', {
-      timeZone: venueTimezone,
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false
-    });
-    
-    const venueFullDateFormatter = new Intl.DateTimeFormat('en-US', {
-      timeZone: venueTimezone,
-      weekday: 'short',
-      month: 'short',
-      day: 'numeric'
-    });
-    
-    // Get timezone abbreviation for venue
+  // Fallback to original schedule data
+  if (fallbackDate) {
+    const date = new Date(fallbackDate);
+    // Get user's timezone abbreviation
+    const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const tzFormatter = new Intl.DateTimeFormat('en-US', {
-      timeZone: venueTimezone,
+      timeZone: localTimezone,
       timeZoneName: 'short'
     });
-    const tzParts = tzFormatter.formatToParts(utcDate);
+    const tzParts = tzFormatter.formatToParts(date);
     const tzAbbr = tzParts.find(p => p.type === 'timeZoneName')?.value || '';
-    
+    const timeWithTz = fallbackTime ? `${fallbackTime} ${tzAbbr}` : '';
     return {
-      dateLabel: venueDateFormatter.format(utcDate),
-      timeLabel: venueTimeFormatter.format(utcDate),
+      dateLabel: date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
+      timeLabel: fallbackTime || '',
       tzAbbr: tzAbbr,
-      fullDate: venueFullDateFormatter.format(utcDate),
-      fullTime: `${venueTimeFormatter.format(utcDate)} ${tzAbbr}`
+      fullDate: date.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' }),
+      fullTime: timeWithTz
     };
   }
   return {
@@ -674,9 +534,6 @@ function getMatchDateTimeLabel(matchNo, venue, fallbackDate, fallbackTime) {
 }
 
 const groupListElement = document.getElementById('group-list');
-if (!groupListElement) {
-  console.error('group-list element not found!');
-}
 const bracketContainer = document.getElementById('bracket-container');
 const clearButton = document.getElementById('clearButton');
 const exportButton = document.getElementById('exportButton');
@@ -794,9 +651,6 @@ function initLiveApi() {
 
   // Fetch stadium data on init
   fetchStadiumData();
-  
-  // Fetch teams data on init
-  fetchTeamsData();
 }
 
 async function fetchLiveScores() {
@@ -860,10 +714,6 @@ async function fetchLiveScores() {
           timesUpdated++;
         }
 
-        // Track live match status
-        const timeElapsed = game.time_elapsed || 'notstarted';
-        state.liveMatches[targetMatch.matchNo] = timeElapsed;
-
         // Update score if match is finished
         if (game.finished === 'TRUE') {
           // Determine correct score order based on which team is home
@@ -886,13 +736,10 @@ async function fetchLiveScores() {
       }
     });
 
-    // Save state if any updates were made (scores, times, or live status)
+    // Save state if any updates were made (scores or times)
     if (updatedCount > 0 || timesUpdated > 0) {
       saveState();
       render();
-    } else {
-      // Still render if live status changed
-      renderTodaysMatchesSection();
     }
 
     state.lastApiUpdate = new Date().toLocaleTimeString();
@@ -914,31 +761,6 @@ async function fetchLiveScores() {
 // Helper function to check if a match has API-sourced scores
 function isApiSourcedMatch(matchNo) {
   return state.apiSourcedMatches[matchNo] === true;
-}
-
-// Helper function to check if a match is currently live
-function isLiveMatch(matchNo) {
-  const liveStatus = state.liveMatches[matchNo];
-  return liveStatus && liveStatus !== 'finished' && liveStatus !== 'notstarted';
-}
-
-// Helper function to get live status display text
-function getLiveStatusText(matchNo) {
-  const liveStatus = state.liveMatches[matchNo];
-  if (!liveStatus) return '';
-  
-  // Convert API status to display text
-  const statusMap = {
-    '1st half': '1st Half',
-    '2nd half': '2nd Half',
-    'HT': 'Halftime',
-    'ET': 'Extra Time',
-    'Pen': 'Penalties',
-    'FT': 'Full-time',
-    'notstarted': ''
-  };
-  
-  return statusMap[liveStatus] || liveStatus;
 }
 
 function updateLiveIndicator(success) {
@@ -1284,7 +1106,7 @@ function buildGroupMatches(group, matches) {
       <div class="match-card match-compact clickable" data-matchno="${match.matchNo}">
         <div class="match-top">
           <div class="team-left">
-            <div class="team-flag-name">${formatFlag(match.team1)}<div class="team-name">${getTeamFifaCode(match.team1)}</div></div>
+            <div class="team-flag-name">${formatFlag(match.team1)}<div class="team-name">${getTeamInitials(match.team1)}</div></div>
           </div>
           <div class="score-left">
             <input class="score-input" type="number" min="0" value="${score1Val}" data-match="${match.matchNo}" data-side="score1" ${disabledAttr} />
@@ -1294,7 +1116,7 @@ function buildGroupMatches(group, matches) {
             <input class="score-input" type="number" min="0" value="${score2Val}" data-match="${match.matchNo}" data-side="score2" ${disabledAttr} />
           </div>
           <div class="team-right">
-            <div class="team-flag-name">${formatFlag(match.team2)}<div class="team-name">${getTeamFifaCode(match.team2)}</div></div>
+            <div class="team-flag-name">${formatFlag(match.team2)}<div class="team-name">${getTeamInitials(match.team2)}</div></div>
           </div>
         </div>
 
@@ -1307,131 +1129,6 @@ function buildGroupMatches(group, matches) {
       </div>
     `;
     }).join('');
-}
-
-// Build today's matches (no score field)
-function buildTodaysMatches() {
-  // Get today's date in UTC
-  const today = new Date();
-  const todayUTC = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate()));
-  const todayStr = todayUTC.toISOString().split('T')[0];
-  
-  // Filter matches for today
-  const allMatches = [...scheduleData.groupMatches, ...scheduleData.knockoutMatches];
-  const todaysMatches = allMatches.filter(match => {
-    const matchDate = match.date.split('T')[0];
-    return matchDate === todayStr;
-  }).sort((a, b) => a.matchNo - b.matchNo);
-  
-  if (todaysMatches.length === 0) {
-    return `
-      <div class="today-section">
-        <div class="today-header">
-          <h2>Today's Matches</h2>
-          <span class="today-date">${todayUTC.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}</span>
-        </div>
-        <div class="today-no-matches">
-          <span class="material-symbols-outlined">event_busy</span>
-          <p>No matches scheduled for today</p>
-        </div>
-      </div>
-    `;
-  }
-  
-  return `
-    <div class="today-section">
-      <div class="today-header">
-        <h2>Today's Matches</h2>
-        <span class="today-date">${todayUTC.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}</span>
-      </div>
-      <div class="today-count">${todaysMatches.length} match${todaysMatches.length > 1 ? 'es' : ''}</div>
-      <div class="today-matches">
-        ${todaysMatches.map(match => {
-          const { dateLabel, timeLabel, tzAbbr } = getMatchDateTimeLabel(match.matchNo, match.venue, match.date, match.time);
-          const timeDisplay = tzAbbr ? `${timeLabel} ${tzAbbr}` : timeLabel;
-          
-          // Get group info for group stage matches
-          let groupInfo = '';
-          if (match.stage === 'group' && match.pos1) {
-            groupInfo = `<span class="today-group-badge">Group ${match.pos1[0]}</span>`;
-          }
-          
-          // Check match status
-          const score1Val = state.scores[match.matchNo]?.score1 ?? '';
-          const score2Val = state.scores[match.matchNo]?.score2 ?? '';
-          const isApiSourced = isApiSourcedMatch(match.matchNo);
-          const isFinished = isApiSourced && score1Val !== '' && score2Val !== '';
-          const isLive = isLiveMatch(match.matchNo);
-          const liveStatus = getLiveStatusText(match.matchNo);
-          
-          // Build match card content based on status
-          let teamsHtml;
-          let cardClass = 'today-match-card clickable';
-          let statusBadge = '';
-          
-          if (isFinished) {
-            teamsHtml = `
-              <div class="today-team">
-                ${formatFlag(match.team1)}<span class="today-team-name">${getTeamFifaCode(match.team1)}</span>
-              </div>
-              <div class="today-score">${score1Val}</div>
-              <div class="today-score-separator">-</div>
-              <div class="today-score">${score2Val}</div>
-              <div class="today-team">
-                ${formatFlag(match.team2)}<span class="today-team-name">${getTeamFifaCode(match.team2)}</span>
-              </div>
-            `;
-            statusBadge = '<span class="api-badge-small">Full-time</span>';
-          } else if (isLive) {
-            // Live match - show scores if available
-            const liveScore1 = score1Val || '0';
-            const liveScore2 = score2Val || '0';
-            teamsHtml = `
-              <div class="today-team">
-                ${formatFlag(match.team1)}<span class="today-team-name">${getTeamFifaCode(match.team1)}</span>
-              </div>
-              <div class="today-score">${liveScore1}</div>
-              <div class="today-score-separator">-</div>
-              <div class="today-score">${liveScore2}</div>
-              <div class="today-team">
-                ${formatFlag(match.team2)}<span class="today-team-name">${getTeamFifaCode(match.team2)}</span>
-              </div>
-            `;
-            statusBadge = `<span class="api-badge-small live-badge">LIVE ${liveStatus}</span>`;
-            cardClass += ' live';
-          } else {
-            // Upcoming match
-            teamsHtml = `
-              <div class="today-team">
-                ${formatFlag(match.team1)}<span class="today-team-name">${getTeamFifaCode(match.team1)}</span>
-              </div>
-              <div class="today-vs">vs</div>
-              <div class="today-team">
-                ${formatFlag(match.team2)}<span class="today-team-name">${getTeamFifaCode(match.team2)}</span>
-              </div>
-            `;
-            cardClass += ' upcoming';
-          }
-          
-          return `
-            <div class="${cardClass}" data-matchno="${match.matchNo}">
-              <div class="today-teams">
-                ${teamsHtml}
-              </div>
-              <div class="today-meta">
-                ${groupInfo}
-                <span class="today-time">${timeDisplay} ${statusBadge}</span>
-              </div>
-              <div class="today-venue">
-                <span class="today-stadium">${getStadiumName(match.venue) || ''}</span>
-                <span class="today-city">${getCityName(match.venue) || ''}</span>
-              </div>
-            </div>
-          `;
-        }).join('')}
-      </div>
-    </div>
-  `;
 }
 
 let selectedMatchNo = null;
@@ -1689,7 +1386,6 @@ function renderGroups(rankings, thirdPlaceTeams) {
   `;
 
   const thirdPlaceHtml = renderThirdPlaceStandings(thirdPlaceTeams);
-  
   groupListElement.innerHTML = groupHtml + legendHtml + thirdPlaceHtml;
 
   groupListElement.querySelectorAll('.score-input').forEach((input) => {
@@ -1706,21 +1402,6 @@ function renderGroups(rankings, thirdPlaceTeams) {
       toggleGroupCollapse(group);
     });
   });
-}
-
-function renderTodaysMatchesSection() {
-  const todaysSection = document.getElementById('todays-matches');
-  if (todaysSection) {
-    todaysSection.innerHTML = buildTodaysMatches();
-    
-    // Add click handlers for today's match cards
-    todaysSection.querySelectorAll('.today-match-card').forEach(card => {
-      card.addEventListener('click', () => {
-        const matchNo = card.dataset.matchno;
-        openMatchModal(matchNo);
-      });
-    });
-  }
 }
 
 function buildMatchCardHtml(match, stage, rankings, thirdPlaceTeams, knockoutMap, assignments) {
@@ -1743,7 +1424,7 @@ function buildMatchCardHtml(match, stage, rankings, thirdPlaceTeams, knockoutMap
           <div class="bracket-team-info">
             ${isTBDA ? '<span class="team-flag">🏳️</span>' : formatFlag(teamA.name)}
             <span class="bracket-team-name">
-              ${isTBDA ? (teamA.name === 'TBD' ? (teamA.note || match.pos1) : teamA.name) : getTeamFifaCode(teamA.name)}
+              ${isTBDA ? (teamA.name === 'TBD' ? (teamA.note || match.pos1) : teamA.name) : getTeamInitials(teamA.name)}
             </span>
           </div>
           <input class="score-input bracket-score" type="number" min="0" value="${scoreA}" data-match="${match.matchNo}" data-side="score1" ${disabledAttr} />
@@ -1752,7 +1433,7 @@ function buildMatchCardHtml(match, stage, rankings, thirdPlaceTeams, knockoutMap
           <div class="bracket-team-info">
             ${isTBDB ? '<span class="team-flag">🏳️</span>' : formatFlag(teamB.name)}
             <span class="bracket-team-name">
-              ${isTBDB ? (teamB.name === 'TBD' ? (teamB.note || match.pos2) : teamB.name) : getTeamFifaCode(teamB.name)}
+              ${isTBDB ? (teamB.name === 'TBD' ? (teamB.note || match.pos2) : teamB.name) : getTeamInitials(teamB.name)}
             </span>
           </div>
           <input class="score-input bracket-score" type="number" min="0" value="${scoreB}" data-match="${match.matchNo}" data-side="score2" ${disabledAttr} />
@@ -1888,11 +1569,9 @@ let currentAssignments = {};
 
 function render() {
   const { rankings, thirdPlaceTeams, thirdPlaceAssignments } = computeGroupStandings();
-  
   currentRankings = rankings;
   currentThirdPlacers = thirdPlaceTeams;
   currentAssignments = thirdPlaceAssignments;
-  
   renderGroups(rankings, thirdPlaceTeams);
   renderBracket(rankings, thirdPlaceTeams, thirdPlaceAssignments);
 }
