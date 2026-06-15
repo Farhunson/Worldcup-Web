@@ -874,224 +874,288 @@ const scheduleData =
       "date": "2026-06-28T19:00:00",
       "time": "19:00",
       "venue": "Los Angeles",
-      "stage": "r32"
+      "stage": "r32",
+      "pos1": "2A",
+      "pos2": "2B"
     },
     {
       "matchNo": 74,
       "date": "2026-06-29T17:00:00",
       "time": "17:00",
       "venue": "Houston",
-      "stage": "r32"
+      "stage": "r32",
+      "pos1": "1E",
+      "pos2": "3-ABCDF"
     },
     {
       "matchNo": 75,
       "date": "2026-06-29T20:30:00",
       "time": "20:30",
       "venue": "Boston",
-      "stage": "r32"
+      "stage": "r32",
+      "pos1": "1F",
+      "pos2": "2C"
     },
     {
       "matchNo": 76,
       "date": "2026-06-30T00:00:00",
       "time": "00:00",
       "venue": "Monterrey",
-      "stage": "r32"
+      "stage": "r32",
+      "pos1": "1C",
+      "pos2": "2F"
     },
     {
       "matchNo": 77,
       "date": "2026-06-30T17:00:00",
       "time": "17:00",
       "venue": "Dallas",
-      "stage": "r32"
+      "stage": "r32",
+      "pos1": "1I",
+      "pos2": "3-CDFGH"
     },
     {
       "matchNo": 78,
       "date": "2026-06-30T21:00:00",
       "time": "21:00",
       "venue": "New York/New Jersey",
-      "stage": "r32"
+      "stage": "r32",
+      "pos1": "2E",
+      "pos2": "2I"
     },
     {
       "matchNo": 79,
       "date": "2026-07-01T00:00:00",
       "time": "00:00",
       "venue": "Mexico City",
-      "stage": "r32"
+      "stage": "r32",
+      "pos1": "1A",
+      "pos2": "3-CEFHI"
     },
     {
       "matchNo": 80,
       "date": "2026-07-01T17:00:00",
       "time": "17:00",
       "venue": "Mexico City",
-      "stage": "r32"
+      "stage": "r32",
+      "pos1": "1L",
+      "pos2": "3-EHIJK"
     },
     {
       "matchNo": 81,
       "date": "2026-07-01T20:00:00",
       "time": "20:00",
       "venue": "Seattle",
-      "stage": "r32"
+      "stage": "r32",
+      "pos1": "1D",
+      "pos2": "3-BEFIJ"
     },
     {
       "matchNo": 82,
       "date": "2026-07-02T00:00:00",
       "time": "00:00",
       "venue": "San Francisco Bay Area",
-      "stage": "r32"
+      "stage": "r32",
+      "pos1": "1G",
+      "pos2": "3-AEHIJ"
     },
     {
       "matchNo": 83,
       "date": "2026-07-02T19:00:00",
       "time": "19:00",
       "venue": "Los Angeles",
-      "stage": "r32"
+      "stage": "r32",
+      "pos1": "2K",
+      "pos2": "2L"
     },
     {
       "matchNo": 84,
       "date": "2026-07-02T23:00:00",
       "time": "23:00",
       "venue": "Toronto",
-      "stage": "r32"
+      "stage": "r32",
+      "pos1": "1H",
+      "pos2": "2J"
     },
     {
       "matchNo": 85,
       "date": "2026-07-03T03:00:00",
       "time": "03:00",
       "venue": "Vancouver",
-      "stage": "r32"
+      "stage": "r32",
+      "pos1": "1B",
+      "pos2": "3-EFGIJ"
     },
     {
       "matchNo": 86,
       "date": "2026-07-03T18:00:00",
       "time": "18:00",
       "venue": "Dallas",
-      "stage": "r32"
+      "stage": "r32",
+      "pos1": "1J",
+      "pos2": "2H"
     },
     {
       "matchNo": 87,
       "date": "2026-07-03T22:00:00",
       "time": "22:00",
       "venue": "Miami",
-      "stage": "r32"
+      "stage": "r32",
+      "pos1": "1K",
+      "pos2": "3-DEIJL"
     },
     {
       "matchNo": 88,
       "date": "2026-07-04T00:30:00",
       "time": "00:30",
       "venue": "Miami",
-      "stage": "r32"
+      "stage": "r32",
+      "pos1": "2D",
+      "pos2": "2G"
     },
     {
       "matchNo": 89,
       "date": "2026-07-04T17:00:00",
       "time": "17:00",
       "venue": "Houston",
-      "stage": "r16"
+      "stage": "r16",
+      "pos1": "W74",
+      "pos2": "W77"
     },
     {
       "matchNo": 90,
       "date": "2026-07-04T21:00:00",
       "time": "21:00",
       "venue": "Philadelphia",
-      "stage": "r16"
+      "stage": "r16",
+      "pos1": "W73",
+      "pos2": "W75"
     },
     {
       "matchNo": 91,
       "date": "2026-07-05T20:00:00",
       "time": "20:00",
       "venue": "New York/New Jersey",
-      "stage": "r16"
+      "stage": "r16",
+      "pos1": "W76",
+      "pos2": "W78"
     },
     {
       "matchNo": 92,
       "date": "2026-07-05T23:00:00",
       "time": "23:00",
       "venue": "Mexico City",
-      "stage": "r16"
+      "stage": "r16",
+      "pos1": "W79",
+      "pos2": "W80"
     },
     {
       "matchNo": 93,
       "date": "2026-07-06T19:00:00",
       "time": "19:00",
       "venue": "Dallas",
-      "stage": "r16"
+      "stage": "r16",
+      "pos1": "W83",
+      "pos2": "W84"
     },
     {
       "matchNo": 94,
       "date": "2026-07-07T00:00:00",
       "time": "00:00",
       "venue": "Seattle",
-      "stage": "r16"
+      "stage": "r16",
+      "pos1": "W81",
+      "pos2": "W82"
     },
     {
       "matchNo": 95,
       "date": "2026-07-07T17:00:00",
       "time": "17:00",
       "venue": "Mexico City",
-      "stage": "r16"
+      "stage": "r16",
+      "pos1": "W86",
+      "pos2": "W88"
     },
     {
       "matchNo": 96,
       "date": "2026-07-07T20:00:00",
       "time": "20:00",
       "venue": "Vancouver",
-      "stage": "r16"
+      "stage": "r16",
+      "pos1": "W85",
+      "pos2": "W87"
     },
     {
       "matchNo": 97,
       "date": "2026-07-09T20:00:00",
       "time": "20:00",
       "venue": "Boston",
-      "stage": "qf"
+      "stage": "qf",
+      "pos1": "W89",
+      "pos2": "W90"
     },
     {
       "matchNo": 98,
       "date": "2026-07-10T19:00:00",
       "time": "19:00",
       "venue": "Los Angeles",
-      "stage": "qf"
+      "stage": "qf",
+      "pos1": "W93",
+      "pos2": "W94"
     },
     {
       "matchNo": 99,
       "date": "2026-07-11T21:00:00",
       "time": "21:00",
       "venue": "Miami",
-      "stage": "qf"
+      "stage": "qf",
+      "pos1": "W91",
+      "pos2": "W92"
     },
     {
       "matchNo": 100,
       "date": "2026-07-12T00:00:00",
       "time": "00:00",
       "venue": "Miami",
-      "stage": "qf"
+      "stage": "qf",
+      "pos1": "W95",
+      "pos2": "W96"
     },
     {
       "matchNo": 101,
       "date": "2026-07-14T19:00:00",
       "time": "19:00",
       "venue": "Dallas",
-      "stage": "sf"
+      "stage": "sf",
+      "pos1": "W97",
+      "pos2": "W98"
     },
     {
       "matchNo": 102,
       "date": "2026-07-15T20:00:00",
       "time": "20:00",
       "venue": "Mexico City",
-      "stage": "sf"
+      "stage": "sf",
+      "pos1": "W99",
+      "pos2": "W100"
     },
     {
       "matchNo": 103,
       "date": "2026-07-18T21:00:00",
       "time": "21:00",
       "venue": "Miami",
-      "stage": "third"
+      "stage": "third",
+      "pos1": "RU101",
+      "pos2": "RU102"
     },
     {
       "matchNo": 104,
       "date": "2026-07-19T19:00:00",
       "time": "19:00",
       "venue": "New York/New Jersey",
-      "stage": "final"
+      "stage": "final",
+      "pos1": "W101",
+      "pos2": "W102"
     },
   ]
 };
