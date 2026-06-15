@@ -513,11 +513,11 @@ function getMatchDateTimeLabel(matchNo, venue, fallbackDate, fallbackTime) {
     // The date string format is "2026-06-14T05:00:00" (local time at venue)
     const dateStr = fallbackDate.endsWith('Z') ? fallbackDate.slice(0, -1) : fallbackDate;
     
-    // Get venue timezone
+    // Get venue timezone for parsing the schedule data
     const venueTimezone = venueTimezones[venue] || 'America/New_York';
     
-    // Get user's timezone for display
-    const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    // Get user's browser timezone for display
+    const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     
     // Parse the local venue date/time components
     const [year, month, dayTime] = dateStr.split('T');
@@ -555,36 +555,36 @@ function getMatchDateTimeLabel(matchNo, venue, fallbackDate, fallbackTime) {
       correctUTC = new Date(Date.UTC(year, parseInt(month) - 1, parseInt(day), hours, minutes));
     }
     
-    // Get venue timezone abbreviation
-    const venueTzFormatter = new Intl.DateTimeFormat('en-US', {
-      timeZone: venueTimezone,
+    // Get user's timezone abbreviation
+    const userTzFormatter = new Intl.DateTimeFormat('en-US', {
+      timeZone: userTimezone,
       timeZoneName: 'short'
     });
-    const venueTzParts = venueTzFormatter.formatToParts(correctUTC);
-    const venueTzAbbr = venueTzParts.find(p => p.type === 'timeZoneName')?.value || '';
+    const userTzParts = userTzFormatter.formatToParts(correctUTC);
+    const userTzAbbr = userTzParts.find(p => p.type === 'timeZoneName')?.value || '';
     
-    // Format for display - use venue timezone for time, user's timezone for date
-    const venueDateFormatter = new Intl.DateTimeFormat('en-US', {
-      timeZone: venueTimezone,
+    // Format for display - convert UTC to user's browser timezone
+    const userDateFormatter = new Intl.DateTimeFormat('en-US', {
+      timeZone: userTimezone,
       month: 'short',
       day: 'numeric'
     });
-    const venueTimeFormatter = new Intl.DateTimeFormat('en-US', {
-      timeZone: venueTimezone,
+    const userTimeFormatter = new Intl.DateTimeFormat('en-US', {
+      timeZone: userTimezone,
       hour: '2-digit',
       minute: '2-digit',
       hour12: false
     });
     
-    const dateLabel = venueDateFormatter.format(correctUTC);
-    const localTimeStr = venueTimeFormatter.format(correctUTC);
+    const dateLabel = userDateFormatter.format(correctUTC);
+    const localTimeStr = userTimeFormatter.format(correctUTC);
     
     return {
       dateLabel: dateLabel,
       timeLabel: localTimeStr || '',
-      tzAbbr: venueTzAbbr,
-      fullDate: correctUTC.toLocaleDateString(undefined, { timeZone: venueTimezone, weekday: 'short', month: 'short', day: 'numeric' }),
-      fullTime: `${localTimeStr} ${venueTzAbbr}`
+      tzAbbr: userTzAbbr,
+      fullDate: correctUTC.toLocaleDateString(undefined, { timeZone: userTimezone, weekday: 'short', month: 'short', day: 'numeric' }),
+      fullTime: `${localTimeStr} ${userTzAbbr}`
     };
   }
   return {
