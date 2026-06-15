@@ -1315,6 +1315,9 @@ function buildGroupMatches(group, matches) {
           </div>
         </div>
         ${scorersHtml}
+        <div class="match-mid">
+          ${dateLabel} · ${timeDisplay} ${statusBadge}
+        </div>
         <div class="match-bottom">
           <div class="stadium-name">${getStadiumName(match.venue) || ''}</div>
           <div class="city-name">${getCityName(match.venue) || ''}</div>
