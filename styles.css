@@ -2617,15 +2617,11 @@ footer {
 
 .scorers-row {
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 8px 12px;
-  gap: 12px;
+  flex-direction: column;
+  padding: 0;
   background: rgba(0, 0, 0, 0.15);
   border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
   font-size: 0.75rem;
-  min-height: 32px;
 }
 
 .scorers-home,
@@ -2679,6 +2675,69 @@ footer {
   font-style: italic;
 }
 
+/* Scorers toggle - clickable header */
+.scorers-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+  color: var(--primary);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.scorers-toggle:hover {
+  background: rgba(77, 156, 255, 0.1);
+}
+
+/* Scorers icon rotation */
+.scorers-icon {
+  font-size: 18px !important;
+  transition: transform 0.25s ease;
+}
+
+/* Scorers indicator badge */
+.scorers-indicator {
+  background: var(--surface-strong);
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.7rem;
+}
+
+/* Scorers content - collapsible section */
+.scorers-content {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 8px 12px;
+  gap: 12px;
+  overflow: hidden;
+  transition: opacity 0.25s ease, max-height 0.25s ease, padding 0.25s ease;
+  max-height: 200px;
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+/* Collapsed state - hide content */
+.scorers-row.collapsed .scorers-content {
+  display: none;
+  max-height: 0;
+  padding: 0;
+  opacity: 0;
+}
+
+/* When collapsed, rotate icon */
+.scorers-row.collapsed .scorers-icon {
+  transform: rotate(-90deg);
+}
+
 /* Today's match card scorers - smaller size */
 .todays-scorers {
   padding: 6px 10px;
@@ -2694,16 +2753,21 @@ footer {
 }
 
 /* Group stage match card scorers */
-.match-compact .scorers-row {
+.match-compact .scorers-toggle {
+  padding: 6px 10px;
+}
+
+.match-compact .scorers-content {
   padding: 6px 10px;
 }
 
 /* Responsive adjustments for scorers */
 @media (max-width: 640px) {
-  .scorers-row {
+  .scorers-content {
     flex-direction: column;
     align-items: center;
     gap: 8px;
+    padding: 8px 10px;
   }
   
   .scorers-home,
