@@ -1181,7 +1181,7 @@ function isGroupComplete(group) {
     });
 }
 
-function resolveTeamPosition(position, rankings, thirdPlaceTeams, knockoutMap, requireComplete = false, matchNo = null, assignments = {}) {
+function resolveTeamPosition(position, rankings, thirdPlaceTeams, knockoutMap, requireComplete = false, matchNo = null, assignments = {}, allGroupsComplete = false) {
   if (!position) return { name: 'TBD', note: 'TBD' };
 
   if (position.startsWith('1') || position.startsWith('2')) {
@@ -1194,11 +1194,17 @@ function resolveTeamPosition(position, rankings, thirdPlaceTeams, knockoutMap, r
   }
 
   if (position.startsWith('3-')) {
-    // Always show numbered "Best 3rd place" labels – never resolve to actual teams
+    // For 3rd place positions, only resolve to actual team when ALL groups are complete
+    if (allGroupsComplete && matchNo && assignments[matchNo]) {
+      const assignedTeam = assignments[matchNo];
+      return { name: assignedTeam.team, note: `3rd ${assignedTeam.group}` };
+    }
+    // Show numbered "Best 3rd place" labels until all groups complete
     const slotMatchNos = [74, 77, 79, 80, 81, 82, 85, 87];
     const slotIndex = slotMatchNos.indexOf(matchNo);
     const label = slotIndex >= 0 ? `Best 3rd place ${'#'}${slotIndex + 1}` : 'Best 3rd place #';
-    return { name: 'TBD', note: label };
+    const waitLabel = allGroupsComplete ? '' : ' (Waiting all groups)';
+    return { name: 'TBD', note: label + waitLabel };
   }
 
   if (position.startsWith('W') || position.startsWith('RU')) {
@@ -1215,7 +1221,7 @@ function resolveTeamPosition(position, rankings, thirdPlaceTeams, knockoutMap, r
   return { name: position, note: position };
 }
 
-function computeKnockoutResults(rankings, thirdPlaceTeams, assignments) {
+function computeKnockoutResults(rankings, thirdPlaceTeams, assignments, allGroupsComplete = false) {
   const map = {};
   scheduleData.knockoutMatches.forEach((match) => {
     const score1 = parseScore(state.scores[match.matchNo]?.score1 || '');
@@ -1225,13 +1231,15 @@ function computeKnockoutResults(rankings, thirdPlaceTeams, assignments) {
     let name2 = match.team2;
 
     if (!name1) {
-      name1 = resolveTeamPosition(match.pos1, rankings, thirdPlaceTeams, map, false, match.matchNo, assignments).name;
+      const resolved = resolveTeamPosition(match.pos1, rankings, thirdPlaceTeams, map, false, match.matchNo, assignments, allGroupsComplete);
+      name1 = resolved.name;
     }
     if (!name2) {
-      name2 = resolveTeamPosition(match.pos2, rankings, thirdPlaceTeams, map, false, match.matchNo, assignments).name;
+      const resolved = resolveTeamPosition(match.pos2, rankings, thirdPlaceTeams, map, false, match.matchNo, assignments, allGroupsComplete);
+      name2 = resolved.name;
     }
 
-    if (!name1 || !name2) return;
+    if (!name1 || !name2 || name1 === 'TBD' || name2 === 'TBD') return;
 
     if (score1 > score2) {
       map[match.matchNo] = { winner: name1, runner: name2 };
@@ -1397,8 +1405,8 @@ function renderMatchDetail(matchNo) {
   const score2 = state.scores[match.matchNo]?.score2 ?? '';
   const { dateLabel, timeLabel, fullDate, fullTime } = getMatchDateTimeLabel(match.matchNo, match.venue, match.date, match.time);
 
-  const teamA = match.team1 ? { name: match.team1 } : resolveTeamPosition(match.pos1 || '', currentRankings, currentThirdPlacers, {}, false, match.matchNo, currentAssignments);
-  const teamB = match.team2 ? { name: match.team2 } : resolveTeamPosition(match.pos2 || '', currentRankings, currentThirdPlacers, {}, false, match.matchNo, currentAssignments);
+  const teamA = match.team1 ? { name: match.team1 } : resolveTeamPosition(match.pos1 || '', currentRankings, currentThirdPlacers, {}, false, match.matchNo, currentAssignments, currentAllGroupsComplete);
+  const teamB = match.team2 ? { name: match.team2 } : resolveTeamPosition(match.pos2 || '', currentRankings, currentThirdPlacers, {}, false, match.matchNo, currentAssignments, currentAllGroupsComplete);
 
   const apiTime = getMatchTime(match.matchNo, match.venue);
   const timezoneDisplay = apiTime
@@ -1649,10 +1657,10 @@ function renderGroups(rankings, thirdPlaceTeams) {
   });
 }
 
-function buildMatchCardHtml(match, stage, rankings, thirdPlaceTeams, knockoutMap, assignments) {
+function buildMatchCardHtml(match, stage, rankings, thirdPlaceTeams, knockoutMap, assignments, allGroupsComplete) {
   const isR32 = stage === 'r32';
-  const teamA = match.team1 ? { name: match.team1, note: '' } : resolveTeamPosition(match.pos1, rankings, thirdPlaceTeams, knockoutMap, isR32, match.matchNo, assignments);
-  const teamB = match.team2 ? { name: match.team2, note: '' } : resolveTeamPosition(match.pos2, rankings, thirdPlaceTeams, knockoutMap, isR32, match.matchNo, assignments);
+  const teamA = match.team1 ? { name: match.team1, note: '' } : resolveTeamPosition(match.pos1, rankings, thirdPlaceTeams, knockoutMap, isR32, match.matchNo, assignments, allGroupsComplete);
+  const teamB = match.team2 ? { name: match.team2, note: '' } : resolveTeamPosition(match.pos2, rankings, thirdPlaceTeams, knockoutMap, isR32, match.matchNo, assignments, allGroupsComplete);
   const scoreA = state.scores[match.matchNo]?.score1 ?? '';
   const scoreB = state.scores[match.matchNo]?.score2 ?? '';
   const isTBDA = teamA.name === 'TBD' || teamA.note === 'TBD' || teamA.note.includes('Waiting');
@@ -1696,8 +1704,8 @@ function buildMatchCardHtml(match, stage, rankings, thirdPlaceTeams, knockoutMap
   `;
 }
 
-function buildStageHtml(stage, matches, rankings, thirdPlaceTeams, knockoutMap, assignments) {
-  const matchCards = matches.map(m => buildMatchCardHtml(m, stage, rankings, thirdPlaceTeams, knockoutMap, assignments));
+function buildStageHtml(stage, matches, rankings, thirdPlaceTeams, knockoutMap, assignments, allGroupsComplete) {
+  const matchCards = matches.map(m => buildMatchCardHtml(m, stage, rankings, thirdPlaceTeams, knockoutMap, assignments, allGroupsComplete));
 
   // Group matches into pairs for bracket connectors (skip for third/final)
   let matchesHtml;
@@ -1727,7 +1735,7 @@ function buildStageHtml(stage, matches, rankings, thirdPlaceTeams, knockoutMap, 
   `;
 }
 
-function renderBracket(rankings, thirdPlaceTeams, assignments) {
+function renderBracket(rankings, thirdPlaceTeams, assignments, allGroupsComplete) {
   const grouped = scheduleData.knockoutMatches.reduce((acc, match) => {
     acc[match.stage] = acc[match.stage] || [];
     acc[match.stage].push(match);
@@ -1736,11 +1744,11 @@ function renderBracket(rankings, thirdPlaceTeams, assignments) {
 
   const stageOrder = ['r32', 'r16', 'qf', 'sf', 'third', 'final'];
   let html = '';
-  const resultMap = computeKnockoutResults(rankings, thirdPlaceTeams, assignments);
+  const resultMap = computeKnockoutResults(rankings, thirdPlaceTeams, assignments, allGroupsComplete);
 
   stageOrder.forEach((stage) => {
     if (!grouped[stage]?.length) return;
-    html += buildStageHtml(stage, grouped[stage].sort((a, b) => a.matchNo - b.matchNo), rankings, thirdPlaceTeams, resultMap, assignments);
+    html += buildStageHtml(stage, grouped[stage].sort((a, b) => a.matchNo - b.matchNo), rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete);
   });
 
   bracketContainer.innerHTML = html;
@@ -1811,6 +1819,7 @@ function downloadCsv(csv, filename) {
 let currentRankings = null;
 let currentThirdPlacers = null;
 let currentAssignments = {};
+let currentAllGroupsComplete = false;
 
 // Get matches for today
 function getTodaysMatches() {
@@ -1976,13 +1985,14 @@ function scrollToMatch(matchNo) {
 }
 
 function render() {
-  const { rankings, thirdPlaceTeams, thirdPlaceAssignments } = computeGroupStandings();
+  const { rankings, thirdPlaceTeams, thirdPlaceAssignments, allGroupsComplete } = computeGroupStandings();
   currentRankings = rankings;
   currentThirdPlacers = thirdPlaceTeams;
   currentAssignments = thirdPlaceAssignments;
+  currentAllGroupsComplete = allGroupsComplete;
   renderTodaysMatches();
   renderGroups(rankings, thirdPlaceTeams);
-  renderBracket(rankings, thirdPlaceTeams, thirdPlaceAssignments);
+  renderBracket(rankings, thirdPlaceTeams, thirdPlaceAssignments, allGroupsComplete);
 }
 
 // Initialize Live API features
