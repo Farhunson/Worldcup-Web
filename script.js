@@ -735,19 +735,23 @@ async function fetchLiveScores() {
           timesUpdated++;
         }
 
-        // Update score for both live and finished matches
-        // Determine correct score order based on which team is home
-        const isHomeTeam = targetMatch.team1 === homeProjectName;
-        const score1 = isHomeTeam ? homeScore : awayScore;
-        const score2 = isHomeTeam ? awayScore : homeScore;
+        // Only update score for live and finished matches (not upcoming)
+        const isLiveOrFinished = game.finished === 'TRUE' || game.time_elapsed === 'live';
+        
+        if (isLiveOrFinished) {
+          // Determine correct score order based on which team is home
+          const isHomeTeam = targetMatch.team1 === homeProjectName;
+          const score1 = isHomeTeam ? homeScore : awayScore;
+          const score2 = isHomeTeam ? awayScore : homeScore;
 
-        // Update score if different from current
-        const currentScore = state.scores[targetMatch.matchNo];
-        if (!currentScore ||
-          parseInt(currentScore.score1) !== score1 ||
-          parseInt(currentScore.score2) !== score2) {
-          state.scores[targetMatch.matchNo] = { score1: String(score1), score2: String(score2) };
-          updatedCount++;
+          // Update score if different from current
+          const currentScore = state.scores[targetMatch.matchNo];
+          if (!currentScore ||
+            parseInt(currentScore.score1) !== score1 ||
+            parseInt(currentScore.score2) !== score2) {
+            state.scores[targetMatch.matchNo] = { score1: String(score1), score2: String(score2) };
+            updatedCount++;
+          }
         }
 
         // Check if match is live (not finished, time_elapsed is "live")
