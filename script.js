@@ -1835,11 +1835,18 @@ function buildTodaysMatchCard(match) {
     const scorers = getMatchScorers(match.matchNo);
     const homeScorersHtml = buildScorersHtml(scorers.home);
     const awayScorersHtml = buildScorersHtml(scorers.away);
+    const totalScorers = scorers.home.length + scorers.away.length;
     scorersHtml = `
-      <div class="scorers-row todays-scorers">
-        <div class="scorers-home">${homeScorersHtml}</div>
-        <div class="scorers-divider"></div>
-        <div class="scorers-away">${awayScorersHtml}</div>
+      <div class="scorers-row todays-scorers collapsed" data-match="${match.matchNo}">
+        <div class="scorers-toggle">
+          <span class="material-symbols-outlined scorers-icon">expand_more</span>
+          <span class="scorers-indicator">${totalScorers} goal${totalScorers !== 1 ? 's' : ''}</span>
+        </div>
+        <div class="scorers-content">
+          <div class="scorers-home">${homeScorersHtml}</div>
+          <div class="scorers-divider"></div>
+          <div class="scorers-away">${awayScorersHtml}</div>
+        </div>
       </div>
     `;
   }
