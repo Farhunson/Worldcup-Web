@@ -2740,7 +2740,6 @@ footer {
 
 /* Today's match card scorers - smaller size */
 .todays-scorers {
-  padding: 6px 10px;
   font-size: 0.7rem;
 }
 
@@ -2750,6 +2749,14 @@ footer {
 
 .todays-scorers .scorer-minute {
   font-size: 0.65rem;
+}
+
+.todays-scorers .scorers-content {
+  padding: 6px 10px;
+}
+
+.todays-scorers .scorers-toggle {
+  padding: 6px 10px;
 }
 
 /* Group stage match card scorers */
