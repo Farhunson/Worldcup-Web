@@ -1136,7 +1136,7 @@ function buildGroupCard(group, teams, rankings) {
 
 function buildGroupMatches(group, matches) {
   return matches
-    .filter((match) => match.pos1 && match.pos1[0] === group)
+    .filter((match) => match.pos1 && (match.pos1[0] === group || match.pos2[0] === group))
     .sort((a, b) => a.matchNo - b.matchNo)
     .map((match) => {
       const { dateLabel, timeLabel, tzAbbr } = getMatchDateTimeLabel(match.matchNo, match.venue, match.date, match.time);
