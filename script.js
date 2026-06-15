@@ -7,6 +7,7 @@ const state = {
   apiMatchTimes: {}, // Store API match times (UTC) for timezone conversion
   liveMatches: {}, // Track which matches are currently live
   finishedMatches: {}, // Track which matches are finished from API
+  apiScorers: {}, // Store scorer data from API { matchNo: { home: [...], away: [...] } }
 };
 loadState();
 
@@ -771,11 +772,81 @@ async function fetchLiveScores() {
           state.apiSourcedMatches[targetMatch.matchNo] = false;
           state.finishedMatches[targetMatch.matchNo] = false;
         }
+
+        // Parse and store scorer data from API
+        if (isLiveOrFinished && (game.home_scorers || game.away_scorers)) {
+          try {
+            // Helper function to parse the malformed JSON from API (uses single quotes)
+            const parseScorers = (scorersStr) => {
+              if (!scorersStr || scorersStr === 'null') return [];
+              try {
+                // First try standard JSON parse
+                return JSON.parse(scorersStr);
+              } catch {
+                // The API returns malformed JSON with single quotes
+                // Format: {"Name 90'","Name 45'(p)"}
+                // Convert to valid JSON by replacing ' with \" and wrapping array elements properly
+                // Extract the array content and parse each element
+                const content = scorersStr.replace(/^\{|\}$/g, '');
+                const matches = [];
+                let current = '';
+                let inQuote = false;
+                let escapeNext = false;
+                
+                for (let i = 0; i < content.length; i++) {
+                  const char = content[i];
+                  if (escapeNext) {
+                    current += char;
+                    escapeNext = false;
+                    continue;
+                  }
+                  if (char === '\\') {
+                    escapeNext = true;
+                    current += char;
+                    continue;
+                  }
+                  if (char === '"') {
+                    inQuote = !inQuote;
+                    current += char;
+                  } else if (char === ',' && !inQuote) {
+                    // End of element
+                    const trimmed = current.trim();
+                    if (trimmed) {
+                      // Remove surrounding quotes and unescape
+                      const clean = trimmed.replace(/^"|"$/g, '').replace(/\\"/g, '"');
+                      matches.push(clean);
+                    }
+                    current = '';
+                  } else {
+                    current += char;
+                  }
+                }
+                // Don't forget the last element
+                if (current.trim()) {
+                  const clean = current.trim().replace(/^"|"$/g, '').replace(/\\"/g, '"');
+                  matches.push(clean);
+                }
+                return matches;
+              }
+            };
+            
+            const homeScorersRaw = parseScorers(game.home_scorers);
+            const awayScorersRaw = parseScorers(game.away_scorers);
+            
+            state.apiScorers[targetMatch.matchNo] = {
+              home: homeScorersRaw,
+              away: awayScorersRaw
+            };
+          } catch (e) {
+            // Failed to parse scorers JSON, ignore
+            console.warn(`Failed to parse scorers for match ${targetMatch.matchNo}:`, e);
+          }
+        }
       }
     });
 
-    // Save state if any updates were made (scores or times)
-    if (updatedCount > 0 || timesUpdated > 0) {
+    // Save state if any updates were made (scores, times, or scorers)
+    if (updatedCount > 0 || timesUpdated > 0 || games.some(g => g.home_scorers || g.away_scorers)) {
       saveState();
       render();
     }
@@ -809,6 +880,46 @@ function isLiveMatch(matchNo) {
 // Helper function to check if a match is finished (from API)
 function isFinishedMatch(matchNo) {
   return state.finishedMatches[matchNo] === true;
+}
+
+// Helper function to get scorers for a match
+function getMatchScorers(matchNo) {
+  return state.apiScorers[matchNo] || { home: [], away: [] };
+}
+
+// Helper function to check if a match has scorer data
+function hasScorerData(matchNo) {
+  const scorers = state.apiScorers[matchNo];
+  return scorers && (scorers.home.length > 0 || scorers.away.length > 0);
+}
+
+// Helper function to format a single scorer string for display
+function formatScorer(scorerStr) {
+  if (!scorerStr) return '';
+  
+  // Parse the scorer string - format is like "Name 90'" or "Name 45'+5'(p)"
+  // Extract name and minute/penalty info
+  const match = scorerStr.match(/^(.+?)\s*(\d+'\+?\d*'?\(p\)?)/);
+  if (match) {
+    const [, name, minute] = match;
+    const isPenalty = minute.includes('(p)');
+    return { name: name.trim(), minute, isPenalty };
+  }
+  
+  return { name: scorerStr.trim(), minute: '', isPenalty: false };
+}
+
+// Helper function to build scorers HTML for a team
+function buildScorersHtml(scorers, isHomeTeam = true) {
+  if (!scorers || scorers.length === 0) {
+    return '<span class="no-scorers">-</span>';
+  }
+  
+  return scorers.map(scorerStr => {
+    const parsed = formatScorer(scorerStr);
+    const penaltyClass = parsed.isPenalty ? ' scorer-penalty' : '';
+    return `<span class="scorer-item${penaltyClass}">${parsed.name} <span class="scorer-minute">${parsed.minute}</span></span>`;
+  }).join('');
 }
 
 function updateLiveIndicator(success) {
@@ -1161,6 +1272,23 @@ function buildGroupMatches(group, matches) {
       } else if (isApiSourced || isFinished) {
         statusBadge = '<span class="api-badge-small">Full-time</span>';
       }
+
+      // Get scorer data for this match
+      const showScorers = hasScorerData(match.matchNo);
+      let scorersHtml = '';
+      if (showScorers) {
+        const scorers = getMatchScorers(match.matchNo);
+        const homeScorersHtml = buildScorersHtml(scorers.home);
+        const awayScorersHtml = buildScorersHtml(scorers.away);
+        scorersHtml = `
+          <div class="scorers-row">
+            <div class="scorers-home">${homeScorersHtml}</div>
+            <div class="scorers-divider"></div>
+            <div class="scorers-away">${awayScorersHtml}</div>
+          </div>
+        `;
+      }
+
       
       return `
       <div class="match-card match-compact clickable" data-matchno="${match.matchNo}">
@@ -1179,8 +1307,7 @@ function buildGroupMatches(group, matches) {
             <div class="team-flag-name">${formatFlag(match.team2)}<div class="team-name">${getTeamInitials(match.team2)}</div></div>
           </div>
         </div>
-
-        <div class="match-mid">${dateLabel} · ${timeDisplay} ${statusBadge}</div>
+        ${scorersHtml}
         <div class="match-bottom">
           <div class="stadium-name">${getStadiumName(match.venue) || ''}</div>
           <div class="city-name">${getCityName(match.venue) || ''}</div>
@@ -1694,6 +1821,22 @@ function buildTodaysMatchCard(match) {
     statusClass = 'todays-match-upcoming';
   }
   
+  // Get scorer data for this match
+  const showScorers = hasScorerData(match.matchNo);
+  let scorersHtml = '';
+  if (showScorers) {
+    const scorers = getMatchScorers(match.matchNo);
+    const homeScorersHtml = buildScorersHtml(scorers.home);
+    const awayScorersHtml = buildScorersHtml(scorers.away);
+    scorersHtml = `
+      <div class="scorers-row todays-scorers">
+        <div class="scorers-home">${homeScorersHtml}</div>
+        <div class="scorers-divider"></div>
+        <div class="scorers-away">${awayScorersHtml}</div>
+      </div>
+    `;
+  }
+  
   // Build today's match card content
   const matchContent = `
     <div class="todays-match-header">
@@ -1714,6 +1857,7 @@ function buildTodaysMatchCard(match) {
         <div class="team-flag-name">${formatFlag(match.team2)}<div class="team-name">${getTeamInitials(match.team2)}</div></div>
       </div>
     </div>
+    ${scorersHtml}
     <div class="match-mid">
       ${dateLabel} · ${timeDisplay} ${statusBadge}
     </div>

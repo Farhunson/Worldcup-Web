@@ -2610,3 +2610,116 @@ footer {
     box-shadow: 0 0 0 4px var(--accent);
   }
 }
+
+/* ============================================
+   Scorers Display
+   ============================================ */
+
+.scorers-row {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 8px 12px;
+  gap: 12px;
+  background: rgba(0, 0, 0, 0.15);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  font-size: 0.75rem;
+  min-height: 32px;
+}
+
+.scorers-home,
+.scorers-away {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-width: 45%;
+}
+
+.scorers-away {
+  text-align: right;
+  align-items: flex-end;
+}
+
+.scorers-divider {
+  width: 1px;
+  align-self: stretch;
+  background: var(--border);
+  margin: 0 4px;
+}
+
+.scorer-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text);
+  white-space: nowrap;
+  padding: 1px 4px;
+  border-radius: 3px;
+  line-height: 1.3;
+}
+
+.scorer-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.scorer-penalty {
+  color: var(--accent);
+}
+
+.scorer-minute {
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
+.no-scorers {
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* Today's match card scorers - smaller size */
+.todays-scorers {
+  padding: 6px 10px;
+  font-size: 0.7rem;
+}
+
+.todays-scorers .scorer-item {
+  font-size: 0.7rem;
+}
+
+.todays-scorers .scorer-minute {
+  font-size: 0.65rem;
+}
+
+/* Group stage match card scorers */
+.match-compact .scorers-row {
+  padding: 6px 10px;
+}
+
+/* Responsive adjustments for scorers */
+@media (max-width: 640px) {
+  .scorers-row {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .scorers-home,
+  .scorers-away {
+    max-width: 100%;
+    width: 100%;
+  }
+  
+  .scorers-away {
+    text-align: left;
+    align-items: flex-start;
+  }
+  
+  .scorers-divider {
+    width: 100%;
+    height: 1px;
+    align-self: auto;
+  }
+}
