@@ -2161,7 +2161,6 @@ async function updatePortraitsFromAPI() {
   
   for (const img of portraitImages) {
     const playerName = img.dataset.player;
-    const initials = img.dataset.initials;
     const placeholder = img.nextElementSibling;
     console.log('Fetching portrait for:', playerName);
     
@@ -2169,13 +2168,20 @@ async function updatePortraitsFromAPI() {
     console.log('Got URL for', playerName, ':', portraitUrl);
     
     if (portraitUrl) {
-      img.onload = function() {
+      // Create a new image to preload
+      const tempImg = new Image();
+      tempImg.onload = function() {
+        // Image loaded successfully, update the DOM
+        img.src = portraitUrl;
         img.style.display = 'inline-block';
         if (placeholder && placeholder.classList.contains('scorer-portrait-placeholder')) {
           placeholder.style.display = 'none';
         }
       };
-      img.src = portraitUrl;
+      tempImg.onerror = function() {
+        console.log('Failed to load image for', playerName);
+      };
+      tempImg.src = portraitUrl;
     }
   }
 }
