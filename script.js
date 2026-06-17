@@ -1034,13 +1034,21 @@ function computeTopScorers() {
   // Iterate through all matches and their scorers
   for (const matchNo in state.apiScorers) {
     const matchScorers = state.apiScorers[matchNo];
+    const match = findMatchByNo(Number(matchNo));
+    
+    // Get country for home and away teams
+    const homeTeam = match?.team1 || null;
+    const awayTeam = match?.team2 || null;
     
     // Process home team scorers
     for (const scorerStr of matchScorers.home || []) {
       const parsed = formatScorer(scorerStr);
       const name = parsed.name;
       if (name) {
-        scorerCounts[name] = (scorerCounts[name] || 0) + 1;
+        if (!scorerCounts[name]) {
+          scorerCounts[name] = { goals: 0, country: homeTeam };
+        }
+        scorerCounts[name].goals++;
       }
     }
     
@@ -1049,14 +1057,17 @@ function computeTopScorers() {
       const parsed = formatScorer(scorerStr);
       const name = parsed.name;
       if (name) {
-        scorerCounts[name] = (scorerCounts[name] || 0) + 1;
+        if (!scorerCounts[name]) {
+          scorerCounts[name] = { goals: 0, country: awayTeam };
+        }
+        scorerCounts[name].goals++;
       }
     }
   }
   
   // Convert to array and sort by goal count
   const sortedScorers = Object.entries(scorerCounts)
-    .map(([name, goals]) => ({ name, goals }))
+    .map(([name, data]) => ({ name, goals: data.goals, country: data.country }))
     .sort((a, b) => b.goals - a.goals);
   
   return sortedScorers;
@@ -1087,13 +1098,28 @@ function renderTopScorers() {
       <tbody>
   `;
   
+  let currentRank = 0;
   topScorers.forEach((scorer, index) => {
-    const rank = index + 1;
-    const rankClass = rank <= 3 ? `rank-${rank}` : '';
+    // Calculate rank with ties
+    // If goals same as previous, show "=", otherwise show sequential rank
+    const isTied = index > 0 && scorer.goals === topScorers[index - 1].goals;
+    const rankDisplay = isTied ? '=' : index + 1;
+    
+    // Determine rank class (for gold/silver/bronze styling)
+    let effectiveRank = currentRank;
+    if (!isTied) {
+      currentRank = index + 1;
+      effectiveRank = currentRank;
+    }
+    const rankClass = effectiveRank <= 3 ? `rank-${effectiveRank}` : '';
+    
+    // Get flag for country
+    const flagHtml = scorer.country ? formatFlag(scorer.country) : '';
+    
     html += `
       <tr class="${rankClass}">
-        <td class="rank-col">${rank}</td>
-        <td class="player-col">${scorer.name}</td>
+        <td class="rank-col">${rankDisplay}</td>
+        <td class="player-col">${flagHtml}<span class="scorer-name">${scorer.name}</span></td>
         <td class="goals-col">${scorer.goals}</td>
       </tr>
     `;
