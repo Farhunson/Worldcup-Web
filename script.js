@@ -992,7 +992,7 @@ const scorerNameConversions = {
   'D. Bobadilla': 'Diego Bobadilla',
   
   // Sweden
-  'Y.Ayari': 'Youssef Lydefelt',
+  'Y.Ayari': 'Yasin Ayari',
   'A. Isak': 'Alexander Isak',
   'V. Gyökeres': 'Viktor Gyökeres',
   'M. Svanberg': 'Mattias Svanberg',
@@ -1126,7 +1126,7 @@ const wcPlayerDatabase = [
   { fullName: 'Viktor Gyokeres', nickname: 'Gyokeres', team: 'Sweden' },
   { fullName: 'Dejan Kulusevski', nickname: 'Kulusevski', team: 'Sweden' },
   { fullName: 'Anthony Elanga', nickname: 'Elanga', team: 'Sweden' },
-  { fullName: 'Youssef Lydefelt', nickname: 'Ayari', team: 'Sweden' },
+  { fullName: 'Yasin Ayari', nickname: 'Ayari', team: 'Sweden' },
   { fullName: 'Mattias Svanberg', nickname: 'Svanberg', team: 'Sweden' },
   
   // Norway
@@ -1524,15 +1524,51 @@ function fuzzyMatch(str1, str2) {
   str1 = str1.toLowerCase().trim();
   str2 = str2.toLowerCase().trim();
   
+  // Normalize - remove dots, handle initials like "Y.Ayari" -> "y ayari"
+  str1 = str1.replace(/\./g, ' ').replace(/\s+/g, ' ').trim();
+  str2 = str2.replace(/\./g, ' ').replace(/\s+/g, ' ').trim();
+  
   // Exact match
   if (str1 === str2) return 1;
   
-  // One contains the other
-  if (str1.includes(str2) || str2.includes(str1)) return 0.8;
+  // Check if one contains the other AND length ratio is reasonable (>= 0.5)
+  const len1 = str1.length;
+  const len2 = str2.length;
+  const lengthRatio = Math.min(len1, len2) / Math.max(len1, len2);
   
-  // Check if initials match (e.g., "K. Havertz" matches "Kai Havertz")
+  if ((str1.includes(str2) || str2.includes(str1)) && lengthRatio >= 0.5) {
+    return 0.8 * lengthRatio; // Reduce score for large length differences
+  }
+  
+  // Check if initials match (e.g., "K Havertz" matches "Kai Havertz")
   const words1 = str1.split(/\s+/);
   const words2 = str2.split(/\s+/);
+  
+  // For short inputs like "y ayari", check if last name matches
+  if (len1 <= 15) {
+    // Short input - must have last name match
+    const lastWord1 = words1[words1.length - 1];
+    const lastWord2 = words2[words2.length - 1];
+    const secondWord1 = words1.length > 1 ? words1[1] : '';
+    
+    // If last name matches exactly, check first name
+    if (lastWord1 === lastWord2) {
+      // Check if first name starts with same letter or is initial
+      if (words1.length === 2 && words2.length >= 2) {
+        const first1 = words1[0][0];
+        const first2 = words2[0][0];
+        if (first1 === first2) return 0.9;
+      }
+      return 0.7;
+    }
+    
+    // Partial last name match
+    if (lastWord2.includes(lastWord1) || lastWord1.includes(lastWord2)) {
+      return 0.5 * lengthRatio;
+    }
+    
+    return 0;
+  }
   
   // Check first letter matches
   const firstMatch = words1[0][0] === words2[0][0];
@@ -1543,7 +1579,7 @@ function fuzzyMatch(str1, str2) {
   
   // Levenshtein distance for short names
   const distance = levenshteinDistance(str1, str2);
-  const maxLen = Math.max(str1.length, str2.length);
+  const maxLen = Math.max(len1, len2);
   const similarity = 1 - (distance / maxLen);
   
   return Math.max(0, similarity - 0.3); // Penalize non-exact matches
