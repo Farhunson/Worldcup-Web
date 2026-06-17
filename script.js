@@ -1690,6 +1690,30 @@ function buildMatchCardHtml(match, stage, rankings, thirdPlaceTeams, knockoutMap
   const apiBadge = isApiSourced ? '<span class="api-badge-bracket">Live</span>' : '';
   const { dateLabel, timeLabel, tzAbbr } = getMatchDateTimeLabel(match.matchNo, match.venue, match.date, match.time);
   const timeDisplay = tzAbbr ? `${timeLabel} ${tzAbbr}` : timeLabel;
+  
+  // Get scorer data for this match
+  const showScorers = hasScorerData(match.matchNo);
+  let scorersHtml = '';
+  if (showScorers) {
+    const scorers = getMatchScorers(match.matchNo);
+    const homeScorersHtml = buildScorersHtml(scorers.home);
+    const awayScorersHtml = buildScorersHtml(scorers.away);
+    const totalScorers = scorers.home.length + scorers.away.length;
+    scorersHtml = `
+      <div class="scorers-row bracket-scorers collapsed" data-match="${match.matchNo}">
+        <div class="scorers-toggle">
+          <span class="material-symbols-outlined scorers-icon">expand_more</span>
+          <span class="scorers-indicator">${totalScorers} goal${totalScorers !== 1 ? 's' : ''}</span>
+        </div>
+        <div class="scorers-content">
+          <div class="scorers-home">${homeScorersHtml}</div>
+          <div class="scorers-divider"></div>
+          <div class="scorers-away">${awayScorersHtml}</div>
+        </div>
+      </div>
+    `;
+  }
+  
   return `
     <div class="bracket-match-node" data-matchno="${match.matchNo}" data-stage="${stage}">
       <div class="bracket-match-inner">
@@ -1712,6 +1736,7 @@ function buildMatchCardHtml(match, stage, rankings, thirdPlaceTeams, knockoutMap
           <input class="score-input bracket-score" type="number" min="0" value="${scoreB}" data-match="${match.matchNo}" data-side="score2" ${disabledAttr} />
         </div>
       </div>
+      ${scorersHtml}
       <div class="bracket-match-meta">
         <span class="bracket-datetime">${dateLabel} · ${timeDisplay} ${apiBadge}</span>
         <div class="bracket-venue">
