@@ -2913,18 +2913,22 @@ footer {
 .top-scorers-table .scorer-portrait-placeholder {
   width: 40px;
   height: 40px;
+  min-width: 40px;
   border-radius: 50%;
-  background: var(--surface);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border: 2px solid var(--border);
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-muted);
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
 }
 
 .top-scorers-table .scorer-portrait-placeholder svg {
   width: 24px;
   height: 24px;
+  fill: white;
 }
 
 /* Top 3 specific portrait styling */

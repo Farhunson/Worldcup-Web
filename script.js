@@ -1840,7 +1840,6 @@ function renderTopScorers() {
   `;
   
   let currentRank = 0;
-  let displayRank = 0;
   
   topScorers.forEach((scorer, index) => {
     // Calculate rank with ties
@@ -1850,10 +1849,9 @@ function renderTopScorers() {
     if (!isTied) {
       currentRank = index + 1;
     }
-    displayRank = currentRank;
     
     const rankDisplay = isTied ? '=' : currentRank;
-    const rankClass = displayRank <= 3 ? `rank-${displayRank}` : '';
+    const rankClass = currentRank <= 3 ? `rank-${currentRank}` : '';
     
     // Get flag for country
     const flagHtml = scorer.country ? `<span class="team-flag-name">${formatFlag(scorer.country)}</span>` : '';
@@ -1870,10 +1868,9 @@ function renderTopScorers() {
       lastName = scorer.name;
     }
     
-    // Get portrait for top 3 scorers only (based on actual rank, not tied rank)
+    // Get portrait for top 3 positions (index 0, 1, 2 = positions 1, 2, 3)
     let portraitHtml = '';
-    if (displayRank <= 3 && !isTied) {
-      // Only show portrait for the actual top 3 (not tied players)
+    if (index < 3) {
       const portraitUrl = getPlayerPortrait(scorer.name);
       if (portraitUrl) {
         portraitHtml = `<img class="scorer-portrait" src="${portraitUrl}" alt="${scorer.name}" onerror="this.style.display='none'" />`;
