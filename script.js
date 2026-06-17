@@ -1120,8 +1120,8 @@ function renderTopScorers() {
     }
     const rankClass = effectiveRank <= 3 ? `rank-${effectiveRank}` : '';
     
-    // Get flag for country - only flag, no country name
-    const flagHtml = scorer.country ? `<span class="scorer-flag">${formatFlag(scorer.country)}</span>` : '';
+    // Get flag for country - use team-flag class like match cards
+    const flagHtml = scorer.country ? `<span class="team-flag">${formatFlag(scorer.country)}</span>` : '';
     const displayName = scorer.name;
     
     html += `

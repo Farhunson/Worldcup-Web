@@ -2872,13 +2872,18 @@ footer {
   gap: 8px;
 }
 
-.top-scorers-table .scorer-flag {
+.top-scorers-table .scorer-name {
+  font-weight: 500;
+}
+
+.top-scorers-table .team-flag {
   display: inline-flex;
   align-items: center;
 }
 
-.top-scorers-table .scorer-name {
-  font-weight: 500;
+.top-scorers-table .team-flag img {
+  width: 24px;
+  height: auto;
 }
 
 .top-scorers-table .goals-col {
