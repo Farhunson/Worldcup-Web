@@ -2664,6 +2664,11 @@ footer {
   color: var(--accent);
 }
 
+.scorer-og {
+  color: var(--error);
+  font-style: italic;
+}
+
 .scorer-minute {
   color: var(--muted);
   font-size: 0.7rem;

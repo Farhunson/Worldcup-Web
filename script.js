@@ -1005,6 +1005,11 @@ const scorerNameConversions = {
   'I.B. Hwang': 'Hwang In-beom',
   'H.G. Oh': 'Oh Se-hun',
   
+  // Austria vs Jordan (API has garbled names)
+  'Rvmanv Ashmid': 'Romano Schmid',
+  'Izn Alarb': 'Yazan Al-Arab',
+  'Ali Avlvan': 'Ali Al-Arab',
+  
   // Other players
   'L. Krejčí': 'Ladislav Krejčí',
   'C. Larin': 'Cyle Larin',
@@ -1031,7 +1036,6 @@ const scorerNameConversions = {
   'Maximiliano Araújo': 'Maximiliano Araújo',
   'I. Mbaye': 'Ibrahim Mbaye',
   'Aimn Hsin': 'Aliasghbar Regife',
-  'Rvmanv Ashmid': 'Roman Aschmidt',
   'Jovo Lukić': 'Jovan Lukić'
 };
 
@@ -1118,6 +1122,10 @@ const playerTeamDatabase = {
   
   // Italy
   'Gianluigi Donnarumma': 'Italy',
+  
+  // Jordan
+  'Yazan Al-Arab': 'Jordan',
+  'Ali Al-Arab': 'Jordan',
   
   // Rep. of Korea
   'Hwang In-beom': 'South Korea',
@@ -1487,6 +1495,10 @@ const wcPlayerDatabase = [
   { fullName: 'Takefusa Kubo', nickname: 'Kubo', team: 'Japan' },
   { fullName: 'Daizen Maeda', nickname: 'Maeda', team: 'Japan' },
   
+  // Jordan
+  { fullName: 'Yazan Al-Arab', nickname: 'Al-Arab', team: 'Jordan' },
+  { fullName: 'Ali Al-Arab', nickname: 'Al-Arab', team: 'Jordan' },
+  
   // South Korea
   { fullName: 'Son Heung-min', nickname: 'Son', team: 'South Korea' },
   { fullName: 'Hwang In-beom', nickname: 'Hwang', team: 'South Korea' },
@@ -1523,7 +1535,8 @@ const wcPlayerDatabase = [
   // Austria
   { fullName: 'Marko Arnautovic', nickname: 'Arnautovic', team: 'Austria' },
   { fullName: 'Marcel Sabitzer', nickname: 'Sabitzer', team: 'Austria' },
-  { fullName: 'Roman Aschmidt', nickname: 'Aschmidt', team: 'Austria' },
+  { fullName: 'Romano Schmid', nickname: 'Schmid', team: 'Austria' },
+  { fullName: 'Roman Aschmidt', nickname: 'Aschmidt', team: 'Iran' },
   
   // Romania
   { fullName: 'Nicolae Stanciu', nickname: 'Stanciu', team: 'Romania' },
@@ -1999,15 +2012,22 @@ function formatScorer(scorerStr, team = null) {
 }
 
 // Helper function to build scorers HTML for a team
-function buildScorersHtml(scorers, isHomeTeam = true) {
+function buildScorersHtml(scorers, isHomeTeam = true, teamName = null) {
   if (!scorers || scorers.length === 0) {
     return '<span class="no-scorers">-</span>';
   }
   
   return scorers.map(scorerStr => {
-    const parsed = formatScorer(scorerStr);
+    const parsed = formatScorer(scorerStr, teamName);
     const penaltyClass = parsed.isPenalty ? ' scorer-penalty' : '';
-    return `<span class="scorer-item${penaltyClass}">${parsed.name} <span class="scorer-minute">${parsed.minute}</span></span>`;
+    
+    // Check if this is an own goal using the player database
+    // If player doesn't belong to the team they're listed under, it's an OG
+    const playerTeam = playerTeamDatabase[parsed.name];
+    const isOG = parsed.isOG || (playerTeam && teamName && playerTeam !== teamName);
+    const ogClass = isOG ? ' scorer-og' : '';
+    
+    return `<span class="scorer-item${penaltyClass}${ogClass}">${parsed.name}${isOG ? ' (OG)' : ''} <span class="scorer-minute">${parsed.minute}</span></span>`;
   }).join('');
 }
 
@@ -2687,8 +2707,8 @@ function buildGroupMatches(group, matches) {
       let scorersHtml = '';
       if (showScorers) {
         const scorers = getMatchScorers(match.matchNo);
-        const homeScorersHtml = buildScorersHtml(scorers.home);
-        const awayScorersHtml = buildScorersHtml(scorers.away);
+        const homeScorersHtml = buildScorersHtml(scorers.home, true, match.team1);
+        const awayScorersHtml = buildScorersHtml(scorers.away, false, match.team2);
         const totalScorers = scorers.home.length + scorers.away.length;
         scorersHtml = `
           <div class="scorers-row collapsed" data-match="${match.matchNo}">
@@ -3029,8 +3049,8 @@ function buildMatchCardHtml(match, stage, rankings, thirdPlaceTeams, knockoutMap
   let scorersHtml = '';
   if (showScorers) {
     const scorers = getMatchScorers(match.matchNo);
-    const homeScorersHtml = buildScorersHtml(scorers.home);
-    const awayScorersHtml = buildScorersHtml(scorers.away);
+    const homeScorersHtml = buildScorersHtml(scorers.home, true, teamA.name);
+    const awayScorersHtml = buildScorersHtml(scorers.away, false, teamB.name);
     const totalScorers = scorers.home.length + scorers.away.length;
     scorersHtml = `
       <div class="scorers-row bracket-scorers collapsed" data-match="${match.matchNo}">
@@ -3271,8 +3291,8 @@ function buildTodaysMatchCard(match) {
   let scorersHtml = '';
   if (showScorers) {
     const scorers = getMatchScorers(match.matchNo);
-    const homeScorersHtml = buildScorersHtml(scorers.home);
-    const awayScorersHtml = buildScorersHtml(scorers.away);
+    const homeScorersHtml = buildScorersHtml(scorers.home, true, match.team1);
+    const awayScorersHtml = buildScorersHtml(scorers.away, false, match.team2);
     const totalScorers = scorers.home.length + scorers.away.length;
     scorersHtml = `
       <div class="scorers-row todays-scorers collapsed" data-match="${match.matchNo}">
