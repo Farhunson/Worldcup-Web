@@ -1838,6 +1838,9 @@ function computeTopScorers() {
     const matchScorers = state.apiScorers[matchNo];
     const match = findMatchByNo(Number(matchNo));
     
+    // Get match datetime for ordering (use match date/time for all goals in this match)
+    const matchTime = match?.datetime ? new Date(match.datetime).getTime() : 0;
+    
     // Get country for home and away teams
     const homeTeam = match?.team1 || null;
     const awayTeam = match?.team2 || null;
@@ -1850,9 +1853,13 @@ function computeTopScorers() {
       const name = parsed.name;
       if (name) {
         if (!scorerCounts[name]) {
-          scorerCounts[name] = { goals: 0, country: homeTeam };
+          scorerCounts[name] = { goals: 0, country: homeTeam, latestGoalTime: 0 };
         }
         scorerCounts[name].goals++;
+        // Update latest goal time (most recent goal from this match)
+        if (matchTime > scorerCounts[name].latestGoalTime) {
+          scorerCounts[name].latestGoalTime = matchTime;
+        }
       }
     }
     
@@ -1864,17 +1871,28 @@ function computeTopScorers() {
       const name = parsed.name;
       if (name) {
         if (!scorerCounts[name]) {
-          scorerCounts[name] = { goals: 0, country: awayTeam };
+          scorerCounts[name] = { goals: 0, country: awayTeam, latestGoalTime: 0 };
         }
         scorerCounts[name].goals++;
+        // Update latest goal time (most recent goal from this match)
+        if (matchTime > scorerCounts[name].latestGoalTime) {
+          scorerCounts[name].latestGoalTime = matchTime;
+        }
       }
     }
   }
   
-  // Convert to array and sort by goal count
+  // Convert to array and sort by goal count (desc), then by latest goal time (desc - most recent first)
   const sortedScorers = Object.entries(scorerCounts)
-    .map(([name, data]) => ({ name, goals: data.goals, country: data.country }))
-    .sort((a, b) => b.goals - a.goals);
+    .map(([name, data]) => ({ name, goals: data.goals, country: data.country, latestGoalTime: data.latestGoalTime }))
+    .sort((a, b) => {
+      // First sort by goals (descending)
+      if (b.goals !== a.goals) {
+        return b.goals - a.goals;
+      }
+      // Then by latest goal time (descending - most recent first)
+      return b.latestGoalTime - a.latestGoalTime;
+    });
   
   return sortedScorers;
 }
