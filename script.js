@@ -1029,7 +1029,7 @@ const scorerNameConversions = {
   'Elijah Just': 'Elijah Just',
   'Abdulelah Al-Amri': 'Abdulelah Al-Amri',
   'Maximiliano Araújo': 'Maximiliano Araújo',
-  'I. Mbaye': 'Ismaila Sarr',
+  'I. Mbaye': 'Ibrahim Mbaye',
   'Aimn Hsin': 'Aliasghbar Regife',
   'Rvmanv Ashmid': 'Roman Aschmidt',
   'Jovo Lukić': 'Jovan Lukić'
@@ -1155,6 +1155,7 @@ const wcPlayerDatabase = [
   { fullName: 'Sadio Mane', nickname: 'Mane', team: 'Senegal' },
   { fullName: 'Ismaila Sarr', nickname: 'Sarr', team: 'Senegal' },
   { fullName: 'Boulaye Dia', nickname: 'Dia', team: 'Senegal' },
+  { fullName: 'Ibrahim Mbaye', nickname: 'Mbaye', team: 'Senegal' },
   
   // Ghana
   { fullName: 'Mohammed Kudus', nickname: 'Kudus', team: 'Ghana' },
@@ -1725,9 +1726,11 @@ function computeTopScorers() {
     const homeTeam = match?.team1 || null;
     const awayTeam = match?.team2 || null;
     
-    // Process home team scorers
+    // Process home team scorers (goals FOR the home team, against away team)
     for (const scorerStr of matchScorers.home || []) {
       const parsed = formatScorer(scorerStr, homeTeam);
+      // Skip own goals - they are scored by opponent but credited to the team
+      if (parsed.isOG) continue;
       const name = parsed.name;
       if (name) {
         if (!scorerCounts[name]) {
@@ -1737,9 +1740,11 @@ function computeTopScorers() {
       }
     }
     
-    // Process away team scorers
+    // Process away team scorers (goals FOR the away team, against home team)
     for (const scorerStr of matchScorers.away || []) {
       const parsed = formatScorer(scorerStr, awayTeam);
+      // Skip own goals - they are scored by opponent but credited to the team
+      if (parsed.isOG) continue;
       const name = parsed.name;
       if (name) {
         if (!scorerCounts[name]) {
