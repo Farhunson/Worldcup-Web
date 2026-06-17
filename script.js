@@ -2200,8 +2200,15 @@ function renderTopScorers() {
     return;
   }
   
-  // Build HTML table
+  const hasMoreThanThree = topScorers.length > 3;
+  
+  // Build HTML table with collapsible header
   let html = `
+    <div class="top-scorers-header">
+      <h3 class="top-scorers-title">Top Scorers</h3>
+      ${hasMoreThanThree ? '<button class="top-scorers-toggle" onclick="toggleTopScorers(this)">Show All (${topScorers.length})</button>' : ''}
+    </div>
+    <div class="top-scorers-content" ${hasMoreThanThree ? 'style="display: none;"' : ''}>
     <table class="top-scorers-table">
       <thead>
         <tr>
@@ -2272,12 +2279,29 @@ function renderTopScorers() {
   html += `
       </tbody>
     </table>
+    </div>
   `;
   
   container.innerHTML = html;
   
   // Async: Update portraits from TheSportsDB API
   updatePortraitsFromAPI();
+}
+
+// Toggle function for collapse/expand
+function toggleTopScorers(button) {
+  const content = button.closest('.top-scorers-table-wrapper, #top-scorers-table').querySelector('.top-scorers-content');
+  const allRows = content.querySelectorAll('tbody tr');
+  
+  if (content.style.display === 'none') {
+    // Expand
+    content.style.display = 'block';
+    button.textContent = 'Show Less';
+  } else {
+    // Collapse - show only top 3
+    content.style.display = 'none';
+    button.textContent = `Show All (${allRows.length})`;
+  }
 }
 
 // Function to update portraits from TheSportsDB API after render
