@@ -974,16 +974,20 @@ const scorerNameConversions = {
 function formatScorer(scorerStr) {
   if (!scorerStr) return '';
   
-  // Clean the scorer string - remove surrounding quotes if present
+  // Clean the scorer string - remove all types of surrounding quotes if present
   let cleanStr = scorerStr.trim();
-  cleanStr = cleanStr.replace(/^[""]+|[""]+$/g, '');
+  // Remove curly quotes (", ") and straight quotes (") from start/end
+  cleanStr = cleanStr.replace(/^["""]+|["""]+$/g, '');
   
-  // Parse the scorer string - format is like "Name 90'" or "Name 45'+5'(p)"
+  // Parse the scorer string - format is like "Name 90'" or "Name 45'+5'(p)" or "Name 7'(OG)"
   // Extract name and minute/penalty info
-  const match = cleanStr.match(/^(.+?)\s+(\d+'\+?\d*'?\(p\)?)$/);
+  // Match: everything before the minute (with optional OG or penalty), then the minute
+  const match = cleanStr.match(/^(.+?)\s+(\d+'\+?\d*'?(\(OG\))?\s*(\(p\))?)$/);
   let name;
+  let minute = '';
   if (match) {
     name = match[1].trim();
+    minute = match[2];
   } else {
     name = cleanStr.trim();
   }
@@ -991,13 +995,10 @@ function formatScorer(scorerStr) {
   // Apply name conversion if available
   const displayName = scorerNameConversions[name] || name;
   
-  if (match) {
-    const minute = match[2];
-    const isPenalty = minute.includes('(p)');
-    return { name: displayName, minute, isPenalty };
-  }
+  const isPenalty = minute.includes('(p)');
+  const isOG = minute.includes('(OG)');
   
-  return { name: displayName, minute: '', isPenalty: false };
+  return { name: displayName, minute, isPenalty, isOG };
 }
 
 // Helper function to build scorers HTML for a team
