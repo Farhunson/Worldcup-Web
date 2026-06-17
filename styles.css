@@ -2823,3 +2823,87 @@ footer {
     align-self: auto;
   }
 }
+
+/* Top Scorers Table */
+.top-scorers-container {
+  overflow-x: auto;
+}
+
+.top-scorers-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.top-scorers-table th,
+.top-scorers-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.top-scorers-table th {
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  background: var(--surface);
+}
+
+.top-scorers-table tbody tr {
+  transition: background 0.2s ease;
+}
+
+.top-scorers-table tbody tr:hover {
+  background: var(--surface);
+}
+
+.top-scorers-table .rank-col {
+  width: 50px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.top-scorers-table .player-col {
+  font-weight: 500;
+}
+
+.top-scorers-table .goals-col {
+  width: 80px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+/* Top 3 ranking styles */
+.top-scorers-table .rank-1 {
+  background: linear-gradient(90deg, rgba(255, 215, 0, 0.15) 0%, transparent 100%);
+}
+
+.top-scorers-table .rank-1 .rank-col {
+  color: #FFD700;
+}
+
+.top-scorers-table .rank-2 {
+  background: linear-gradient(90deg, rgba(192, 192, 192, 0.15) 0%, transparent 100%);
+}
+
+.top-scorers-table .rank-2 .rank-col {
+  color: #C0C0C0;
+}
+
+.top-scorers-table .rank-3 {
+  background: linear-gradient(90deg, rgba(205, 127, 50, 0.15) 0%, transparent 100%);
+}
+
+.top-scorers-table .rank-3 .rank-col {
+  color: #CD7F32;
+}
+
+.no-scorers-message {
+  text-align: center;
+  padding: 24px;
+  color: var(--text-muted);
+  font-style: italic;
+}

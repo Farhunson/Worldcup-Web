@@ -921,6 +921,9 @@ async function fetchLiveScores() {
 
     state.lastApiUpdate = new Date().toLocaleTimeString();
     updateLiveIndicator(true);
+    
+    // Update top scorers table with new data
+    renderTopScorers();
 
     console.log(`Live scores synced: ${updatedCount} match(es) updated, ${timesUpdated} time(s) stored`);
 
@@ -1022,6 +1025,86 @@ function updateLiveIndicator(success) {
       timeSpan.textContent = 'Offline';
     }
   }
+}
+
+// Compute top scorers from all matches
+function computeTopScorers() {
+  const scorerCounts = {};
+  
+  // Iterate through all matches and their scorers
+  for (const matchNo in state.apiScorers) {
+    const matchScorers = state.apiScorers[matchNo];
+    
+    // Process home team scorers
+    for (const scorerStr of matchScorers.home || []) {
+      const parsed = formatScorer(scorerStr);
+      const name = parsed.name;
+      if (name) {
+        scorerCounts[name] = (scorerCounts[name] || 0) + 1;
+      }
+    }
+    
+    // Process away team scorers
+    for (const scorerStr of matchScorers.away || []) {
+      const parsed = formatScorer(scorerStr);
+      const name = parsed.name;
+      if (name) {
+        scorerCounts[name] = (scorerCounts[name] || 0) + 1;
+      }
+    }
+  }
+  
+  // Convert to array and sort by goal count
+  const sortedScorers = Object.entries(scorerCounts)
+    .map(([name, goals]) => ({ name, goals }))
+    .sort((a, b) => b.goals - a.goals);
+  
+  return sortedScorers;
+}
+
+// Render top scorers table
+function renderTopScorers() {
+  const container = document.getElementById('top-scorers-table');
+  if (!container) return;
+  
+  const topScorers = computeTopScorers();
+  
+  if (topScorers.length === 0) {
+    container.innerHTML = '<p class="no-scorers-message">No scorer data available yet.</p>';
+    return;
+  }
+  
+  // Build HTML table
+  let html = `
+    <table class="top-scorers-table">
+      <thead>
+        <tr>
+          <th class="rank-col">#</th>
+          <th class="player-col">Player</th>
+          <th class="goals-col">Goals</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+  
+  topScorers.forEach((scorer, index) => {
+    const rank = index + 1;
+    const rankClass = rank <= 3 ? `rank-${rank}` : '';
+    html += `
+      <tr class="${rankClass}">
+        <td class="rank-col">${rank}</td>
+        <td class="player-col">${scorer.name}</td>
+        <td class="goals-col">${scorer.goals}</td>
+      </tr>
+    `;
+  });
+  
+  html += `
+      </tbody>
+    </table>
+  `;
+  
+  container.innerHTML = html;
 }
 
 function startAutoRefresh() {
@@ -2054,6 +2137,7 @@ function render() {
   renderTodaysMatches();
   renderGroups(rankings, thirdPlaceTeams);
   renderBracket(rankings, thirdPlaceTeams, thirdPlaceAssignments, allGroupsComplete);
+  renderTopScorers();
 }
 
 // Initialize Live API features
