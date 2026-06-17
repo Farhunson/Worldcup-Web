@@ -3842,13 +3842,8 @@ function buildScorersHtml(scorers, isHomeTeam = true, teamName = null) {
     const isOG = parsed.isOG || (playerTeam && teamName && playerTeam !== teamName);
     const ogClass = isOG ? ' scorer-og' : '';
     
-    // Format: (number) | POS | NAME ON SHIRT | CLUB
-    let displayText = parsed.name;
-    if (parsed.jerseyNumber) {
-      displayText = `(${parsed.jerseyNumber}) | ${parsed.position} | ${parsed.name} | ${parsed.club}`;
-    }
-    
-    return `<span class="scorer-item${penaltyClass}${ogClass}">${displayText}${isOG ? ' (OG)' : ''} <span class="scorer-minute">${parsed.minute}</span></span>`;
+    // Display: Full Name (OG) Minute
+    return `<span class="scorer-item${penaltyClass}${ogClass}">${parsed.name}${isOG ? ' (OG)' : ''} <span class="scorer-minute">${parsed.minute}</span></span>`;
   }).join('');
 }
 
@@ -4134,17 +4129,19 @@ function renderTopScorers() {
     // Hide rows 4+ when collapsed
     const rowHidden = hasMoreThanThree && index >= 3;
     
-    // Format: (number) | POS | NAME | CLUB
-    let playerInfoHtml = `<span class="scorer-name"><span class="scorer-first-name">${firstName}</span> <span class="scorer-last-name">${lastName}</span></span>`;
+    // Format: Flag #number POS Full Name
+    let playerDisplay = scorer.name;
     if (scorer.jerseyNumber) {
-      playerInfoHtml = `<span class="scorer-details">(${scorer.jerseyNumber}) | ${scorer.position} | ${scorer.name} | ${scorer.club}</span>`;
+      playerDisplay = `${flagHtml} #${scorer.jerseyNumber} ${scorer.position} ${scorer.name}`;
+    } else {
+      playerDisplay = `${flagHtml} ${scorer.name}`;
     }
     
     html += `
       <tr class="${rankClass}" ${rowHidden ? 'style="display: none;"' : ''}>
         <td class="rank-col">${rankDisplay}</td>
-        <td class="player-col">${portraitHtml}${flagHtml}${playerInfoHtml}</td>
-        <td class="goals-col"><span class="goals-badge">${scorer.goals}</span></td>
+        <td class="player-col">${portraitHtml}${playerDisplay}</td>
+        <td class="goals-col"><span class="goals-badge">${scorer.goals} goals</span></td>
       </tr>
     `;
   });
