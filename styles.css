@@ -2876,14 +2876,17 @@ footer {
   font-weight: 500;
 }
 
-.top-scorers-table .team-flag {
-  display: inline-flex;
-  align-items: center;
+.top-scorers-table .team-flag-name .team-flag {
+  width: 20px;
+  min-width: 20px;
+  height: 14px;
+  border-radius: 0 4px 0 4px;
 }
 
-.top-scorers-table .team-flag img {
-  width: 24px;
-  height: auto;
+.top-scorers-table .team-flag-name .team-flag img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .top-scorers-table .goals-col {
