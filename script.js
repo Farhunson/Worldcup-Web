@@ -2125,8 +2125,6 @@ function computeTopScorers() {
         
         // Skip counting this goal if it's an OG (we don't count OG in top scorers)
         if (isOG) {
-          // Still track the OG for reference but don't add to scorer counts
-          console.log(`Own goal detected: ${name} (OG credited to ${actualCreditedTeam})`);
           continue;
         }
         
@@ -2157,7 +2155,6 @@ function computeTopScorers() {
         
         // Skip counting this goal if it's an OG (we don't count OG in top scorers)
         if (isOG) {
-          console.log(`Own goal detected: ${name} (OG credited to ${actualCreditedTeam})`);
           continue;
         }
         
@@ -2286,15 +2283,12 @@ function renderTopScorers() {
 // Function to update portraits from TheSportsDB API after render
 async function updatePortraitsFromAPI() {
   const portraitImages = document.querySelectorAll('.scorer-portrait[data-player]');
-  console.log('updatePortraitsFromAPI called, found images:', portraitImages.length);
   
   for (const img of portraitImages) {
     const playerName = img.dataset.player;
     const placeholder = img.nextElementSibling;
-    console.log('Fetching portrait for:', playerName);
     
     const portraitUrl = await getPlayerPortraitAsync(playerName);
-    console.log('Got URL for', playerName, ':', portraitUrl);
     
     if (portraitUrl) {
       // Create a new image to preload
@@ -2306,9 +2300,6 @@ async function updatePortraitsFromAPI() {
         if (placeholder && placeholder.classList.contains('scorer-portrait-placeholder')) {
           placeholder.style.display = 'none';
         }
-      };
-      tempImg.onerror = function() {
-        console.log('Failed to load image for', playerName);
       };
       tempImg.src = portraitUrl;
     }
