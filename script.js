@@ -965,13 +965,648 @@ function hasScorerData(matchNo) {
 }
 
 // Helper function to format a single scorer string for display
-// Scorer name conversion map (API names to display names)
+// Comprehensive player name conversion map (API names to full display names)
 const scorerNameConversions = {
-  'Arling Halnd': 'E. Haaland',
-  'Livnl Msi': 'L. Messi'
+  // Norway
+  'Arling Halnd': 'Erling Haaland',
+  'Liv Avstigard': 'Oscar Bobb',
+  
+  // Argentina
+  'Livnl Msi': 'Lionel Messi',
+  
+  // France
+  'K. Mbappé': 'Kylian Mbappé',
+  'B. Barcola': 'Bradley Barcola',
+  
+  // Germany
+  'K. Havertz': 'Kai Havertz',
+  'J. Musiala': 'Jamal Musiala',
+  'N. Schlotterbeck': 'Nico Schlotterbeck',
+  'N. Brown': 'Nathaniel Brown',
+  'Felix Nmecha': 'Felix Nmecha',
+  'D. Undav': 'Deniz Undav',
+  
+  // USA
+  'F. Balogun': 'Folarin Balogun',
+  'G. Reyna': 'Gio Reyna',
+  'D. Bobadilla': 'Diego Bobadilla',
+  
+  // Sweden
+  'Y.Ayari': 'Youssef Lydefelt',
+  'A. Isak': 'Alexander Isak',
+  'V. Gyökeres': 'Viktor Gyökeres',
+  'M. Svanberg': 'Mattias Svanberg',
+  
+  // Mexico
+  'J. Quiñones': 'Jorge Quiñones',
+  'R. Jiménez': 'Raúl Jiménez',
+  
+  // Rep. of Korea
+  'I.B. Hwang': 'Hwang In-beom',
+  'H.G. Oh': 'Oh Se-hun',
+  
+  // Other players
+  'L. Krejčí': 'Ladislav Krejčí',
+  'C. Larin': 'Cyle Larin',
+  'Maurício': 'Maurício',
+  'B. Khoukhi': 'Bouthayna Khoukhi',
+  'Breel Embolo': 'Breel Embolo',
+  'V. Júnior': 'Vinícius Júnior',
+  'I. Saibari': 'Ismail Azzaoui',
+  'J. McGinn': 'John McGinn',
+  'Nestory Irankunda': 'Nestory Irankunda',
+  'C. Metcalfe': 'Connor Metcalfe',
+  'Virgil van Dijk': 'Virgil van Dijk',
+  'C. Summerville': 'Cryensco Summerville',
+  'K. Nakamura': 'Kaoru Nakamura',
+  'K. Ogawa': 'Koki Ogawa',
+  'A. Diallo': 'Abdoulaye Diallo',
+  'O. Rekik': 'Omar Rekik',
+  'Mohamed Hany': 'Mohamed Hany',
+  'Emam Ashour': 'Emam Ashour',
+  'Ramin Rezaiian': 'Ramin Rezaeian',
+  'Mohammad Mohebi': 'Mohammad Mohebi',
+  'Elijah Just': 'Elijah Just',
+  'Abdulelah Al-Amri': 'Abdulelah Al-Amri',
+  'Maximiliano Araújo': 'Maximiliano Araújo',
+  'I. Mbaye': 'Ismaila Sarr',
+  'Aimn Hsin': 'Aliasghbar Regife',
+  'Rvmanv Ashmid': 'Roman Aschmidt',
+  'Jovo Lukić': 'Jovan Lukić'
 };
 
-function formatScorer(scorerStr) {
+// Comprehensive World Cup players database for fuzzy matching
+const wcPlayerDatabase = [
+  // Argentina
+  { fullName: 'Lionel Messi', nickname: 'Messi', team: 'Argentina' },
+  { fullName: 'Julian Alvarez', nickname: 'J. Alvarez', team: 'Argentina' },
+  { fullName: 'Angel Di Maria', nickname: 'Di Maria', team: 'Argentina' },
+  { fullName: 'Enzo Fernandez', nickname: 'E. Fernandez', team: 'Argentina' },
+  
+  // France
+  { fullName: 'Kylian Mbappe', nickname: 'K. Mbappe', team: 'France' },
+  { fullName: 'Bradley Barcola', nickname: 'B. Barcola', team: 'France' },
+  { fullName: 'Ousmane Dembele', nickname: 'O. Dembele', team: 'France' },
+  { fullName: 'Antoine Griezmann', nickname: 'Griezmann', team: 'France' },
+  
+  // Germany
+  { fullName: 'Kai Havertz', nickname: 'K. Havertz', team: 'Germany' },
+  { fullName: 'Jamal Musiala', nickname: 'J. Musiala', team: 'Germany' },
+  { fullName: 'Florian Wirtz', nickname: 'F. Wirtz', team: 'Germany' },
+  { fullName: 'Leroy Sane', nickname: 'L. Sane', team: 'Germany' },
+  { fullName: 'Niklas Fullkrug', nickname: 'N. Fullkrug', team: 'Germany' },
+  { fullName: 'Deniz Undav', nickname: 'D. Undav', team: 'Germany' },
+  { fullName: 'Nathaniel Brown', nickname: 'N. Brown', team: 'Germany' },
+  { fullName: 'Nico Schlotterbeck', nickname: 'N. Schlotterbeck', team: 'Germany' },
+  { fullName: 'Felix Nmecha', nickname: 'Nmecha', team: 'Germany' },
+  
+  // Brazil
+  { fullName: 'Vinicius Junior', nickname: 'V. Junior', team: 'Brazil' },
+  { fullName: 'Rodri', nickname: 'Rodri', team: 'Brazil' },
+  { fullName: 'Raphinha', nickname: 'Raphinha', team: 'Brazil' },
+  { fullName: 'Neymar', nickname: 'Neymar', team: 'Brazil' },
+  { fullName: 'Richarlison', nickname: 'Richarlison', team: 'Brazil' },
+  
+  // England
+  { fullName: 'Harry Kane', nickname: 'H. Kane', team: 'England' },
+  { fullName: 'Bukayo Saka', nickname: 'B. Saka', team: 'England' },
+  { fullName: 'Phil Foden', nickname: 'Foden', team: 'England' },
+  { fullName: 'Jude Bellingham', nickname: 'Bellingham', team: 'England' },
+  
+  // Portugal
+  { fullName: 'Cristiano Ronaldo', nickname: 'Ronaldo', team: 'Portugal' },
+  { fullName: 'Bruno Fernandes', nickname: 'B. Fernandes', team: 'Portugal' },
+  { fullName: 'Bernardo Silva', nickname: 'B. Silva', team: 'Portugal' },
+  
+  // Spain
+  { fullName: 'Lamine Yamal', nickname: 'L. Yamal', team: 'Spain' },
+  { fullName: 'Pedri', nickname: 'Pedri', team: 'Spain' },
+  { fullName: 'Gavi', nickname: 'Gavi', team: 'Spain' },
+  { fullName: 'Rodri', nickname: 'Rodri', team: 'Spain' },
+  
+  // Netherlands
+  { fullName: 'Virgil van Dijk', nickname: 'van Dijk', team: 'Netherlands' },
+  { fullName: ' Cody Gakpo', nickname: 'Gakpo', team: 'Netherlands' },
+  { fullName: 'Xavi Simons', nickname: 'X. Simons', team: 'Netherlands' },
+  { fullName: 'Dani Olmo', nickname: 'D. Olmo', team: 'Netherlands' },
+  
+  // Belgium
+  { fullName: 'Kevin De Bruyne', nickname: 'De Bruyne', team: 'Belgium' },
+  { fullName: 'Romelu Lukaku', nickname: 'Lukaku', team: 'Belgium' },
+  { fullName: 'Jeremy Doku', nickname: 'Doku', team: 'Belgium' },
+  
+  // Italy
+  { fullName: 'Gianluigi Donnarumma', nickname: 'Donnarumma', team: 'Italy' },
+  { fullName: 'Lorenzo Pellegrini', nickname: 'L. Pellegrini', team: 'Italy' },
+  
+  // Croatia
+  { fullName: 'Luka Modric', nickname: 'Modric', team: 'Croatia' },
+  { fullName: 'Andrej Kramaric', nickname: 'Kramaric', team: 'Croatia' },
+  
+  // Uruguay
+  { fullName: 'Darwin Nunez', nickname: 'Nunez', team: 'Uruguay' },
+  { fullName: 'Federico Valverde', nickname: 'Valverde', team: 'Uruguay' },
+  { fullName: 'Maximiliano Araujo', nickname: 'Araujo', team: 'Uruguay' },
+  
+  // USA
+  { fullName: 'Christian Pulisic', nickname: 'Pulisic', team: 'USA' },
+  { fullName: 'Folarin Balogun', nickname: 'Balogun', team: 'USA' },
+  { fullName: 'Gio Reyna', nickname: 'Reyna', team: 'USA' },
+  { fullName: 'Tyler Adams', nickname: 'Adams', team: 'USA' },
+  { fullName: 'Diego Bobadilla', nickname: 'Bobadilla', team: 'USA' },
+  
+  // Mexico
+  { fullName: 'Santiago Munoz', nickname: 'Munoz', team: 'Mexico' },
+  { fullName: 'Jorge Quinones', nickname: 'Quinones', team: 'Mexico' },
+  { fullName: 'Raul Jimenez', nickname: 'Jimenez', team: 'Mexico' },
+  { fullName: 'Hirving Lozano', nickname: 'Lozano', team: 'Mexico' },
+  
+  // Sweden
+  { fullName: 'Alexander Isak', nickname: 'Isak', team: 'Sweden' },
+  { fullName: 'Viktor Gyokeres', nickname: 'Gyokeres', team: 'Sweden' },
+  { fullName: 'Dejan Kulusevski', nickname: 'Kulusevski', team: 'Sweden' },
+  { fullName: 'Anthony Elanga', nickname: 'Elanga', team: 'Sweden' },
+  { fullName: 'Youssef Lydefelt', nickname: 'Ayari', team: 'Sweden' },
+  { fullName: 'Mattias Svanberg', nickname: 'Svanberg', team: 'Sweden' },
+  
+  // Norway
+  { fullName: 'Erling Haaland', nickname: 'Haaland', team: 'Norway' },
+  { fullName: 'Martin Odegaard', nickname: 'Odegaard', team: 'Norway' },
+  { fullName: 'Jorgen Strand Larsen', nickname: 'Strand Larsen', team: 'Norway' },
+  { fullName: 'Oscar Bobb', nickname: 'Bobb', team: 'Norway' },
+  
+  // Denmark
+  { fullName: 'Rasmus Hojlund', nickname: 'Hojlund', team: 'Denmark' },
+  { fullName: 'Pierre-Emile Hojbjerg', nickname: 'Hojbjerg', team: 'Denmark' },
+  
+  // Switzerland
+  { fullName: 'Granit Xhaka', nickname: 'Xhaka', team: 'Switzerland' },
+  { fullName: 'Xherdan Shaqiri', nickname: 'Shaqiri', team: 'Switzerland' },
+  { fullName: 'Breel Embolo', nickname: 'Embolo', team: 'Switzerland' },
+  
+  // Morocco
+  { fullName: 'Achraf Hakimi', nickname: 'Hakimi', team: 'Morocco' },
+  { fullName: 'Hakim Ziyech', nickname: 'Ziyech', team: 'Morocco' },
+  { fullName: 'Sofyan Amrabat', nickname: 'Amrabat', team: 'Morocco' },
+  { fullName: 'Youssef En-Nesyri', nickname: 'En-Nesyri', team: 'Morocco' },
+  { fullName: 'Ismail Azzaoui', nickname: 'Saibari', team: 'Morocco' },
+  
+  // Senegal
+  { fullName: 'Sadio Mane', nickname: 'Mane', team: 'Senegal' },
+  { fullName: 'Ismaila Sarr', nickname: 'Sarr', team: 'Senegal' },
+  { fullName: 'Boulaye Dia', nickname: 'Dia', team: 'Senegal' },
+  
+  // Ghana
+  { fullName: 'Mohammed Kudus', nickname: 'Kudus', team: 'Ghana' },
+  { fullName: 'Inaki Williams', nickname: 'Williams', team: 'Ghana' },
+  
+  // Cameroon
+  { fullName: 'Vincent Aboubakar', nickname: 'Aboubakar', team: 'Cameroon' },
+  { fullName: 'Andre Onana', nickname: 'Onana', team: 'Cameroon' },
+  
+  // Japan
+  { fullName: 'Kaoru Nakamura', nickname: 'Nakamura', team: 'Japan' },
+  { fullName: 'Koki Ogawa', nickname: 'Ogawa', team: 'Japan' },
+  { fullName: 'Takefusa Kubo', nickname: 'Kubo', team: 'Japan' },
+  { fullName: 'Daizen Maeda', nickname: 'Maeda', team: 'Japan' },
+  
+  // South Korea
+  { fullName: 'Son Heung-min', nickname: 'Son', team: 'South Korea' },
+  { fullName: 'Hwang In-beom', nickname: 'Hwang', team: 'South Korea' },
+  { fullName: 'Kim Min-jae', nickname: 'Kim Min-jae', team: 'South Korea' },
+  { fullName: 'Oh Se-hun', nickname: 'Oh', team: 'South Korea' },
+  
+  // Australia
+  { fullName: 'Mitchell Duke', nickname: 'Duke', team: 'Australia' },
+  { fullName: 'Awer Mabil', nickname: 'Mabil', team: 'Australia' },
+  { fullName: 'Nestory Irankunda', nickname: 'Irankunda', team: 'Australia' },
+  { fullName: 'Connor Metcalfe', nickname: 'Metcalfe', team: 'Australia' },
+  
+  // Canada
+  { fullName: 'Alphonso Davies', nickname: 'Davies', team: 'Canada' },
+  { fullName: 'Cyle Larin', nickname: 'Larin', team: 'Canada' },
+  { fullName: 'Jonathan David', nickname: 'J. David', team: 'Canada' },
+  
+  // Poland
+  { fullName: 'Robert Lewandowski', nickname: 'Lewandowski', team: 'Poland' },
+  { fullName: 'Karim Benzema', nickname: 'Benzema', team: 'Poland' },
+  
+  // Czech Republic
+  { fullName: 'Patrik Schick', nickname: 'Schick', team: 'Czech Republic' },
+  { fullName: 'Ladislav Krejci', nickname: 'Krejci', team: 'Czech Republic' },
+  
+  // Ukraine
+  { fullName: 'Mykhailo Mudryk', nickname: 'Mudryk', team: 'Ukraine' },
+  { fullName: 'Oleksandr Zinchenko', nickname: 'Zinchenko', team: 'Ukraine' },
+  
+  // Serbia
+  { fullName: 'Dusan Vlahovic', nickname: 'Vlahovic', team: 'Serbia' },
+  { fullName: 'Aleksandar Mitrovic', nickname: 'Mitrovic', team: 'Serbia' },
+  
+  // Austria
+  { fullName: 'Marko Arnautovic', nickname: 'Arnautovic', team: 'Austria' },
+  { fullName: 'Marcel Sabitzer', nickname: 'Sabitzer', team: 'Austria' },
+  { fullName: 'Roman Aschmidt', nickname: 'Aschmidt', team: 'Austria' },
+  
+  // Romania
+  { fullName: 'Nicolae Stanciu', nickname: 'Stanciu', team: 'Romania' },
+  
+  // Hungary
+  { fullName: 'Dominik Szoboszlai', nickname: 'Szoboszlai', team: 'Hungary' },
+  
+  // Scotland
+  { fullName: 'John McGinn', nickname: 'McGinn', team: 'Scotland' },
+  { fullName: 'Andy Robertson', nickname: 'Robertson', team: 'Scotland' },
+  { fullName: 'Kieran Tierney', nickname: 'Tierney', team: 'Scotland' },
+  
+  // Turkey
+  { fullName: 'Arda Guler', nickname: 'Guler', team: 'Turkey' },
+  { fullName: 'Hakan Calhanoglu', nickname: 'Calhanoglu', team: 'Turkey' },
+  { fullName: 'Kerem Akturkoglu', nickname: 'Akturkoglu', team: 'Turkey' },
+  
+  // New Zealand
+  { fullName: 'Chris Wood', nickname: 'Wood', team: 'New Zealand' },
+  { fullName: 'Elijah Just', nickname: 'Just', team: 'New Zealand' },
+  { fullName: 'Ryan Thomas', nickname: 'Thomas', team: 'New Zealand' },
+  
+  // Saudi Arabia
+  { fullName: 'Abdulelah Al-Makhi', nickname: 'Al-Makhi', team: 'Saudi Arabia' },
+  { fullName: 'Feras Al Brikan', nickname: 'Al Brikan', team: 'Saudi Arabia' },
+  { fullName: 'Saleh Al Shehri', nickname: 'Al Shehri', team: 'Saudi Arabia' },
+  
+  // Qatar
+  { fullName: 'Almoez Ali', nickname: 'Almoez Ali', team: 'Qatar' },
+  { fullName: 'Bouthayna Khoukhi', nickname: 'Khoukhi', team: 'Qatar' },
+  { fullName: 'Akram Afif', nickname: 'Afif', team: 'Qatar' },
+  
+  // UAE
+  { fullName: 'Ali Mabkhout', nickname: 'Mabkhout', team: 'UAE' },
+  
+  // Iran
+  { fullName: 'Sardar Azmoun', nickname: 'Azmoun', team: 'Iran' },
+  { fullName: 'Mehdi Taremi', nickname: 'Taremi', team: 'Iran' },
+  { fullName: 'Jalal Hosseini', nickname: 'Hosseini', team: 'Iran' },
+  { fullName: 'Ramin Rezaeian', nickname: 'Rezaeian', team: 'Iran' },
+  { fullName: 'Mohammad Mohebi', nickname: 'Mohebi', team: 'Iran' },
+  
+  // Egypt
+  { fullName: 'Mohamed Salah', nickname: 'Salah', team: 'Egypt' },
+  { fullName: 'Mostafa Mohamed', nickname: 'M. Mohamed', team: 'Egypt' },
+  { fullName: 'Emam Ashour', nickname: 'Ashour', team: 'Egypt' },
+  { fullName: 'Omar Marmoush', nickname: 'Marmoush', team: 'Egypt' },
+  
+  // Tunisia
+  { fullName: 'Youssef Msakni', nickname: 'Msakni', team: 'Tunisia' },
+  { fullName: 'Khazri', nickname: 'Khazri', team: 'Tunisia' },
+  { fullName: 'Omar Rekik', nickname: 'Rekik', team: 'Tunisia' },
+  
+  // Algeria
+  { fullName: 'Riyad Mahrez', nickname: 'Mahrez', team: 'Algeria' },
+  { fullName: 'Ismail Bennacer', nickname: 'Bennacer', team: 'Algeria' },
+  
+  // Ivory Coast
+  { fullName: 'Sebastien Haller', nickname: 'Haller', team: 'Ivory Coast' },
+  { fullName: 'Nicolas Pepe', nickname: 'Pepe', team: 'Ivory Coast' },
+  { fullName: 'Abdoulaye Diallo', nickname: 'Diallo', team: 'Ivory Coast' },
+  
+  // Nigeria
+  { fullName: 'Victor Osimhen', nickname: 'Osimhen', team: 'Nigeria' },
+  { fullName: 'Ademola Lookman', nickname: 'Lookman', team: 'Nigeria' },
+  
+  // DR Congo
+  { fullName: 'Chancel Mbemba', nickname: 'Mbemba', team: 'DR Congo' },
+  { fullName: 'Erick Tshimanga', nickname: 'Tshimanga', team: 'DR Congo' },
+  
+  // Cameroon
+  { fullName: 'Bryan Mbeumo', nickname: 'Mbeumo', team: 'Cameroon' },
+  
+  // Paraguay
+  { fullName: 'Antonio Sanabria', nickname: 'Sanabria', team: 'Paraguay' },
+  { fullName: 'Miguel Almirón', nickname: 'Almirón', team: 'Paraguay' },
+  
+  // Bolivia
+  { fullName: 'Marcelo Martins', nickname: 'Martins', team: 'Bolivia' },
+  
+  // Ecuador
+  { fullName: 'Enner Valencia', nickname: 'Valencia', team: 'Ecuador' },
+  { fullName: 'Pervis Estupinan', nickname: 'Estupinan', team: 'Ecuador' },
+  
+  // Peru
+  { fullName: 'Paolo Guerrero', nickname: 'Guerrero', team: 'Peru' },
+  { fullName: 'Renaldo Tapia', nickname: 'Tapia', team: 'Peru' },
+  
+  // Chile
+  { fullName: 'Alexis Sanchez', nickname: 'A. Sanchez', team: 'Chile' },
+  { fullName: 'Arturo Vidal', nickname: 'Vidal', team: 'Chile' },
+  
+  // Colombia
+  { fullName: 'James Rodriguez', nickname: 'J. Rodriguez', team: 'Colombia' },
+  { fullName: 'Luis Diaz', nickname: 'L. Diaz', team: 'Colombia' },
+  { fullName: 'Jhon Cordoba', nickname: 'Cordoba', team: 'Colombia' },
+  
+  // Venezuela
+  { fullName: 'Salomon Rondon', nickname: 'Rondon', team: 'Venezuela' },
+  { fullName: 'Josef Martinez', nickname: 'Martinez', team: 'Venezuela' },
+  
+  // Costa Rica
+  { fullName: 'Keylor Navas', nickname: 'Navas', team: 'Costa Rica' },
+  { fullName: 'Anthony Contreras', nickname: 'Contreras', team: 'Costa Rica' },
+  
+  // Panama
+  { fullName: 'Ismael Diaz', nickname: 'I. Diaz', team: 'Panama' },
+  { fullName: 'Alberto Yin', nickname: 'Yin', team: 'Panama' },
+  
+  // Jamaica
+  { fullName: 'Leon Bailey', nickname: 'Bailey', team: 'Jamaica' },
+  { fullName: 'Michail Antonio', nickname: 'Antonio', team: 'Jamaica' },
+  
+  // Honduras
+  { fullName: 'Luis Lopez', nickname: 'Lopez', team: 'Honduras' },
+  
+  // USA
+  { fullName: 'Timothy Weah', nickname: 'Weah', team: 'USA' },
+  { fullName: 'Weston McKennie', nickname: 'McKennie', team: 'USA' },
+  { fullName: 'Sergiño Dest', nickname: 'Dest', team: 'USA' },
+  
+  // Canada
+  { fullName: 'Tajon Buchanan', nickname: 'Buchanan', team: 'Canada' },
+  { fullName: 'Alphonso Davies', nickname: 'Davies', team: 'Canada' },
+  
+  // Bosnia
+  { fullName: 'Edin Dzeko', nickname: 'Dzeko', team: 'Bosnia' },
+  { fullName: 'Milan Djuric', nickname: 'Djuric', team: 'Bosnia' },
+  { fullName: 'Jovan Lukić', nickname: 'Lukić', team: 'Bosnia' },
+  
+  // Iceland
+  { fullName: 'Gylfi Sigurdsson', nickname: 'Sigurdsson', team: 'Iceland' },
+  
+  // Wales
+  { fullName: 'Gareth Bale', nickname: 'Bale', team: 'Wales' },
+  { fullName: 'Aaron Ramsey', nickname: 'Ramsey', team: 'Wales' },
+  
+  // Albania
+  { fullName: 'Sokol Çiçkja', nickname: 'Çiçkja', team: 'Albania' },
+  { fullName: 'Reysas Manaj', nickname: 'Manaj', team: 'Albania' },
+  
+  // Slovenia
+  { fullName: 'Benjamin Šeško', nickname: 'Šeško', team: 'Slovenia' },
+  { fullName: 'Andraž Šporar', nickname: 'Šporar', team: 'Slovenia' },
+  
+  // Slovakia
+  { fullName: 'Milan Škriniar', nickname: 'Škriniar', team: 'Slovakia' },
+  { fullName: 'Ondrej Duda', nickname: 'Duda', team: 'Slovakia' },
+  
+  // Lithuania
+  { fullName: 'Vykintas Slivka', nickname: 'Slivka', team: 'Lithuania' },
+  
+  // Finland
+  { fullName: 'Teemu Pukki', nickname: 'Pukki', team: 'Finland' },
+  
+  // Greece
+  { fullName: 'Dimitris Pelkas', nickname: 'Pelkas', team: 'Greece' },
+  
+  // Israel
+  { fullName: 'Eran Zahavi', nickname: 'Zahavi', team: 'Israel' },
+  
+  // Kazakhstan
+  { fullName: 'Abat Aymbetov', nickname: 'Aymbetov', team: 'Kazakhstan' },
+  
+  // Luxembourg
+  { fullName: 'Gerson Rodrigues', nickname: 'Rodrigues', team: 'Luxembourg' },
+  
+  // Montenegro
+  { fullName: 'Stevan Jovetic', nickname: 'Jovetic', team: 'Montenegro' },
+  
+  // North Macedonia
+  { fullName: 'Goran Pandev', nickname: 'Pandev', team: 'North Macedonia' },
+  
+  // Cyprus
+  { fullName: 'Nicholas Ioannou', nickname: 'Ioannou', team: 'Cyprus' },
+  
+  // Estonia
+  { fullName: ' Konstantin Vassiljev', nickname: 'Vassiljev', team: 'Estonia' },
+  
+  // Latvia
+  { fullName: 'Roberts Uldriķis', nickname: 'Uldriķis', team: 'Latvia' },
+  
+  // Malta
+  { fullName: 'Kyrian Nwoko', nickname: 'Nwoko', team: 'Malta' },
+  
+  // Andorra
+  { fullName: 'Cristian Martínez', nickname: 'Martínez', team: 'Andorra' },
+  
+  // Liechtenstein
+  { fullName: 'Dennis Yasak', nickname: 'Yasak', team: 'Liechtenstein' },
+  
+  // San Marino
+  { fullName: 'Alessandro Golinucci', nickname: 'Golinucci', team: 'San Marino' },
+  
+  // Gibraltar
+  { fullName: 'Toms Haverns', nickname: 'Haverns', team: 'Gibraltar' },
+  
+  // Faroe Islands
+  { fullName: 'Jóan Símun Edmundsson', nickname: 'Edmundsson', team: 'Faroe Islands' },
+  
+  // Curaçao
+  { fullName: 'Leuk Combé', nickname: 'Combé', team: 'Curaçao' },
+  { fullName: 'Leroy Comenencia', nickname: 'Comenencia', team: 'Curaçao' },
+  
+  // Trinidad & Tobago
+  { fullName: 'Levi Garcia', nickname: 'Garcia', team: 'Trinidad & Tobago' },
+  
+  // Guatemala
+  { fullName: 'Carlos Fangrow', nickname: 'Fangrow', team: 'Guatemala' },
+  
+  // Suriname
+  { fullName: ' Glearlo Sieth', nickname: 'Sieth', team: 'Suriname' },
+  
+  // Guyana
+  { fullName: ' Nigel Boakai', nickname: 'Boakai', team: 'Guyana' },
+  
+  // Haiti
+  { fullName: ' Duckens Nazo', nickname: 'Nazo', team: 'Haiti' },
+  
+  // Nicaragua
+  { fullName: 'Juan Carlos Aburto', nickname: 'Aburto', team: 'Nicaragua' },
+  
+  // El Salvador
+  { fullName: 'Joshua Camil', nickname: 'Camil', team: 'El Salvador' },
+  
+  // Belize
+  { fullName: 'Deon Burton', nickname: 'Burton', team: 'Belize' },
+  
+  // Grenada
+  { fullName: 'Kandy Row', nickname: 'Row', team: 'Grenada' },
+  
+  // Bermuda
+  { fullName: 'Lejaun Simmons', nickname: 'Simmons', team: 'Bermuda' },
+  
+  // Barbados
+  { fullName: 'Rashid', nickname: 'Rashid', team: 'Barbados' },
+  
+  // Bahamas
+  { fullName: 'Marcel Joseph', nickname: 'Joseph', team: 'Bahamas' },
+  
+  // Antigua & Barbuda
+  { fullName: 'Quincy', nickname: 'Quincy', team: 'Antigua & Barbuda' },
+  
+  // Dominica
+  { fullName: 'Julius James', nickname: 'James', team: 'Dominica' },
+  
+  // St Kitts & Nevis
+  { fullName: 'Rashid', nickname: 'Rashid', team: 'St Kitts & Nevis' },
+  
+  // St Lucia
+  { fullName: 'Tano Smith', nickname: 'Smith', team: 'St Lucia' },
+  
+  // St Vincent & Grenadines
+  { fullName: 'Oalex Anderson', nickname: 'Anderson', team: 'St Vincent & Grenadines' },
+  
+  // Dominicans
+  { fullName: 'Marante', nickname: 'Marante', team: 'Dominicans' },
+  
+  // Puerto Rico
+  { fullName: 'Marante', nickname: 'Marante', team: 'Puerto Rico' },
+  
+  // Guadeloupe
+  { fullName: 'Ludovic Get', nickname: 'Get', team: 'Guadeloupe' },
+  
+  // Martinique
+  { fullName: 'Kévin Fortuné', nickname: 'Fortuné', team: 'Martinique' },
+  
+  // French Guiana
+  { fullName: 'Roy Contout', nickname: 'Contout', team: 'French Guiana' },
+  
+  // Aruba
+  { fullName: 'Anton Jongsma', nickname: 'Jongsma', team: 'Aruba' },
+  
+  // Bonaire
+  { fullName: 'Rowendy', nickname: 'Rowendy', team: 'Bonaire' },
+  
+  // Sint Maarten
+  { fullName: 'Gioseph Char', nickname: 'Char', team: 'Sint Maarten' },
+  
+  // Curacao
+  { fullName: 'Leuk Combé', nickname: 'Combé', team: 'Curaçao' },
+  
+  // Cayman Islands
+  { fullName: 'MaCL', nickname: 'MaCL', team: 'Cayman Islands' },
+  
+  // British Virgin Islands
+  { fullName: 'Coniah', nickname: 'Coniah', team: 'British Virgin Islands' },
+  
+  // US Virgin Islands
+  { fullName: 'Kevin', nickname: 'Kevin', team: 'US Virgin Islands' },
+  
+  // Anguilla
+  { fullName: 'Connor', nickname: 'Connor', team: 'Anguilla' },
+  
+  // Montserrat
+  { fullName: 'Brun', nickname: 'Brun', team: 'Montserrat' },
+  
+  // Turks & Caicos
+  { fullName: 'Billy', nickname: 'Billy', team: 'Turks & Caicos' },
+  
+  // Cuba
+  { fullName: 'Carlos Santos', nickname: 'Santos', team: 'Cuba' },
+  
+  // Haiti
+  { fullName: 'Mouchoukain', nickname: 'Mouchoukain', team: 'Haiti' },
+  
+  // Iraq
+  { fullName: 'Aliasghbar Regife', nickname: 'Hsin', team: 'Iraq' },
+];
+
+// Fuzzy match function - calculates similarity between two strings
+function fuzzyMatch(str1, str2) {
+  if (!str1 || !str2) return 0;
+  
+  str1 = str1.toLowerCase().trim();
+  str2 = str2.toLowerCase().trim();
+  
+  // Exact match
+  if (str1 === str2) return 1;
+  
+  // One contains the other
+  if (str1.includes(str2) || str2.includes(str1)) return 0.8;
+  
+  // Check if initials match (e.g., "K. Havertz" matches "Kai Havertz")
+  const words1 = str1.split(/\s+/);
+  const words2 = str2.split(/\s+/);
+  
+  // Check first letter matches
+  const firstMatch = words1[0][0] === words2[0][0];
+  const lastMatch = words1[words1.length - 1][0] === words2[words2.length - 1][0];
+  
+  if (firstMatch && lastMatch) return 0.7;
+  if (firstMatch || lastMatch) return 0.5;
+  
+  // Levenshtein distance for short names
+  const distance = levenshteinDistance(str1, str2);
+  const maxLen = Math.max(str1.length, str2.length);
+  const similarity = 1 - (distance / maxLen);
+  
+  return Math.max(0, similarity - 0.3); // Penalize non-exact matches
+}
+
+// Levenshtein distance calculation
+function levenshteinDistance(str1, str2) {
+  const m = str1.length;
+  const n = str2.length;
+  const dp = Array(m + 1).fill(null).map(() => Array(n + 1).fill(0));
+  
+  for (let i = 0; i <= m; i++) dp[i][0] = i;
+  for (let j = 0; j <= n; j++) dp[0][j] = j;
+  
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1];
+      } else {
+        dp[i][j] = 1 + Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]);
+      }
+    }
+  }
+  
+  return dp[m][n];
+}
+
+// Find best match from database
+function findBestMatch(apiName, team = null) {
+  // First check explicit conversions
+  if (scorerNameConversions[apiName]) {
+    return scorerNameConversions[apiName];
+  }
+  
+  let bestMatch = null;
+  let bestScore = 0;
+  
+  // Filter by team if provided
+  const candidates = team 
+    ? wcPlayerDatabase.filter(p => p.team.toLowerCase() === team.toLowerCase())
+    : wcPlayerDatabase;
+  
+  for (const player of candidates) {
+    // Check against full name
+    let score = fuzzyMatch(apiName, player.fullName);
+    if (score > bestScore) {
+      bestScore = score;
+      bestMatch = player.fullName;
+    }
+    
+    // Check against nickname
+    const nickScore = fuzzyMatch(apiName, player.nickname) * 0.9;
+    if (nickScore > bestScore) {
+      bestScore = nickScore;
+      bestMatch = player.fullName;
+    }
+  }
+  
+  // Only return if confidence is above threshold
+  return bestScore > 0.5 ? bestMatch : apiName;
+}
+
+function formatScorer(scorerStr, team = null) {
   if (!scorerStr) return '';
   
   // Clean the scorer string - remove all types of surrounding quotes if present
@@ -994,8 +1629,15 @@ function formatScorer(scorerStr) {
     name = cleanStr.trim();
   }
   
-  // Apply name conversion if available
-  const displayName = scorerNameConversions[name] || name;
+  // Apply name conversion with fuzzy matching fallback
+  let displayName = scorerNameConversions[name];
+  if (!displayName) {
+    // Try fuzzy matching from database
+    displayName = findBestMatch(name, team);
+  }
+  if (!displayName) {
+    displayName = name;
+  }
   
   const isPenalty = minute.includes('(p)');
   const isOG = minute.includes('(OG)');
@@ -1049,7 +1691,7 @@ function computeTopScorers() {
     
     // Process home team scorers
     for (const scorerStr of matchScorers.home || []) {
-      const parsed = formatScorer(scorerStr);
+      const parsed = formatScorer(scorerStr, homeTeam);
       const name = parsed.name;
       if (name) {
         if (!scorerCounts[name]) {
@@ -1061,7 +1703,7 @@ function computeTopScorers() {
     
     // Process away team scorers
     for (const scorerStr of matchScorers.away || []) {
-      const parsed = formatScorer(scorerStr);
+      const parsed = formatScorer(scorerStr, awayTeam);
       const name = parsed.name;
       if (name) {
         if (!scorerCounts[name]) {
