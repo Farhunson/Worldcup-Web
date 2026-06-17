@@ -2294,7 +2294,8 @@ function renderTopScorers() {
 
 // Toggle function for collapse/expand
 function toggleTopScorers(button) {
-  const wrapper = button.closest('.top-scorers-wrapper');
+  const container = button.closest('#top-scorers-table');
+  const wrapper = container.querySelector('.top-scorers-wrapper');
   const allRows = wrapper.querySelectorAll('tbody tr');
   const isCollapsed = wrapper.dataset.collapsed === 'true';
   const totalCount = allRows.length;
