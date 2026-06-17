@@ -3812,7 +3812,7 @@ function buildScorersHtml(scorers, isHomeTeam = true, teamName = null) {
     
     // Check if this is an own goal using the player database
     // If player doesn\'t belong to the team they\'re listed under, it\'s an OG
-    const playerTeam = playerTeamDatabase[parsed.name];
+    const playerTeam = officialSquadPlayers[parsed.name];
     const isOG = parsed.isOG || (playerTeam && teamName && playerTeam !== teamName);
     const ogClass = isOG ? ' scorer-og' : '';
     
@@ -3859,7 +3859,7 @@ function computeTopScorers() {
   
   // Helper function to check if a goal is an own goal using the player database
   const isOwnGoalByDatabase = (playerName, scoringForTeam) => {
-    const playerTeam = playerTeamDatabase[playerName];
+    const playerTeam = officialSquadPlayers[playerName];
     if (playerTeam && scoringForTeam && playerTeam !== scoringForTeam) {
       return true; // Player is scoring for a team they don\'t belong to = own goal
     }
