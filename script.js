@@ -976,13 +976,14 @@ function formatScorer(scorerStr) {
   
   // Clean the scorer string - remove all types of surrounding quotes if present
   let cleanStr = scorerStr.trim();
-  // Remove curly quotes (", ") and straight quotes (") from start/end
+  // Remove curly quotes ("), (") and straight quotes (") from start/end
   cleanStr = cleanStr.replace(/^["""]+|["""]+$/g, '');
   
-  // Parse the scorer string - format is like "Name 90'" or "Name 45'+5'(p)" or "Name 7'(OG)"
+  // Parse the scorer string - format is like "Name 90'" or "Name 45'+5'(p)" or "Name 90+6'" (extra time)
   // Extract name and minute/penalty info
   // Match: everything before the minute (with optional OG or penalty), then the minute
-  const match = cleanStr.match(/^(.+?)\s+(\d+'\+?\d*'?(\(OG\))?\s*(\(p\))?)$/);
+  // Handles formats: 90', 90+6', 90+5'(p), 7'(OG), etc.
+  const match = cleanStr.match(/^(.+?)\s+(\d+['+]?\+?\d*'?(\(OG\))?\s*(\(p\))?)$/);
   let name;
   let minute = '';
   if (match) {
@@ -1118,14 +1119,14 @@ function renderTopScorers() {
     }
     const rankClass = effectiveRank <= 3 ? `rank-${effectiveRank}` : '';
     
-    // Get flag for country - same format as match cards
-    const flagHtml = scorer.country ? `${formatFlag(scorer.country)} ${scorer.country}` : '';
+    // Get flag for country - only flag, no country name
+    const flagHtml = scorer.country ? `<span class="scorer-flag">${formatFlag(scorer.country)}</span>` : '';
     const displayName = scorer.name;
     
     html += `
       <tr class="${rankClass}">
         <td class="rank-col">${rankDisplay}</td>
-        <td class="player-col">${flagHtml} ${displayName}</td>
+        <td class="player-col">${flagHtml}<span class="scorer-name">${displayName}</span></td>
         <td class="goals-col">${scorer.goals}</td>
       </tr>
     `;
