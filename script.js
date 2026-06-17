@@ -1873,10 +1873,13 @@ function renderTopScorers() {
     if (index < 3) {
       const portraitUrl = getPlayerPortrait(scorer.name);
       if (portraitUrl) {
-        portraitHtml = `<img class="scorer-portrait" src="${portraitUrl}" alt="${scorer.name}" onerror="this.style.display='none'" />`;
+        portraitHtml = `<img class="scorer-portrait" src="${portraitUrl}" alt="${scorer.name}" />`;
       } else {
-        // Use placeholder silhouette
-        portraitHtml = `<span class="scorer-portrait-placeholder"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="4"/><path d="M12 14c-4 0-8 2-8 4v2h16v-2c0-2-4-4-8-4z"/></svg></span>`;
+        // Use initials as placeholder - get first letter of first and last name
+        const initials = nameParts.length >= 2 
+          ? nameParts[0][0] + nameParts[nameParts.length - 1][0] 
+          : scorer.name.substring(0, 2);
+        portraitHtml = `<span class="scorer-portrait-placeholder">${initials.toUpperCase()}</span>`;
       }
     }
     
