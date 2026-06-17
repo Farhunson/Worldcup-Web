@@ -1029,7 +1029,7 @@ const scorerNameConversions = {
   'Elijah Just': 'Elijah Just',
   'Abdulelah Al-Amri': 'Abdulelah Al-Amri',
   'Maximiliano Araújo': 'Maximiliano Araújo',
-  'I. Mbaye': 'Ismaila Sarr',
+  'I. Mbaye': 'Ibrahim Mbaye',
   'Aimn Hsin': 'Aliasghbar Regife',
   'Rvmanv Ashmid': 'Roman Aschmidt',
   'Jovo Lukić': 'Jovan Lukić'
@@ -1155,6 +1155,7 @@ const wcPlayerDatabase = [
   { fullName: 'Sadio Mane', nickname: 'Mane', team: 'Senegal' },
   { fullName: 'Ismaila Sarr', nickname: 'Sarr', team: 'Senegal' },
   { fullName: 'Boulaye Dia', nickname: 'Dia', team: 'Senegal' },
+  { fullName: 'Ibrahim Mbaye', nickname: 'Mbaye', team: 'Senegal' },
   
   // Ghana
   { fullName: 'Mohammed Kudus', nickname: 'Kudus', team: 'Ghana' },
