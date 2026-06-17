@@ -2891,6 +2891,58 @@ footer {
   color: var(--text);
 }
 
+.top-scorers-table .scorer-first-name {
+  font-weight: 400;
+  opacity: 0.8;
+}
+
+.top-scorers-table .scorer-last-name {
+  font-weight: 700;
+  font-size: 1.05em;
+}
+
+.top-scorers-table .scorer-portrait {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.top-scorers-table .scorer-portrait-placeholder {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+}
+
+.top-scorers-table .scorer-portrait-placeholder svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* Top 3 specific portrait styling */
+.top-scorers-table .rank-1 .scorer-portrait {
+  border-color: #FFD700;
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.5);
+}
+
+.top-scorers-table .rank-2 .scorer-portrait {
+  border-color: #C0C0C0;
+  box-shadow: 0 0 12px rgba(192, 192, 192, 0.4);
+}
+
+.top-scorers-table .rank-3 .scorer-portrait {
+  border-color: #CD7F32;
+  box-shadow: 0 0 12px rgba(205, 127, 50, 0.4);
+}
+
 .top-scorers-table .team-flag-name {
   display: inline-flex;
 }
