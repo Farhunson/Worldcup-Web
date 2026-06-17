@@ -2873,12 +2873,8 @@ footer {
   border-color: var(--accent);
 }
 
-.top-scorers-content {
+.top-scorers-wrapper {
   overflow: hidden;
-}
-
-.top-scorers-content.collapsed .top-scorers-table tbody tr:nth-child(n+4) {
-  display: none;
 }
 
 .top-scorers-table {

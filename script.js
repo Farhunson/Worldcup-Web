@@ -2203,12 +2203,13 @@ function renderTopScorers() {
   const hasMoreThanThree = topScorers.length > 3;
   
   // Build HTML table with collapsible header
+  // Start collapsed (rows 4+ hidden), toggle to show all
   let html = `
     <div class="top-scorers-header">
       <h3 class="top-scorers-title">Top Scorers</h3>
-      ${hasMoreThanThree ? '<button class="top-scorers-toggle" onclick="toggleTopScorers(this)">Show All (${topScorers.length})</button>' : ''}
+      ${hasMoreThanThree ? '<button class="top-scorers-toggle" onclick="toggleTopScorers(this)">Show All (' + topScorers.length + ')</button>' : ''}
     </div>
-    <div class="top-scorers-content" ${hasMoreThanThree ? 'style="display: none;"' : ''}>
+    <div class="top-scorers-wrapper" data-collapsed="true">
     <table class="top-scorers-table">
       <thead>
         <tr>
@@ -2267,8 +2268,11 @@ function renderTopScorers() {
       }
     }
     
+    // Hide rows 4+ when collapsed
+    const rowHidden = hasMoreThanThree && index >= 3;
+    
     html += `
-      <tr class="${rankClass}">
+      <tr class="${rankClass}" ${rowHidden ? 'style="display: none;"' : ''}>
         <td class="rank-col">${rankDisplay}</td>
         <td class="player-col">${portraitHtml}${flagHtml}<span class="scorer-name"><span class="scorer-first-name">${firstName}</span> <span class="scorer-last-name">${lastName}</span></span></td>
         <td class="goals-col"><span class="goals-badge">${scorer.goals}</span></td>
@@ -2290,17 +2294,23 @@ function renderTopScorers() {
 
 // Toggle function for collapse/expand
 function toggleTopScorers(button) {
-  const content = button.closest('.top-scorers-table-wrapper, #top-scorers-table').querySelector('.top-scorers-content');
-  const allRows = content.querySelectorAll('tbody tr');
+  const wrapper = button.closest('.top-scorers-wrapper');
+  const allRows = wrapper.querySelectorAll('tbody tr');
+  const isCollapsed = wrapper.dataset.collapsed === 'true';
+  const totalCount = allRows.length;
   
-  if (content.style.display === 'none') {
-    // Expand
-    content.style.display = 'block';
+  if (isCollapsed) {
+    // Expand - show all rows
+    wrapper.dataset.collapsed = 'false';
+    allRows.forEach(row => row.style.display = '');
     button.textContent = 'Show Less';
   } else {
-    // Collapse - show only top 3
-    content.style.display = 'none';
-    button.textContent = `Show All (${allRows.length})`;
+    // Collapse - hide rows after top 3
+    wrapper.dataset.collapsed = 'true';
+    allRows.forEach((row, index) => {
+      row.style.display = index < 3 ? '' : 'none';
+    });
+    button.textContent = 'Show All (' + totalCount + ')';
   }
 }
 
