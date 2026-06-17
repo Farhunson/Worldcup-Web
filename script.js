@@ -2385,7 +2385,7 @@ async function getPlayerPortraitAsync(playerName) {
   return await fetchPortraitFromSportsDB(playerName);
 }
 
-const officialWcPlayerDatabase = [
+const wcPlayerDatabase = [
   { number: 1, nameOnShirt: 'MASTIL', fullName: 'MASTIL', team: 'Algeria', position: 'GK', club: 'FC Stade Nyonnais (SUI)' },
   { number: 2, nameOnShirt: 'MANDI', fullName: 'MANDI', team: 'Algeria', position: 'DF', club: 'Lille OSC (FRA)' },
   { number: 3, nameOnShirt: 'ABADA', fullName: 'ABADA', team: 'Algeria', position: 'DF', club: 'USM Alger (ALG)' },
