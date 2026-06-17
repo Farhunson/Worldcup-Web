@@ -1040,26 +1040,49 @@ const scorerNameConversions = {
 const playerPortraitMap = {
   'Lionel Messi': 'https://images.fifa.com/image/upload/w_80,h_80,c_fill,g_face,q_auto,f_southamerica/v1669066048/d0lkbhvqmxvnkxqjzamk.png',
   'Erling Haaland': 'https://images.fifa.com/image/upload/w_80,h_80,c_fill,g_face,q_auto,f_europe/nedfcdzpyq1gs0nuzuuu.png',
-  'Kylian Mbappe': 'https://images.fifa.com/image/upload/w_80,h_80,c_fill,g_face,q_auto,f_europe/fi0art8xhnrmvnhbue8i.png',
+  'Kylian Mbappé': 'https://images.fifa.com/image/upload/w_80,h_80,c_fill,g_face,q_auto,f_europe/fi0art8xhnrmvnhbue8i.png',
   'Folarin Balogun': 'https://images.fifa.com/image/upload/w_80,h_80,c_fill,g_face,q_auto,f_northamerica/v1684920290/zfvinnccvqefrjzuljrv.png',
   'Kai Havertz': 'https://images.fifa.com/image/upload/w_80,h_80,c_fill,g_face,q_auto,f_europe/hdofxwq5gq8q3f8qyv9a.png',
   'Yasin Ayari': 'https://images.fifa.com/image/upload/w_80,h_80,c_fill,g_face,q_auto,f_europe/edvkxmq9d1y4d2d8jvwb.png',
   'Elijah Just': 'https://images.fifa.com/image/upload/w_80,h_80,c_fill,g_face,q_auto,f_oceania/n0fxxvjcmxjz6q5d4l8a.png',
   'Oscar Bobb': 'https://images.fifa.com/image/upload/w_80,h_80,c_fill,g_face,q_auto,f_europe/z7k9e6f4f1koxjwjw6h9.png',
+  'Alexander Isak': 'https://images.fifa.com/image/upload/w_80,h_80,c_fill,g_face,q_auto,f_europe/p8ktv2x4j0j9mvcnjt4h.png',
+  'Viktor Gyökeres': 'https://images.fifa.com/image/upload/w_80,h_80,c_fill,g_face,q_auto,f_europe/rx9yq5hwfqg3tnbnq0t3.png',
+  'Bradley Barcola': 'https://images.fifa.com/image/upload/w_80,h_80,c_fill,g_face,q_auto,f_europe/rj5e8c8s2j6xv5qyz8a0.png',
   // Add more players as needed
 };
 
-// Helper function to get player portrait
+// Helper function to get player portrait - tries multiple name variations
 function getPlayerPortrait(playerName) {
+  // Direct match
   if (playerPortraitMap[playerName]) {
     return playerPortraitMap[playerName];
   }
-  // Try to find by partial match (for names with middle initials)
+  
+  // Normalize name for comparison (remove accents)
+  const normalize = (str) => str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  
+  // Try normalized comparison
+  const normalizedInput = normalize(playerName);
   for (const key in playerPortraitMap) {
-    if (playerName.includes(key) || key.includes(playerName)) {
+    if (normalize(key) === normalizedInput) {
       return playerPortraitMap[key];
     }
   }
+  
+  // Try last name only match (for players with same last name)
+  const nameParts = playerName.split(' ');
+  const lastName = nameParts[nameParts.length - 1];
+  const normalizedLastName = normalize(lastName);
+  
+  for (const key in playerPortraitMap) {
+    const keyParts = key.split(' ');
+    const keyLastName = keyParts[keyParts.length - 1];
+    if (normalize(keyLastName) === normalizedLastName && normalize(key).startsWith(normalizedInput.substring(0, 2))) {
+      return playerPortraitMap[key];
+    }
+  }
+  
   return null;
 }
 
@@ -1817,19 +1840,20 @@ function renderTopScorers() {
   `;
   
   let currentRank = 0;
+  let displayRank = 0;
+  
   topScorers.forEach((scorer, index) => {
     // Calculate rank with ties
     // If goals same as previous, show "=", otherwise show sequential rank
     const isTied = index > 0 && scorer.goals === topScorers[index - 1].goals;
-    const rankDisplay = isTied ? '=' : index + 1;
     
-    // Determine rank class (for gold/silver/bronze styling)
-    let effectiveRank = currentRank;
     if (!isTied) {
       currentRank = index + 1;
-      effectiveRank = currentRank;
     }
-    const rankClass = effectiveRank <= 3 ? `rank-${effectiveRank}` : '';
+    displayRank = currentRank;
+    
+    const rankDisplay = isTied ? '=' : currentRank;
+    const rankClass = displayRank <= 3 ? `rank-${displayRank}` : '';
     
     // Get flag for country
     const flagHtml = scorer.country ? `<span class="team-flag-name">${formatFlag(scorer.country)}</span>` : '';
@@ -1846,9 +1870,10 @@ function renderTopScorers() {
       lastName = scorer.name;
     }
     
-    // Get portrait for top 3 scorers
+    // Get portrait for top 3 scorers only (based on actual rank, not tied rank)
     let portraitHtml = '';
-    if (effectiveRank <= 3) {
+    if (displayRank <= 3 && !isTied) {
+      // Only show portrait for the actual top 3 (not tied players)
       const portraitUrl = getPlayerPortrait(scorer.name);
       if (portraitUrl) {
         portraitHtml = `<img class="scorer-portrait" src="${portraitUrl}" alt="${scorer.name}" onerror="this.style.display='none'" />`;
