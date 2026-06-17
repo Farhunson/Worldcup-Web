@@ -1225,8 +1225,50 @@ const playerPortraitMap = {
   'Leo Østigård': 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Leo_%C3%98stig%C3%A5rd_2022.jpg/200px-Leo_%C3%98stig%C3%A5rd_2022.jpg',
 };
 
-// Helper function to get player portrait - tries multiple name variations
-function getPlayerPortrait(playerName) {
+// Cache for dynamically fetched portraits
+const portraitCache = {};
+
+// Helper function to get player portrait from TheSportsDB API
+async function fetchPortraitFromSportsDB(playerName) {
+  const cacheKey = playerName.toLowerCase();
+  
+  // Check memory cache first
+  if (portraitCache[cacheKey]) {
+    return portraitCache[cacheKey];
+  }
+  
+  // Check local map first (prioritize static entries)
+  const localUrl = getPortraitFromLocalMap(playerName);
+  if (localUrl) {
+    portraitCache[cacheKey] = localUrl;
+    return localUrl;
+  }
+  
+  try {
+    // Fetch from TheSportsDB API
+    const apiUrl = `https://www.thesportsdb.com/api/v1/json/3/searchplayers.php?p=${encodeURIComponent(playerName)}`;
+    const response = await fetch(apiUrl);
+    const data = await response.json();
+    
+    if (data.player && data.player.length > 0) {
+      // Get the most relevant player (first result)
+      const player = data.player[0];
+      // Prefer strThumb (full portrait) over strCutout (silhouette)
+      const imageUrl = player.strThumb || player.strCutout;
+      if (imageUrl) {
+        portraitCache[cacheKey] = imageUrl;
+        return imageUrl;
+      }
+    }
+  } catch (error) {
+    console.warn('Failed to fetch portrait from SportsDB:', error);
+  }
+  
+  return null;
+}
+
+// Helper function to check local portrait map
+function getPortraitFromLocalMap(playerName) {
   // Direct match
   if (playerPortraitMap[playerName]) {
     return playerPortraitMap[playerName];
@@ -1243,7 +1285,7 @@ function getPlayerPortrait(playerName) {
     }
   }
   
-  // Try last name only match (for players with same last name)
+  // Try last name only match
   const nameParts = playerName.split(' ');
   const lastName = nameParts[nameParts.length - 1];
   const normalizedLastName = normalize(lastName);
@@ -1257,6 +1299,39 @@ function getPlayerPortrait(playerName) {
   }
   
   return null;
+}
+
+// Synchronous wrapper for getPlayerPortrait (returns cached or local URLs immediately)
+function getPlayerPortrait(playerName) {
+  const cacheKey = playerName.toLowerCase();
+  
+  // Check memory cache first
+  if (portraitCache[cacheKey]) {
+    return portraitCache[cacheKey];
+  }
+  
+  // Return local map URL if available (synchronous)
+  const localUrl = getPortraitFromLocalMap(playerName);
+  if (localUrl) {
+    portraitCache[cacheKey] = localUrl;
+    return localUrl;
+  }
+  
+  // Trigger async fetch for future use, but return null now
+  fetchPortraitFromSportsDB(playerName);
+  
+  return null;
+}
+
+// Async version that waits for API response
+async function getPlayerPortraitAsync(playerName) {
+  const cacheKey = playerName.toLowerCase();
+  
+  if (portraitCache[cacheKey]) {
+    return portraitCache[cacheKey];
+  }
+  
+  return await fetchPortraitFromSportsDB(playerName);
 }
 
 // Comprehensive World Cup players database for fuzzy matching
@@ -2054,8 +2129,8 @@ function renderTopScorers() {
         // Add error handler to show initials if image fails
         portraitHtml = `<img class="scorer-portrait" src="${portraitUrl}" alt="${scorer.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';" /><span class="scorer-portrait-placeholder" style="display:none;">${initials.toUpperCase()}</span>`;
       } else {
-        // No URL, show initials directly
-        portraitHtml = `<span class="scorer-portrait-placeholder">${initials.toUpperCase()}</span>`;
+        // No URL yet, show initials but mark for async update
+        portraitHtml = `<img class="scorer-portrait" data-player="${scorer.name}" data-initials="${initials}" src="" style="display:none;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';" /><span class="scorer-portrait-placeholder">${initials.toUpperCase()}</span>`;
       }
     }
     
@@ -2074,6 +2149,30 @@ function renderTopScorers() {
   `;
   
   container.innerHTML = html;
+  
+  // Async: Update portraits from TheSportsDB API
+  updatePortraitsFromAPI();
+}
+
+// Function to update portraits from TheSportsDB API after render
+async function updatePortraitsFromAPI() {
+  const portraitImages = document.querySelectorAll('.scorer-portrait[data-player]');
+  
+  for (const img of portraitImages) {
+    const playerName = img.dataset.player;
+    const initials = img.dataset.initials;
+    const placeholder = img.nextElementSibling;
+    
+    const portraitUrl = await getPlayerPortraitAsync(playerName);
+    
+    if (portraitUrl) {
+      img.src = portraitUrl;
+      img.style.display = 'inline-block';
+      if (placeholder && placeholder.classList.contains('scorer-portrait-placeholder')) {
+        placeholder.style.display = 'none';
+      }
+    }
+  }
 }
 
 function startAutoRefresh() {
