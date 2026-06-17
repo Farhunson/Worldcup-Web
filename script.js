@@ -1861,12 +1861,17 @@ function computeTopScorers() {
     // Process home team scorers (goals FOR the home team, against away team)
     for (const scorerStr of matchScorers.home || []) {
       const parsed = formatScorer(scorerStr, homeTeam);
-      // Skip own goals - they are scored by opponent but credited to the team
-      if (parsed.isOG) continue;
       const name = parsed.name;
       if (name) {
+        // Determine which team to credit this goal to
+        // Own goals in home_scorers are credited to the AWAY team (they scored against themselves)
+        const creditedTeam = parsed.isOG ? awayTeam : homeTeam;
+        
         if (!scorerCounts[name]) {
-          scorerCounts[name] = { goals: 0, country: homeTeam, latestGoalTime: 0 };
+          scorerCounts[name] = { goals: 0, country: creditedTeam, latestGoalTime: 0 };
+        } else {
+          // Update country if this scorer now scores for a different team
+          scorerCounts[name].country = creditedTeam;
         }
         scorerCounts[name].goals++;
         // Update latest goal time (most recent goal from this match)
@@ -1879,12 +1884,17 @@ function computeTopScorers() {
     // Process away team scorers (goals FOR the away team, against home team)
     for (const scorerStr of matchScorers.away || []) {
       const parsed = formatScorer(scorerStr, awayTeam);
-      // Skip own goals - they are scored by opponent but credited to the team
-      if (parsed.isOG) continue;
       const name = parsed.name;
       if (name) {
+        // Determine which team to credit this goal to
+        // Own goals in away_scorers are credited to the HOME team (they scored against themselves)
+        const creditedTeam = parsed.isOG ? homeTeam : awayTeam;
+        
         if (!scorerCounts[name]) {
-          scorerCounts[name] = { goals: 0, country: awayTeam, latestGoalTime: 0 };
+          scorerCounts[name] = { goals: 0, country: creditedTeam, latestGoalTime: 0 };
+        } else {
+          // Update country if this scorer now scores for a different team
+          scorerCounts[name].country = creditedTeam;
         }
         scorerCounts[name].goals++;
         // Update latest goal time (most recent goal from this match)
