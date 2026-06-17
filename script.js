@@ -962,19 +962,35 @@ function hasScorerData(matchNo) {
 }
 
 // Helper function to format a single scorer string for display
+// Scorer name conversion map (API names to display names)
+const scorerNameConversions = {
+  'Arling Halnd': 'E. Haaland',
+  'Livnl Msi': 'L. Messi'
+};
+
 function formatScorer(scorerStr) {
   if (!scorerStr) return '';
   
   // Parse the scorer string - format is like "Name 90'" or "Name 45'+5'(p)"
   // Extract name and minute/penalty info
   const match = scorerStr.match(/^(.+?)\s*(\d+'\+?\d*'?\(p\)?)/);
+  let name;
   if (match) {
-    const [, name, minute] = match;
-    const isPenalty = minute.includes('(p)');
-    return { name: name.trim(), minute, isPenalty };
+    name = match[1].trim();
+  } else {
+    name = scorerStr.trim();
   }
   
-  return { name: scorerStr.trim(), minute: '', isPenalty: false };
+  // Apply name conversion if available
+  const displayName = scorerNameConversions[name] || name;
+  
+  if (match) {
+    const minute = match[2];
+    const isPenalty = minute.includes('(p)');
+    return { name: displayName, minute, isPenalty };
+  }
+  
+  return { name: displayName, minute: '', isPenalty: false };
 }
 
 // Helper function to build scorers HTML for a team
