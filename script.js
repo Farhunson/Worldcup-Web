@@ -1015,6 +1015,7 @@ const officialSquadConversions = {
   'I. Mbaye': 'MBAYE',
   'Aimn Hsin': 'REGIFE',
   'Jovo Lukić': 'LUKIĆ',
+  'Aymen Hussein': 'HUSSEIN',
 };
 
 
@@ -2726,7 +2727,7 @@ const wcPlayerDatabase = [
   { number: 26, nameOnShirt: 'RAZAGH', fullName: 'RAZAGH', team: 'Iran', position: 'MF', club: 'Esteghlal Tehran FC (IRN)' },
   { number: 1, nameOnShirt: 'FAHAD', fullName: 'FAHAD', team: 'Iraq', position: 'GK', club: 'Al Talaba SC (IRQ)' },
   { number: 2, nameOnShirt: 'REBIN', fullName: 'REBIN', team: 'Iraq', position: 'DF', club: 'Port FC (THA)' },
-  { number: 3, nameOnShirt: 'HUSSEIN', fullName: 'HUSSEIN', team: 'Iraq', position: 'DF', club: 'Pogo ń  Szczecin (POL)' },
+  { number: 3, nameOnShirt: 'HUSSEIN', fullName: 'Aymen Hussein', team: 'Iraq', position: 'DF', club: 'Pogo ń  Szczecin (POL)' },
   { number: 4, nameOnShirt: 'ZAID T.', fullName: 'ZAID T.', team: 'Iraq', position: 'DF', club: 'Pakhtakor Tashkent FK (UZB)' },
   { number: 5, nameOnShirt: 'AKAM', fullName: 'AKAM', team: 'Iraq', position: 'DF', club: 'Al Zawra\'a SC (IRQ)' },
   { number: 6, nameOnShirt: 'MUNAF', fullName: 'MUNAF', team: 'Iraq', position: 'DF', club: 'Al Shorta SC (IRQ)' },
@@ -3884,11 +3885,17 @@ function computeTopScorers() {
     return 0;
   };
   
-  // Helper function to check if a goal is an own goal using the player database
-  const isOwnGoalByDatabase = (playerName, scoringForTeam) => {
-    const playerTeam = officialSquadPlayers[playerName];
-    if (playerTeam && scoringForTeam && playerTeam !== scoringForTeam) {
-      return true; // Player is scoring for a team they don\'t belong to = own goal
+  // Helper function to check if a goal is an own goal by looking up the player in wcPlayerDatabase
+  // Compare: does this player's fullName match a player from the scoringForTeam?
+  const isOwnGoalByDatabase = (fullName, scoringForTeam) => {
+    // Find the player in wcPlayerDatabase by fullName or nameOnShirt
+    const player = wcPlayerDatabase.find(p => 
+      p.fullName.toUpperCase() === fullName.toUpperCase() || 
+      p.nameOnShirt.toUpperCase() === fullName.toUpperCase()
+    );
+    
+    if (player && scoringForTeam && player.team !== scoringForTeam) {
+      return true; // Player belongs to a different team = own goal
     }
     return false;
   };
