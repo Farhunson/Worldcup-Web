@@ -974,14 +974,18 @@ const scorerNameConversions = {
 function formatScorer(scorerStr) {
   if (!scorerStr) return '';
   
+  // Clean the scorer string - remove surrounding quotes if present
+  let cleanStr = scorerStr.trim();
+  cleanStr = cleanStr.replace(/^[""]+|[""]+$/g, '');
+  
   // Parse the scorer string - format is like "Name 90'" or "Name 45'+5'(p)"
   // Extract name and minute/penalty info
-  const match = scorerStr.match(/^(.+?)\s+(\d+'\+?\d*'?\(p\)?)$/);
+  const match = cleanStr.match(/^(.+?)\s+(\d+'\+?\d*'?\(p\)?)$/);
   let name;
   if (match) {
     name = match[1].trim();
   } else {
-    name = scorerStr.trim();
+    name = cleanStr.trim();
   }
   
   // Apply name conversion if available
