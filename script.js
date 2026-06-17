@@ -976,14 +976,15 @@ function formatScorer(scorerStr) {
   
   // Clean the scorer string - remove all types of surrounding quotes if present
   let cleanStr = scorerStr.trim();
-  // Remove curly quotes ("), (") and straight quotes (") from start/end
-  cleanStr = cleanStr.replace(/^["""]+|["""]+$/g, '');
+  // Remove curly quotes (U+201C, U+201D) and straight quotes (U+0022) from start/end
+  cleanStr = cleanStr.replace(/^[\u0022\u201C\u201D]+|[\u0022\u201C\u201D]+$/g, '');
   
   // Parse the scorer string - format is like "Name 90'" or "Name 45'+5'(p)" or "Name 90+6'" (extra time)
   // Extract name and minute/penalty info
   // Match: everything before the minute (with optional OG or penalty), then the minute
   // Handles formats: 90', 90+6', 90+5'(p), 7'(OG), etc.
-  const match = cleanStr.match(/^(.+?)\s+(\d+['+]?\+?\d*'?(\(OG\))?\s*(\(p\))?)$/);
+  // Minute pattern: digits, optional apostrophe, optional plus, optional digits, optional apostrophe, optional (OG), optional (p)
+  const match = cleanStr.match(/^(.+?)\s+(\d+[']?\+?\d*'?(\(OG\))?\s*(\(p\))?)$/);
   let name;
   let minute = '';
   if (match) {
