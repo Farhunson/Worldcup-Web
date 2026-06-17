@@ -1726,9 +1726,11 @@ function computeTopScorers() {
     const homeTeam = match?.team1 || null;
     const awayTeam = match?.team2 || null;
     
-    // Process home team scorers
+    // Process home team scorers (goals FOR the home team, against away team)
     for (const scorerStr of matchScorers.home || []) {
       const parsed = formatScorer(scorerStr, homeTeam);
+      // Skip own goals - they are scored by opponent but credited to the team
+      if (parsed.isOG) continue;
       const name = parsed.name;
       if (name) {
         if (!scorerCounts[name]) {
@@ -1738,9 +1740,11 @@ function computeTopScorers() {
       }
     }
     
-    // Process away team scorers
+    // Process away team scorers (goals FOR the away team, against home team)
     for (const scorerStr of matchScorers.away || []) {
       const parsed = formatScorer(scorerStr, awayTeam);
+      // Skip own goals - they are scored by opponent but credited to the team
+      if (parsed.isOG) continue;
       const name = parsed.name;
       if (name) {
         if (!scorerCounts[name]) {
