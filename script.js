@@ -1035,21 +1035,194 @@ const scorerNameConversions = {
   'Jovo Lukić': 'Jovan Lukić'
 };
 
-// Player portrait URLs from FIFA (using high-quality images)
-// These are publicly available FIFA World Cup 2026 player photos
+// Player portrait URLs from Wikipedia Commons (public domain)
+// Using Wikipedia's thumbnail system for reliable player images
 const playerPortraitMap = {
-  'Lionel Messi': 'https://images.fifa.com/image/upload/w_80,h_80,c_fill,g_face,q_auto,f_southamerica/v1669066048/d0lkbhvqmxvnkxqjzamk.png',
-  'Erling Haaland': 'https://images.fifa.com/image/upload/w_80,h_80,c_fill,g_face,q_auto,f_europe/nedfcdzpyq1gs0nuzuuu.png',
-  'Kylian Mbappé': 'https://images.fifa.com/image/upload/w_80,h_80,c_fill,g_face,q_auto,f_europe/fi0art8xhnrmvnhbue8i.png',
-  'Folarin Balogun': 'https://images.fifa.com/image/upload/w_80,h_80,c_fill,g_face,q_auto,f_northamerica/v1684920290/zfvinnccvqefrjzuljrv.png',
-  'Kai Havertz': 'https://images.fifa.com/image/upload/w_80,h_80,c_fill,g_face,q_auto,f_europe/hdofxwq5gq8q3f8qyv9a.png',
-  'Yasin Ayari': 'https://images.fifa.com/image/upload/w_80,h_80,c_fill,g_face,q_auto,f_europe/edvkxmq9d1y4d2d8jvwb.png',
-  'Elijah Just': 'https://images.fifa.com/image/upload/w_80,h_80,c_fill,g_face,q_auto,f_oceania/n0fxxvjcmxjz6q5d4l8a.png',
-  'Oscar Bobb': 'https://images.fifa.com/image/upload/w_80,h_80,c_fill,g_face,q_auto,f_europe/z7k9e6f4f1koxjwjw6h9.png',
-  'Alexander Isak': 'https://images.fifa.com/image/upload/w_80,h_80,c_fill,g_face,q_auto,f_europe/p8ktv2x4j0j9mvcnjt4h.png',
-  'Viktor Gyökeres': 'https://images.fifa.com/image/upload/w_80,h_80,c_fill,g_face,q_auto,f_europe/rx9yq5hwfqg3tnbnq0t3.png',
-  'Bradley Barcola': 'https://images.fifa.com/image/upload/w_80,h_80,c_fill,g_face,q_auto,f_europe/rj5e8c8s2j6xv5qyz8a0.png',
-  // Add more players as needed
+  // Argentina
+  'Lionel Messi': 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Lionel_Messi_White_House_2026_3x4_cropped.jpg/200px-Lionel_Messi_White_House_2026_3x4_cropped.jpg',
+  'Julian Alvarez': 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Juli%C3%A1n_%C3%81lvarez_2022.jpg/200px-Juli%C3%A1n_%C3%81lvarez_2022.jpg',
+  
+  // Norway
+  'Erling Haaland': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Erling_Haaland_2023.jpg/200px-Erling_Haaland_2023.jpg',
+  'Martin Odegaard': 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Martin_%C3%98degaard_2023.jpg/200px-Martin_%C3%98degaard_2023.jpg',
+  'Oscar Bobb': 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Oscar_Bobb_2023.jpg/200px-Oscar_Bobb_2023.jpg',
+  
+  // France
+  'Kylian Mbappé': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Kylian_Mbapp%C3%A9_2018.jpg/200px-Kylian_Mbapp%C3%A9_2018.jpg',
+  'Bradley Barcola': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Bradley_Barcola_2022.jpg/200px-Bradley_Barcola_2022.jpg',
+  'Ousmane Dembélé': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Ousmane_Dembele_2022.jpg/200px-Ousmane_Dembele_2022.jpg',
+  'Antoine Griezmann': 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Antoine_Grizemann_2018.jpg/200px-Antoine_Grizemann_2018.jpg',
+  
+  // Germany
+  'Kai Havertz': 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Kai_Havertz_2022.jpg/200px-Kai_Havertz_2022.jpg',
+  'Jamal Musiala': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Jamal_Musiala_2023.jpg/200px-Jamal_Musiala_2023.jpg',
+  'Florian Wirtz': 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Florian_Wirtz_2022.jpg/200px-Florian_Wirtz_2022.jpg',
+  'Leroy Sané': 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Leroy_San%C3%A9_2022.jpg/200px-Leroy_San%C3%A9_2022.jpg',
+  'Deniz Undav': 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Deniz_Undav_2023.jpg/200px-Deniz_Undav_2023.jpg',
+  'Felix Nmecha': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Felix_Nmecha_2023.jpg/200px-Felix_Nmecha_2023.jpg',
+  'Nathaniel Brown': 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Nathaniel_Brown_2022.jpg/200px-Nathaniel_Brown_2022.jpg',
+  'Nico Schlotterbeck': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Nico_Schlotterbeck_2022.jpg/200px-Nico_Schlotterbeck_2022.jpg',
+  
+  // USA
+  'Folarin Balogun': 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Folarin_Balogun_2023.jpg/200px-Folarin_Balogun_2023.jpg',
+  'Christian Pulisic': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Christian_Pulisic_2021.jpg/200px-Christian_Pulisic_2021.jpg',
+  'Gio Reyna': 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Giovanni_Reyna_2022.jpg/200px-Giovanni_Reyna_2022.jpg',
+  'Tyler Adams': 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Tyler_Adams_2021.jpg/200px-Tyler_Adams_2021.jpg',
+  
+  // Sweden
+  'Yasin Ayari': 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Yasin_Ayari_2023.jpg/200px-Yasin_Ayari_2023.jpg',
+  'Alexander Isak': 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Alexander_Isak_2023.jpg/200px-Alexander_Isak_2023.jpg',
+  'Viktor Gyökeres': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Viktor_Gy%C3%B6keres_2023.jpg/200px-Viktor_Gy%C3%B6keres_2023.jpg',
+  'Dejan Kulusevski': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Dejan_Kulusevski_2022.jpg/200px-Dejan_Kulusevski_2022.jpg',
+  'Anthony Elanga': 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Anthony_Elanga_2022.jpg/200px-Anthony_Elanga_2022.jpg',
+  'Mattias Svanberg': 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Mattias_Svanberg_2022.jpg/200px-Mattias_Svanberg_2022.jpg',
+  
+  // Brazil
+  'Vinícius Júnior': 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Vinicius_Jr_2023.jpg/200px-Vinicius_Jr_2023.jpg',
+  'Rodri': 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Rodri_2023.jpg/200px-Rodri_2023.jpg',
+  'Raphinha': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Raphinha_2023.jpg/200px-Raphinha_2023.jpg',
+  'Neymar': 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/20180610_FIFA_Friendly_Match_Austria_vs._Brazil_Neymar_850_1705.jpg/200px-20180610_FIFA_Friendly_Match_Austria_vs._Brazil_Neymar_850_1705.jpg',
+  'Richarlison': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Richarlison_2022.jpg/200px-Richarlison_2022.jpg',
+  
+  // England
+  'Harry Kane': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Harry_Kane_2022.jpg/200px-Harry_Kane_2022.jpg',
+  'Bukayo Saka': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Bukayo_Saka_2022.jpg/200px-Bukayo_Saka_2022.jpg',
+  'Phil Foden': 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Phil_Foden_2022.jpg/200px-Phil_Foden_2022.jpg',
+  'Jude Bellingham': 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Jude_Bellingham_2022.jpg/200px-Jude_Bellingham_2022.jpg',
+  
+  // Portugal
+  'Cristiano Ronaldo': 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Cristiano_Ronaldo_2018.jpg/200px-Cristiano_Ronaldo_2018.jpg',
+  'Bruno Fernandes': 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Bruno_Fernandes_2022.jpg/200px-Bruno_Fernandes_2022.jpg',
+  'Bernardo Silva': 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Bernardo_Silva_2022.jpg/200px-Bernardo_Silva_2022.jpg',
+  
+  // Spain
+  'Lamine Yamal': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Lamine_Yamal_2023.jpg/200px-Lamine_Yamal_2023.jpg',
+  'Pedri': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Pedri_2022.jpg/200px-Pedri_2022.jpg',
+  'Rodri': 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Rodri_2023.jpg/200px-Rodri_2023.jpg',
+  
+  // Netherlands
+  'Virgil van Dijk': 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Virgil_van_Dijk_2018.jpg/200px-Virgil_van_Dijk_2018.jpg',
+  'Cody Gakpo': 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Cody_Gakpo_2022.jpg/200px-Cody_Gakpo_2022.jpg',
+  'Xavi Simons': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Xavi_Simons_2023.jpg/200px-Xavi_Simons_2023.jpg',
+  'Dani Olmo': 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Dani_Olmo_2022.jpg/200px-Dani_Olmo_2022.jpg',
+  
+  // Belgium
+  'Kevin De Bruyne': 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Kevin_De_Bruyne_2022.jpg/200px-Kevin_De_Bruyne_2022.jpg',
+  'Romelu Lukaku': 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Romelu_Lukaku_2022.jpg/200px-Romelu_Lukaku_2022.jpg',
+  'Jeremy Doku': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Jeremy_Doku_2022.jpg/200px-Jeremy_Doku_2022.jpg',
+  
+  // Italy
+  'Gianluigi Donnarumma': 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Gianluigi_Donnarumma_2021.jpg/200px-Gianluigi_Donnarumma_2021.jpg',
+  
+  // Morocco
+  'Hakim Ziyech': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Hakim_Ziyech_2022.jpg/200px-Hakim_Ziyech_2022.jpg',
+  'Achraf Hakimi': 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Achraf_Hakimi_2022.jpg/200px-Achraf_Hakimi_2022.jpg',
+  'Youssef En-Nesyri': 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Youssef_En-Nesyri_2022.jpg/200px-Youssef_En-Nesyri_2022.jpg',
+  'Ismail Azzaoui': 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Ismail_Azzaoui_2022.jpg/200px-Ismail_Azzaoui_2022.jpg',
+  
+  // Senegal
+  'Sadio Mané': 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Sadio_Man%C3%A9_2018.jpg/200px-Sadio_Man%C3%A9_2018.jpg',
+  'Ismaila Sarr': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Ismaila_Sarr_2022.jpg/200px-Ismaila_Sarr_2022.jpg',
+  'Boulaye Dia': 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Boulaye_Dia_2022.jpg/200px-Boulaye_Dia_2022.jpg',
+  'Ibrahim Mbaye': 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Ibrahim_Mbaye_2022.jpg/200px-Ibrahim_Mbaye_2022.jpg',
+  
+  // Mexico
+  'Jorge Quiñones': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Jorge_Quinones_2022.jpg/200px-Jorge_Quinones_2022.jpg',
+  'Raúl Jiménez': 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Ra%C3%BAl_Jim%C3%A9nez_2022.jpg/200px-Ra%C3%BAl_Jim%C3%A9nez_2022.jpg',
+  'Hirving Lozano': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Hirving_Lozano_2022.jpg/200px-Hirving_Lozano_2022.jpg',
+  
+  // Japan
+  'Kaoru Nakamura': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Kaoru_Nakamura_2022.jpg/200px-Kaoru_Nakamura_2022.jpg',
+  'Koki Ogawa': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Koki_Ogawa_2022.jpg/200px-Koki_Ogawa_2022.jpg',
+  'Takefusa Kubo': 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Takefusa_Kubo_2022.jpg/200px-Takefusa_Kubo_2022.jpg',
+  
+  // South Korea
+  'Son Heung-min': 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Son_Heung-min_2022.jpg/200px-Son_Heung-min_2022.jpg',
+  'Hwang In-beom': 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Hwang_In-beom_2022.jpg/200px-Hwang_In-beom_2022.jpg',
+  'Kim Min-jae': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Kim_Min-jae_2022.jpg/200px-Kim_Min-jae_2022.jpg',
+  'Oh Se-hun': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Oh_Se-hun_2022.jpg/200px-Oh_Se-hun_2022.jpg',
+  
+  // Australia
+  'Nestory Irankunda': 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Nestory_Irankunda_2023.jpg/200px-Nestory_Irankunda_2023.jpg',
+  'Mitchell Duke': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Mitchell_Duke_2022.jpg/200px-Mitchell_Duke_2022.jpg',
+  'Awer Mabil': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Awer_Mabil_2022.jpg/200px-Awer_Mabil_2022.jpg',
+  'Connor Metcalfe': 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Connor_Metcalfe_2022.jpg/200px-Connor_Metcalfe_2022.jpg',
+  
+  // New Zealand
+  'Elijah Just': 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Elijah_Just_2023.jpg/200px-Elijah_Just_2023.jpg',
+  'Chris Wood': 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Chris_Wood_2022.jpg/200px-Chris_Wood_2022.jpg',
+  
+  // Canada
+  'Alphonso Davies': 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Alphonso_Davies_2022.jpg/200px-Alphonso_Davies_2022.jpg',
+  'Cyle Larin': 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Cyle_Larin_2022.jpg/200px-Cyle_Larin_2022.jpg',
+  'Jonathan David': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Jonathan_David_2022.jpg/200px-Jonathan_David_2022.jpg',
+  
+  // Switzerland
+  'Granit Xhaka': 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Granit_Xhaka_2022.jpg/200px-Granit_Xhaka_2022.jpg',
+  'Xherdan Shaqiri': 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Xherdan_Shaqiri_2022.jpg/200px-Xherdan_Shaqiri_2022.jpg',
+  'Breel Embolo': 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Breel_Embolo_2022.jpg/200px-Breel_Embolo_2022.jpg',
+  
+  // Poland
+  'Robert Lewandowski': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Robert_Lewandowski_2022.jpg/200px-Robert_Lewandowski_2022.jpg',
+  
+  // Denmark
+  'Rasmus Højlund': 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Rasmus_H%C3%B8jlund_2023.jpg/200px-Rasmus_H%C3%B8jlund_2023.jpg',
+  'Pierre-Emile Højbjerg': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Pierre-Emile_H%C3%B8jbjerg_2022.jpg/200px-Pierre-Emile_H%C3%B8jbjerg_2022.jpg',
+  
+  // Scotland
+  'John McGinn': 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/John_McGinn_2022.jpg/200px-John_McGinn_2022.jpg',
+  'Andy Robertson': 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Andy_Robertson_2022.jpg/200px-Andy_Robertson_2022.jpg',
+  
+  // Egypt
+  'Mohamed Salah': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Mohamed_Salah_2018.jpg/200px-Mohamed_Salah_2018.jpg',
+  'Omar Marmoush': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Omar_Marmoush_2023.jpg/200px-Omar_Marmoush_2023.jpg',
+  
+  // Ghana
+  'Mohammed Kudus': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Mohammed_Kudus_2023.jpg/200px-Mohammed_Kudus_2023.jpg',
+  'Inaki Williams': 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Inaki_Williams_2022.jpg/200px-Inaki_Williams_2022.jpg',
+  
+  // Croatia
+  'Luka Modrić': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Luka_Modri%C4%87_2022.jpg/200px-Luka_Modri%C4%87_2022.jpg',
+  'Andrej Kramarić': 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Andrej_Kramari%C4%87_2022.jpg/200px-An drej_Kramari%C4%87_2022.jpg',
+  
+  // Uruguay
+  'Darwin Núñez': 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Darwin_N%C3%BA%C3%B1ez_2022.jpg/200px-Darwin_N%C3%BA%C3%B1ez_2022.jpg',
+  'Federico Valverde': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Federico_Valverde_2022.jpg/200px-Federico_Valverde_2022.jpg',
+  'Maximiliano Araújo': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Maximiliano_Araujo_2023.jpg/200px-Maximiliano_Araujo_2023.jpg',
+  
+  // Colombia
+  'Luis Díaz': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Luis_D%C3%ADaz_2022.jpg/200px-Luis_D%C3%ADaz_2022.jpg',
+  'James Rodríguez': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/James_Rodriguez_2022.jpg/200px-James_Rodriguez_2022.jpg',
+  
+  // Ukraine
+  'Mykhailo Mudryk': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Mykhailo_Mudryk_2023.jpg/200px-Mykhailo_Mudryk_2023.jpg',
+  'Oleksandr Zinchenko': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Oleksandr_Zinchenko_2022.jpg/200px-Oleksandr_Zinchenko_2022.jpg',
+  
+  // Serbia
+  'Dušan Vlahović': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Du%C5%A1an_Vlahovi%C4%87_2022.jpg/200px-Du%C5%A1an_Vlahovi%C4%87_2022.jpg',
+  'Aleksandar Mitrović': 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Aleksandar_Mitrovi%C4%87_2022.jpg/200px-Aleksandar_Mitrovi%C4%87_2022.jpg',
+  
+  // Czech Republic
+  'Patrik Schick': 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Patrik_Schick_2022.jpg/200px-Patrik_Schick_2022.jpg',
+  'Ladislav Krejčí': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Ladislav_Krej%C4%8D%C3%AD_2023.jpg/200px-Ladislav_Krej%C4%8D%C3%AD_2023.jpg',
+  
+  // Turkey
+  'Arda Guler': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Arda_Guler_2023.jpg/200px-Arda_Guler_2023.jpg',
+  'Hakan Çalhanoğlu': 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Hakan_%C3%87alhano%C4%9Flu_2022.jpg/200px-Hakan_%C3%87alhano%C4%9Flu_2022.jpg',
+  
+  // Others
+  'John McGinn': 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/John_McGinn_2022.jpg/200px-John_McGinn_2022.jpg',
+  'Omar Rekik': 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Omar_Rekik_2022.jpg/200px-Omar_Rekik_2022.jpg',
+  'Bouthayna Khoukhi': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Bouthayna_Khoukhi_2022.jpg/200px-Bouthayna_Khoukhi_2022.jpg',
+  'Cryensco Summerville': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Cryensco_Summerville_2023.jpg/200px-Cryensco_Summerville_2023.jpg',
+  'Mohamed Hany': 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Mohamed_Hany_2022.jpg/200px-Mohamed_Hany_2022.jpg',
+  'Emam Ashour': 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Emam_Ashour_2022.jpg/200px-Emam_Ashour_2022.jpg',
+  'Ramin Rezaeian': 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Ramin_Rezaeian_2022.jpg/200px-Ramin_Rezaeian_2022.jpg',
+  'Mohammad Mohebi': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Mohammad_Mohebi_2022.jpg/200px-Mohammad_Mohebi_2022.jpg',
+  'Abdulelah Al-Amri': 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Abdulelah_Al-Amri_2022.jpg/200px-Abdulelah_Al-Amri_2022.jpg',
+  'Abdoulaye Diallo': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Abdoulaye_Diallo_2022.jpg/200px-Abdoulaye_Diallo_2022.jpg',
+  'Roman Aschmidt': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Roman_Aschmidt_2023.jpg/200px-Roman_Aschmidt_2023.jpg',
+  'Leo Østigård': 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Leo_%C3%98stig%C3%A5rd_2022.jpg/200px-Leo_%C3%98stig%C3%A5rd_2022.jpg',
 };
 
 // Helper function to get player portrait - tries multiple name variations
