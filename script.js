@@ -1035,6 +1035,206 @@ const scorerNameConversions = {
   'Jovo Lukić': 'Jovan Lukić'
 };
 
+// Player database: maps canonical player names to their national team
+// Used to detect own goals (if a player scores for a team they don't belong to, it's an OG)
+const playerTeamDatabase = {
+  // Norway
+  'Erling Haaland': 'Norway',
+  'Martin Ødegaard': 'Norway',
+  'Oscar Bobb': 'Norway',
+  
+  // Argentina
+  'Lionel Messi': 'Argentina',
+  'Julián Álvarez': 'Argentina',
+  
+  // France
+  'Kylian Mbappé': 'France',
+  'Bradley Barcola': 'France',
+  'Antoine Griezmann': 'France',
+  'Ousmane Dembélé': 'France',
+  
+  // Germany
+  'Kai Havertz': 'Germany',
+  'Jamal Musiala': 'Germany',
+  'Florian Wirtz': 'Germany',
+  'Leroy Sané': 'Germany',
+  'Deniz Undav': 'Germany',
+  'Felix Nmecha': 'Germany',
+  'Nathaniel Brown': 'Germany',
+  'Nico Schlotterbeck': 'Germany',
+  
+  // USA
+  'Folarin Balogun': 'USA',
+  'Christian Pulisic': 'USA',
+  'Gio Reyna': 'USA',
+  'Tyler Adams': 'USA',
+  'Diego Bobadilla': 'USA',
+  
+  // Sweden
+  'Yasin Ayari': 'Sweden',
+  'Alexander Isak': 'Sweden',
+  'Viktor Gyökeres': 'Sweden',
+  'Dejan Kulusevski': 'Sweden',
+  'Anthony Elanga': 'Sweden',
+  'Mattias Svanberg': 'Sweden',
+  
+  // Mexico
+  'Jorge Quiñones': 'Mexico',
+  'Raúl Jiménez': 'Mexico',
+  'Hirving Lozano': 'Mexico',
+  
+  // Brazil
+  'Vinícius Júnior': 'Brazil',
+  'Rodri': 'Brazil',
+  'Raphinha': 'Brazil',
+  'Neymar': 'Brazil',
+  'Richarlison': 'Brazil',
+  
+  // England
+  'Harry Kane': 'England',
+  'Bukayo Saka': 'England',
+  'Phil Foden': 'England',
+  'Jude Bellingham': 'England',
+  
+  // Portugal
+  'Cristiano Ronaldo': 'Portugal',
+  'Bruno Fernandes': 'Portugal',
+  'Bernardo Silva': 'Portugal',
+  
+  // Spain
+  'Lamine Yamal': 'Spain',
+  'Pedri': 'Spain',
+  
+  // Netherlands
+  'Virgil van Dijk': 'Netherlands',
+  'Cody Gakpo': 'Netherlands',
+  'Xavi Simons': 'Netherlands',
+  'Dani Olmo': 'Netherlands',
+  
+  // Belgium
+  'Kevin De Bruyne': 'Belgium',
+  'Romelu Lukaku': 'Belgium',
+  'Jeremy Doku': 'Belgium',
+  
+  // Italy
+  'Gianluigi Donnarumma': 'Italy',
+  
+  // Rep. of Korea
+  'Hwang In-beom': 'South Korea',
+  'Oh Se-hun': 'South Korea',
+  'Son Heung-min': 'South Korea',
+  'Kim Min-jae': 'South Korea',
+  
+  // Japan
+  'Kaoru Nakamura': 'Japan',
+  'Koki Ogawa': 'Japan',
+  'Takefusa Kubo': 'Japan',
+  
+  // Morocco
+  'Hakim Ziyech': 'Morocco',
+  'Achraf Hakimi': 'Morocco',
+  'Youssef En-Nesyri': 'Morocco',
+  'Ismail Azzaoui': 'Morocco',
+  
+  // Senegal
+  'Sadio Mané': 'Senegal',
+  'Ismaila Sarr': 'Senegal',
+  'Boulaye Dia': 'Senegal',
+  'Ibrahim Mbaye': 'Senegal',
+  
+  // Qatar
+  'Bouthayna Khoukhi': 'Qatar',
+  
+  // Switzerland
+  'Breel Embolo': 'Switzerland',
+  'Granit Xhaka': 'Switzerland',
+  'Xherdan Shaqiri': 'Switzerland',
+  
+  // Croatia
+  'Luka Modrić': 'Croatia',
+  'Andrej Kramarić': 'Croatia',
+  
+  // Scotland
+  'John McGinn': 'Scotland',
+  'Andy Robertson': 'Scotland',
+  
+  // Australia
+  'Nestory Irankunda': 'Australia',
+  'Connor Metcalfe': 'Australia',
+  
+  // Egypt
+  'Mohamed Salah': 'Egypt',
+  'Omar Marmoush': 'Egypt',
+  
+  // Ghana
+  'Mohammed Kudus': 'Ghana',
+  'Inaki Williams': 'Ghana',
+  
+  // Poland
+  'Robert Lewandowski': 'Poland',
+  
+  // Denmark
+  'Rasmus Højlund': 'Denmark',
+  'Pierre-Emile Højbjerg': 'Denmark',
+  
+  // Colombia
+  'Luis Díaz': 'Colombia',
+  'James Rodríguez': 'Colombia',
+  
+  // Uruguay
+  'Darwin Núñez': 'Uruguay',
+  'Federico Valverde': 'Uruguay',
+  'Maximiliano Araújo': 'Uruguay',
+  
+  // Ukraine
+  'Mykhailo Mudryk': 'Ukraine',
+  'Oleksandr Zinchenko': 'Ukraine',
+  
+  // Serbia
+  'Dušan Vlahović': 'Serbia',
+  'Aleksandar Mitrović': 'Serbia',
+  
+  // Turkey
+  'Arda Guler': 'Turkey',
+  'Hakan Çalhanoğlu': 'Turkey',
+  
+  // Czech Republic
+  'Ladislav Krejčí': 'Czech Republic',
+  'Patrik Schick': 'Czech Republic',
+  
+  // Canada
+  'Alphonso Davies': 'Canada',
+  'Cyle Larin': 'Canada',
+  'Jonathan David': 'Canada',
+  
+  // New Zealand
+  'Elijah Just': 'New Zealand',
+  'Chris Wood': 'New Zealand',
+  
+  // Ivory Coast
+  'Maurício': 'Ivory Coast',
+  
+  // Iraq
+  'Aymen Hussein': 'Iraq',
+  'Aliasghbar Regife': 'Iraq',
+  
+  // Iran
+  'Roman Aschmidt': 'Iran',
+  
+  // Serbia
+  'Jovan Lukić': 'Serbia',
+  
+  // Other
+  'Abdoulaye Diallo': 'Senegal',
+  'Omar Rekik': 'Tunisia',
+  'Mohamed Hany': 'Egypt',
+  'Emam Ashour': 'Egypt',
+  'Ramin Rezaeian': 'Iran',
+  'Mohammad Mohebi': 'Iran',
+  'Abdulelah Al-Amri': 'Saudi Arabia',
+  'Cryensco Summerville': 'Netherlands',
+};
+
 // Player portrait URLs - now uses TheSportsDB API dynamically
 // This map is kept for any manual overrides if needed
 // Portrait fetching is done via fetchPortraitFromSportsDB() which queries TheSportsDB API
@@ -1833,6 +2033,9 @@ function updateLiveIndicator(success) {
 function computeTopScorers() {
   const scorerCounts = {};
   
+  // Track which players appeared in which team's scorers (for heuristic OG detection)
+  const playerTeamAppearances = {};
+  
   // Helper function to parse local_date (format: "06/13/2026 21:00")
   const parseLocalDate = (dateStr) => {
     if (!dateStr) return 0;
@@ -1845,7 +2048,55 @@ function computeTopScorers() {
     return 0;
   };
   
-  // Iterate through all matches and their scorers
+  // Helper function to check if a goal is an own goal using the player database
+  const isOwnGoalByDatabase = (playerName, scoringForTeam) => {
+    const playerTeam = playerTeamDatabase[playerName];
+    if (playerTeam && scoringForTeam && playerTeam !== scoringForTeam) {
+      return true; // Player is scoring for a team they don't belong to = own goal
+    }
+    return false;
+  };
+  
+  // Helper function to check if a player appears in both home and away scorers (heuristic OG detection)
+  const isLikelyOwnGoalByHeuristic = (playerName) => {
+    const appearances = playerTeamAppearances[playerName];
+    if (appearances && appearances.home && appearances.away) {
+      return true; // Player appeared in both home AND away scorers across matches
+    }
+    return false;
+  };
+  
+  // First pass: track player appearances in home/away scorers
+  for (const matchNo in state.apiScorers) {
+    const matchScorers = state.apiScorers[matchNo];
+    const match = findMatchByNo(Number(matchNo));
+    const homeTeam = match?.team1 || null;
+    const awayTeam = match?.team2 || null;
+    
+    // Track home scorers
+    for (const scorerStr of matchScorers.home || []) {
+      const parsed = formatScorer(scorerStr, homeTeam);
+      if (parsed.name) {
+        if (!playerTeamAppearances[parsed.name]) {
+          playerTeamAppearances[parsed.name] = { home: false, away: false };
+        }
+        playerTeamAppearances[parsed.name].home = true;
+      }
+    }
+    
+    // Track away scorers
+    for (const scorerStr of matchScorers.away || []) {
+      const parsed = formatScorer(scorerStr, awayTeam);
+      if (parsed.name) {
+        if (!playerTeamAppearances[parsed.name]) {
+          playerTeamAppearances[parsed.name] = { home: false, away: false };
+        }
+        playerTeamAppearances[parsed.name].away = true;
+      }
+    }
+  }
+  
+  // Second pass: process goals with OG detection
   for (const matchNo in state.apiScorers) {
     const matchScorers = state.apiScorers[matchNo];
     const match = findMatchByNo(Number(matchNo));
@@ -1858,20 +2109,32 @@ function computeTopScorers() {
     const homeTeam = match?.team1 || null;
     const awayTeam = match?.team2 || null;
     
-    // Process home team scorers (goals FOR the home team, against away team)
+    // Process home team scorers
     for (const scorerStr of matchScorers.home || []) {
       const parsed = formatScorer(scorerStr, homeTeam);
       const name = parsed.name;
       if (name) {
-        // Determine which team to credit this goal to
-        // Own goals in home_scorers are credited to the AWAY team (they scored against themselves)
-        const creditedTeam = parsed.isOG ? awayTeam : homeTeam;
+        // Check if this is an own goal
+        // If player doesn't belong to home team (according to database), it's an OG
+        // Credit OG to away team (the team that benefited)
+        const creditedTeam = homeTeam;
+        const isOG = parsed.isOG || isOwnGoalByDatabase(name, homeTeam);
+        
+        // If scoring for away team or it's a likely OG, credit to away team
+        const actualCreditedTeam = isOG ? awayTeam : homeTeam;
+        
+        // Skip counting this goal if it's an OG (we don't count OG in top scorers)
+        if (isOG) {
+          // Still track the OG for reference but don't add to scorer counts
+          console.log(`Own goal detected: ${name} (OG credited to ${actualCreditedTeam})`);
+          continue;
+        }
         
         if (!scorerCounts[name]) {
-          scorerCounts[name] = { goals: 0, country: creditedTeam, latestGoalTime: 0 };
+          scorerCounts[name] = { goals: 0, country: actualCreditedTeam, latestGoalTime: 0 };
         } else {
           // Update country if this scorer now scores for a different team
-          scorerCounts[name].country = creditedTeam;
+          scorerCounts[name].country = actualCreditedTeam;
         }
         scorerCounts[name].goals++;
         // Update latest goal time (most recent goal from this match)
@@ -1881,20 +2144,28 @@ function computeTopScorers() {
       }
     }
     
-    // Process away team scorers (goals FOR the away team, against home team)
+    // Process away team scorers
     for (const scorerStr of matchScorers.away || []) {
       const parsed = formatScorer(scorerStr, awayTeam);
       const name = parsed.name;
       if (name) {
-        // Determine which team to credit this goal to
-        // Own goals in away_scorers are credited to the HOME team (they scored against themselves)
-        const creditedTeam = parsed.isOG ? homeTeam : awayTeam;
+        // Check if this is an own goal
+        const isOG = parsed.isOG || isOwnGoalByDatabase(name, awayTeam);
+        
+        // If scoring for home team or it's a likely OG, credit to home team
+        const actualCreditedTeam = isOG ? homeTeam : awayTeam;
+        
+        // Skip counting this goal if it's an OG (we don't count OG in top scorers)
+        if (isOG) {
+          console.log(`Own goal detected: ${name} (OG credited to ${actualCreditedTeam})`);
+          continue;
+        }
         
         if (!scorerCounts[name]) {
-          scorerCounts[name] = { goals: 0, country: creditedTeam, latestGoalTime: 0 };
+          scorerCounts[name] = { goals: 0, country: actualCreditedTeam, latestGoalTime: 0 };
         } else {
           // Update country if this scorer now scores for a different team
-          scorerCounts[name].country = creditedTeam;
+          scorerCounts[name].country = actualCreditedTeam;
         }
         scorerCounts[name].goals++;
         // Update latest goal time (most recent goal from this match)
