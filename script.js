@@ -2157,20 +2157,31 @@ function renderTopScorers() {
 // Function to update portraits from TheSportsDB API after render
 async function updatePortraitsFromAPI() {
   const portraitImages = document.querySelectorAll('.scorer-portrait[data-player]');
+  console.log('updatePortraitsFromAPI called, found images:', portraitImages.length);
   
   for (const img of portraitImages) {
     const playerName = img.dataset.player;
-    const initials = img.dataset.initials;
     const placeholder = img.nextElementSibling;
+    console.log('Fetching portrait for:', playerName);
     
     const portraitUrl = await getPlayerPortraitAsync(playerName);
+    console.log('Got URL for', playerName, ':', portraitUrl);
     
     if (portraitUrl) {
-      img.src = portraitUrl;
-      img.style.display = 'inline-block';
-      if (placeholder && placeholder.classList.contains('scorer-portrait-placeholder')) {
-        placeholder.style.display = 'none';
-      }
+      // Create a new image to preload
+      const tempImg = new Image();
+      tempImg.onload = function() {
+        // Image loaded successfully, update the DOM
+        img.src = portraitUrl;
+        img.style.display = 'inline-block';
+        if (placeholder && placeholder.classList.contains('scorer-portrait-placeholder')) {
+          placeholder.style.display = 'none';
+        }
+      };
+      tempImg.onerror = function() {
+        console.log('Failed to load image for', playerName);
+      };
+      tempImg.src = portraitUrl;
     }
   }
 }
