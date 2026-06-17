@@ -2768,6 +2768,35 @@ footer {
   padding: 6px 10px;
 }
 
+/* Bracket match card scorers */
+.bracket-scorers {
+  font-size: 0.75rem;
+  border-top: 1px solid var(--border);
+  margin-top: 8px;
+  padding-top: 8px;
+}
+
+.bracket-scorers .scorer-item {
+  font-size: 0.75rem;
+}
+
+.bracket-scorers .scorer-minute {
+  font-size: 0.7rem;
+}
+
+.bracket-scorers .scorers-content {
+  padding: 6px 8px;
+}
+
+.bracket-scorers .scorers-toggle {
+  padding: 4px 8px;
+  font-size: 0.7rem;
+}
+
+.bracket-scorers .scorers-indicator {
+  font-size: 0.65rem;
+}
+
 /* Responsive adjustments for scorers */
 @media (max-width: 640px) {
   .scorers-content {
