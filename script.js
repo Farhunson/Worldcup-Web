@@ -1833,13 +1833,26 @@ function updateLiveIndicator(success) {
 function computeTopScorers() {
   const scorerCounts = {};
   
+  // Helper function to parse local_date (format: "06/13/2026 21:00")
+  const parseLocalDate = (dateStr) => {
+    if (!dateStr) return 0;
+    // Parse format: MM/DD/YYYY HH:MM
+    const parts = dateStr.match(/(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2})/);
+    if (parts) {
+      const [, month, day, year, hour, minute] = parts;
+      return new Date(year, month - 1, day, hour, minute).getTime();
+    }
+    return 0;
+  };
+  
   // Iterate through all matches and their scorers
   for (const matchNo in state.apiScorers) {
     const matchScorers = state.apiScorers[matchNo];
     const match = findMatchByNo(Number(matchNo));
     
-    // Get match datetime for ordering (use match date/time for all goals in this match)
-    const matchTime = match?.datetime ? new Date(match.datetime).getTime() : 0;
+    // Get match local_date from state.apiMatchTimes (format: "06/13/2026 21:00")
+    const localDateStr = state.apiMatchTimes[matchNo];
+    const matchTime = parseLocalDate(localDateStr);
     
     // Get country for home and away teams
     const homeTeam = match?.team1 || null;
