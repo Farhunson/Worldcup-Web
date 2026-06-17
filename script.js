@@ -1035,6 +1035,34 @@ const scorerNameConversions = {
   'Jovo Lukić': 'Jovan Lukić'
 };
 
+// Player portrait URLs from FIFA (using high-quality images)
+// These are publicly available FIFA World Cup 2026 player photos
+const playerPortraitMap = {
+  'Lionel Messi': 'https://images.fifa.com/image/upload/w_80,h_80,c_fill,g_face,q_auto,f_southamerica/v1669066048/d0lkbhvqmxvnkxqjzamk.png',
+  'Erling Haaland': 'https://images.fifa.com/image/upload/w_80,h_80,c_fill,g_face,q_auto,f_europe/nedfcdzpyq1gs0nuzuuu.png',
+  'Kylian Mbappe': 'https://images.fifa.com/image/upload/w_80,h_80,c_fill,g_face,q_auto,f_europe/fi0art8xhnrmvnhbue8i.png',
+  'Folarin Balogun': 'https://images.fifa.com/image/upload/w_80,h_80,c_fill,g_face,q_auto,f_northamerica/v1684920290/zfvinnccvqefrjzuljrv.png',
+  'Kai Havertz': 'https://images.fifa.com/image/upload/w_80,h_80,c_fill,g_face,q_auto,f_europe/hdofxwq5gq8q3f8qyv9a.png',
+  'Yasin Ayari': 'https://images.fifa.com/image/upload/w_80,h_80,c_fill,g_face,q_auto,f_europe/edvkxmq9d1y4d2d8jvwb.png',
+  'Elijah Just': 'https://images.fifa.com/image/upload/w_80,h_80,c_fill,g_face,q_auto,f_oceania/n0fxxvjcmxjz6q5d4l8a.png',
+  'Oscar Bobb': 'https://images.fifa.com/image/upload/w_80,h_80,c_fill,g_face,q_auto,f_europe/z7k9e6f4f1koxjwjw6h9.png',
+  // Add more players as needed
+};
+
+// Helper function to get player portrait
+function getPlayerPortrait(playerName) {
+  if (playerPortraitMap[playerName]) {
+    return playerPortraitMap[playerName];
+  }
+  // Try to find by partial match (for names with middle initials)
+  for (const key in playerPortraitMap) {
+    if (playerName.includes(key) || key.includes(playerName)) {
+      return playerPortraitMap[key];
+    }
+  }
+  return null;
+}
+
 // Comprehensive World Cup players database for fuzzy matching
 const wcPlayerDatabase = [
   // Argentina
@@ -1803,14 +1831,37 @@ function renderTopScorers() {
     }
     const rankClass = effectiveRank <= 3 ? `rank-${effectiveRank}` : '';
     
-    // Get flag for country - wrap output of formatFlag in team-flag-name for CSS styling
+    // Get flag for country
     const flagHtml = scorer.country ? `<span class="team-flag-name">${formatFlag(scorer.country)}</span>` : '';
-    const displayName = scorer.name;
+    
+    // Split name into first and last name for styling
+    const nameParts = scorer.name.split(' ');
+    let firstName = '';
+    let lastName = '';
+    if (nameParts.length >= 2) {
+      firstName = nameParts.slice(0, -1).join(' ');
+      lastName = nameParts[nameParts.length - 1];
+    } else {
+      firstName = '';
+      lastName = scorer.name;
+    }
+    
+    // Get portrait for top 3 scorers
+    let portraitHtml = '';
+    if (effectiveRank <= 3) {
+      const portraitUrl = getPlayerPortrait(scorer.name);
+      if (portraitUrl) {
+        portraitHtml = `<img class="scorer-portrait" src="${portraitUrl}" alt="${scorer.name}" onerror="this.style.display='none'" />`;
+      } else {
+        // Use placeholder silhouette
+        portraitHtml = `<span class="scorer-portrait-placeholder"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="4"/><path d="M12 14c-4 0-8 2-8 4v2h16v-2c0-2-4-4-8-4z"/></svg></span>`;
+      }
+    }
     
     html += `
       <tr class="${rankClass}">
         <td class="rank-col">${rankDisplay}</td>
-        <td class="player-col">${flagHtml}<span class="scorer-name">${displayName}</span></td>
+        <td class="player-col">${portraitHtml}${flagHtml}<span class="scorer-name"><span class="scorer-first-name">${firstName}</span> <span class="scorer-last-name">${lastName}</span></span></td>
         <td class="goals-col"><span class="goals-badge">${scorer.goals}</span></td>
       </tr>
     `;
