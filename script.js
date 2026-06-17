@@ -976,7 +976,7 @@ function formatScorer(scorerStr) {
   
   // Parse the scorer string - format is like "Name 90'" or "Name 45'+5'(p)"
   // Extract name and minute/penalty info
-  const match = scorerStr.match(/^(.+?)\s*(\d+'\+?\d*'?\(p\)?)/);
+  const match = scorerStr.match(/^(.+?)\s+(\d+'\+?\d*'?\(p\)?)$/);
   let name;
   if (match) {
     name = match[1].trim();
@@ -1113,13 +1113,14 @@ function renderTopScorers() {
     }
     const rankClass = effectiveRank <= 3 ? `rank-${effectiveRank}` : '';
     
-    // Get flag for country
-    const flagHtml = scorer.country ? formatFlag(scorer.country) : '';
+    // Get flag for country - same format as match cards
+    const flagHtml = scorer.country ? `${formatFlag(scorer.country)} ${scorer.country}` : '';
+    const displayName = scorer.name;
     
     html += `
       <tr class="${rankClass}">
         <td class="rank-col">${rankDisplay}</td>
-        <td class="player-col">${flagHtml}<span class="scorer-name">${scorer.name}</span></td>
+        <td class="player-col">${flagHtml} ${displayName}</td>
         <td class="goals-col">${scorer.goals}</td>
       </tr>
     `;
