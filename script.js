@@ -2421,7 +2421,7 @@ const wcPlayerDatabase = [
   { number: 7, nameOnShirt: 'M. TREZEGUET', fullName: 'M. TREZEGUET', team: 'Egypt', position: 'FW', club: 'Al Ahly FC (EGY)' },
   { number: 8, nameOnShirt: 'E. ASHOUR', fullName: 'E. ASHOUR', team: 'Egypt', position: 'MF', club: 'Al Ahly FC (EGY)' },
   { number: 9, nameOnShirt: 'ABDELKARIM', fullName: 'ABDELKARIM', team: 'Egypt', position: 'FW', club: 'FC Barcelona (ESP)' },
-  { number: 10, nameOnShirt: 'M. SALAH', fullName: 'M. SALAH', team: 'Egypt', position: 'FW', club: 'Liverpool FC (ENG)' },
+  { number: 10, nameOnShirt: 'M. SALAH', fullName: 'Mohamed Salah', team: 'Egypt', position: 'FW', club: 'Liverpool FC (ENG)' },
   { number: 11, nameOnShirt: 'ZICO', fullName: 'ZICO', team: 'Egypt', position: 'MF', club: 'Pyramids FC (EGY)' },
   { number: 12, nameOnShirt: 'H. HASSAN', fullName: 'H. HASSAN', team: 'Egypt', position: 'FW', club: 'Real Oviedo (ESP)' },
   { number: 13, nameOnShirt: 'A. FATOUH', fullName: 'A. FATOUH', team: 'Egypt', position: 'DF', club: 'Zamalek SC (EGY)' },
@@ -2464,7 +2464,7 @@ const wcPlayerDatabase = [
   { number: 24, nameOnShirt: 'EL AYNAOUI', fullName: 'EL AYNAOUI', team: 'Morocco', position: 'MF', club: 'AS Roma (ITA)' },
   { number: 25, nameOnShirt: 'HALHAL', fullName: 'HALHAL', team: 'Morocco', position: 'DF', club: 'KV Mechelen (BEL)' },
   { number: 26, nameOnShirt: 'SALAH-EDDINE', fullName: 'SALAH-EDDINE', team: 'Morocco', position: 'DF', club: 'PSV Eindhoven (NED)' },
-  { number: 1, nameOnShirt: 'WILLIAMS', fullName: 'WILLIAMS', team: 'South Africa', position: 'GK', club: 'Mamelodi Sundowns FC (RSA)' },
+  { number: 1, nameOnShirt: 'WILLIAMS', fullName: 'Nico Williams', team: 'South Africa', position: 'GK', club: 'Mamelodi Sundowns FC (RSA)' },
   { number: 2, nameOnShirt: 'MATULUDI', fullName: 'MATULUDI', team: 'South Africa', position: 'DF', club: 'Polokwane City FC (RSA)' },
   { number: 3, nameOnShirt: 'NDAMANE', fullName: 'NDAMANE', team: 'South Africa', position: 'DF', club: 'Mamelodi Sundowns FC (RSA)' },
   { number: 4, nameOnShirt: 'MOKOENA', fullName: 'MOKOENA', team: 'South Africa', position: 'MF', club: 'Mamelodi Sundowns FC (RSA)' },
@@ -2560,7 +2560,7 @@ const wcPlayerDatabase = [
   { number: 16, nameOnShirt: 'ASARE', fullName: 'ASARE', team: 'Ghana', position: 'GK', club: 'Hearts Of Oak SC (GHA)' },
   { number: 17, nameOnShirt: 'BABA', fullName: 'BABA', team: 'Ghana', position: 'DF', club: 'PAOK Saloniki (GRE)' },
   { number: 18, nameOnShirt: 'OPOKU', fullName: 'OPOKU', team: 'Ghana', position: 'DF', club: 'Ba ş ak ş ehir FK (TUR)' },
-  { number: 19, nameOnShirt: 'WILLIAMS', fullName: 'WILLIAMS', team: 'Ghana', position: 'FW', club: 'Athletic Club (ESP)' },
+  { number: 19, nameOnShirt: 'WILLIAMS', fullName: 'Nico Williams', team: 'Ghana', position: 'FW', club: 'Athletic Club (ESP)' },
   { number: 20, nameOnShirt: 'BOAKYE', fullName: 'BOAKYE', team: 'Ghana', position: 'MF', club: 'AS Saint-Etienne (FRA)' },
   { number: 21, nameOnShirt: 'PEPRAH', fullName: 'PEPRAH', team: 'Ghana', position: 'DF', club: 'OGC Nice (FRA)' },
   { number: 22, nameOnShirt: 'KAMALDEEN', fullName: 'KAMALDEEN', team: 'Ghana', position: 'FW', club: 'Atalanta Bergamo (ITA)' },
@@ -2609,7 +2609,7 @@ const wcPlayerDatabase = [
   { number: 13, nameOnShirt: 'OPERI', fullName: 'OPERI', team: 'Côte d\'Ivoire', position: 'DF', club: 'Ba ş ak ş ehir FK (TUR)' },
   { number: 14, nameOnShirt: 'DIAKITE', fullName: 'DIAKITE', team: 'Côte d\'Ivoire', position: 'FW', club: 'Cercle Brugge (BEL)' },
   { number: 15, nameOnShirt: 'AMAD', fullName: 'AMAD', team: 'Côte d\'Ivoire', position: 'FW', club: 'Manchester United FC (ENG)' },
-  { number: 16, nameOnShirt: 'KONE', fullName: 'KONE', team: 'Côte d\'Ivoire', position: 'GK', club: 'Sporting Charleroi (BEL)' },
+  { number: 16, nameOnShirt: 'KONE', fullName: 'Boubakary Soumare', team: 'Côte d\'Ivoire', position: 'GK', club: 'Sporting Charleroi (BEL)' },
   { number: 17, nameOnShirt: 'G. DOUE', fullName: 'G. DOUE', team: 'Côte d\'Ivoire', position: 'DF', club: 'RC Strasbourg (FRA)' },
   { number: 18, nameOnShirt: 'SANGARE', fullName: 'SANGARE', team: 'Côte d\'Ivoire', position: 'MF', club: 'Nottingham Forest FC (ENG)' },
   { number: 19, nameOnShirt: 'PEPE', fullName: 'PEPE', team: 'Côte d\'Ivoire', position: 'FW', club: 'Villarreal CF (ESP)' },
@@ -2854,17 +2854,17 @@ const wcPlayerDatabase = [
   { number: 24, nameOnShirt: 'KARIMOV', fullName: 'KARIMOV', team: 'Uzbekistan', position: 'DF', club: 'Surkhon FK (UZB)' },
   { number: 25, nameOnShirt: 'ULMASALIYEV', fullName: 'ULMASALIYEV', team: 'Uzbekistan', position: 'DF', club: 'OKMK FK (UZB)' },
   { number: 26, nameOnShirt: 'UROZOV', fullName: 'UROZOV', team: 'Uzbekistan', position: 'DF', club: 'FK Dinamo Samarkand (UZB)' },
-  { number: 1, nameOnShirt: 'PICKFORD', fullName: 'PICKFORD', team: 'England', position: 'GK', club: 'Everton FC (ENG)' },
+  { number: 1, nameOnShirt: 'PICKFORD', fullName: 'Jordan Pickford', team: 'England', position: 'GK', club: 'Everton FC (ENG)' },
   { number: 2, nameOnShirt: 'KONSA', fullName: 'KONSA', team: 'England', position: 'DF', club: 'Aston Villa FC (ENG)' },
   { number: 3, nameOnShirt: 'O\'REILLY', fullName: 'O\'REILLY', team: 'England', position: 'DF', club: 'Manchester City FC (ENG)' },
-  { number: 4, nameOnShirt: 'RICE', fullName: 'RICE', team: 'England', position: 'MF', club: 'Arsenal FC (ENG)' },
-  { number: 5, nameOnShirt: 'STONES', fullName: 'STONES', team: 'England', position: 'DF', club: 'Manchester City FC (ENG)' },
+  { number: 4, nameOnShirt: 'RICE', fullName: 'Declan Rice', team: 'England', position: 'MF', club: 'Arsenal FC (ENG)' },
+  { number: 5, nameOnShirt: 'STONES', fullName: 'John Stones', team: 'England', position: 'DF', club: 'Manchester City FC (ENG)' },
   { number: 6, nameOnShirt: 'GUEHI', fullName: 'GUEHI', team: 'England', position: 'DF', club: 'Manchester City FC (ENG)' },
-  { number: 7, nameOnShirt: 'SAKA', fullName: 'SAKA', team: 'England', position: 'FW', club: 'Arsenal FC (ENG)' },
+  { number: 7, nameOnShirt: 'SAKA', fullName: 'Bukayo Saka', team: 'England', position: 'FW', club: 'Arsenal FC (ENG)' },
   { number: 8, nameOnShirt: 'ANDERSON', fullName: 'ANDERSON', team: 'England', position: 'MF', club: 'Nottingham Forest FC (ENG)' },
-  { number: 9, nameOnShirt: 'KANE', fullName: 'KANE', team: 'England', position: 'FW', club: 'FC Bayern München (GER)' },
-  { number: 10, nameOnShirt: 'BELLINGHAM', fullName: 'BELLINGHAM', team: 'England', position: 'MF', club: 'Real Madrid C. F. (ESP)' },
-  { number: 11, nameOnShirt: 'RASHFORD', fullName: 'RASHFORD', team: 'England', position: 'FW', club: 'FC Barcelona (ESP)' },
+  { number: 9, nameOnShirt: 'KANE', fullName: 'Harry Kane', team: 'England', position: 'FW', club: 'FC Bayern München (GER)' },
+  { number: 10, nameOnShirt: 'BELLINGHAM', fullName: 'Jude Bellingham', team: 'England', position: 'MF', club: 'Real Madrid C. F. (ESP)' },
+  { number: 11, nameOnShirt: 'RASHFORD', fullName: 'Marcus Rashford', team: 'England', position: 'FW', club: 'FC Barcelona (ESP)' },
   { number: 12, nameOnShirt: 'LIVRAMENTO', fullName: 'LIVRAMENTO', team: 'England', position: 'DF', club: 'Newcastle United FC (ENG)' },
   { number: 13, nameOnShirt: 'D. HENDERSON', fullName: 'D. HENDERSON', team: 'England', position: 'GK', club: 'Crystal Palace FC (ENG)' },
   { number: 14, nameOnShirt: 'J. HENDERSON', fullName: 'J. HENDERSON', team: 'England', position: 'MF', club: 'Brentford FC (ENG)' },
@@ -2880,20 +2880,20 @@ const wcPlayerDatabase = [
   { number: 24, nameOnShirt: 'JAMES', fullName: 'JAMES', team: 'England', position: 'DF', club: 'Chelsea FC (ENG)' },
   { number: 25, nameOnShirt: 'SPENCE', fullName: 'SPENCE', team: 'England', position: 'DF', club: 'Tottenham Hotspur FC (ENG)' },
   { number: 26, nameOnShirt: 'QUANSAH', fullName: 'QUANSAH', team: 'England', position: 'DF', club: 'Bayer Leverkusen (GER)' },
-  { number: 1, nameOnShirt: 'SAMBA', fullName: 'SAMBA', team: 'France', position: 'GK', club: 'Stade Rennais FC (FRA)' },
-  { number: 2, nameOnShirt: 'GUSTO', fullName: 'GUSTO', team: 'France', position: 'DF', club: 'Chelsea FC (ENG)' },
-  { number: 3, nameOnShirt: 'DIGNE', fullName: 'DIGNE', team: 'France', position: 'DF', club: 'Aston Villa FC (ENG)' },
-  { number: 4, nameOnShirt: 'UPAMECANO', fullName: 'UPAMECANO', team: 'France', position: 'DF', club: 'FC Bayern München (GER)' },
-  { number: 5, nameOnShirt: 'KOUNDE', fullName: 'KOUNDE', team: 'France', position: 'DF', club: 'FC Barcelona (ESP)' },
-  { number: 6, nameOnShirt: 'KONE', fullName: 'KONE', team: 'France', position: 'MF', club: 'AS Roma (ITA)' },
-  { number: 7, nameOnShirt: 'DEMBELE', fullName: 'DEMBELE', team: 'France', position: 'FW', club: 'Paris Saint-Germain (FRA)' },
-  { number: 8, nameOnShirt: 'TCHOUAMENI', fullName: 'TCHOUAMENI', team: 'France', position: 'MF', club: 'Real Madrid C. F. (ESP)' },
-  { number: 9, nameOnShirt: 'THURAM', fullName: 'THURAM', team: 'France', position: 'FW', club: 'FC Internazionale Milano (ITA)' },
-  { number: 10, nameOnShirt: 'MBAPPE', fullName: 'MBAPPE', team: 'France', position: 'FW', club: 'Real Madrid C. F. (ESP)' },
+  { number: 1, nameOnShirt: 'SAMBA', fullName: 'Brice Samba', team: 'France', position: 'GK', club: 'Stade Rennais FC (FRA)' },
+  { number: 2, nameOnShirt: 'GUSTO', fullName: 'Malo Gusto', team: 'France', position: 'DF', club: 'Chelsea FC (ENG)' },
+  { number: 3, nameOnShirt: 'DIGNE', fullName: 'Lucas Digne', team: 'France', position: 'DF', club: 'Aston Villa FC (ENG)' },
+  { number: 4, nameOnShirt: 'UPAMECANO', fullName: 'Dayot Upamecano', team: 'France', position: 'DF', club: 'FC Bayern München (GER)' },
+  { number: 5, nameOnShirt: 'KOUNDE', fullName: 'Jules Kounde', team: 'France', position: 'DF', club: 'FC Barcelona (ESP)' },
+  { number: 6, nameOnShirt: 'KONE', fullName: 'Boubakary Soumare', team: 'France', position: 'MF', club: 'AS Roma (ITA)' },
+  { number: 7, nameOnShirt: 'DEMBELE', fullName: 'Ousmane Dembele', team: 'France', position: 'FW', club: 'Paris Saint-Germain (FRA)' },
+  { number: 8, nameOnShirt: 'TCHOUAMENI', fullName: 'Aurelien Tchouameni', team: 'France', position: 'MF', club: 'Real Madrid C. F. (ESP)' },
+  { number: 9, nameOnShirt: 'THURAM', fullName: 'Marcus Thuram', team: 'France', position: 'FW', club: 'FC Internazionale Milano (ITA)' },
+  { number: 10, nameOnShirt: 'MBAPPE', fullName: 'Kylian Mbappe', team: 'France', position: 'FW', club: 'Real Madrid C. F. (ESP)' },
   { number: 11, nameOnShirt: 'OLISE', fullName: 'OLISE', team: 'France', position: 'FW', club: 'FC Bayern München (GER)' },
   { number: 12, nameOnShirt: 'BARCOLA', fullName: 'BARCOLA', team: 'France', position: 'FW', club: 'Paris Saint-Germain (FRA)' },
   { number: 13, nameOnShirt: 'KANTE', fullName: 'KANTE', team: 'France', position: 'MF', club: 'Fenerbahçe SK (TUR)' },
-  { number: 14, nameOnShirt: 'RABIOT', fullName: 'RABIOT', team: 'France', position: 'MF', club: 'AC Milan (ITA)' },
+  { number: 14, nameOnShirt: 'RABIOT', fullName: 'Adrien Rabiot', team: 'France', position: 'MF', club: 'AC Milan (ITA)' },
   { number: 15, nameOnShirt: 'KONATE', fullName: 'KONATE', team: 'France', position: 'DF', club: 'Liverpool FC (ENG)' },
   { number: 16, nameOnShirt: 'MAIGNAN', fullName: 'MAIGNAN', team: 'France', position: 'GK', club: 'AC Milan (ITA)' },
   { number: 17, nameOnShirt: 'SALIBA', fullName: 'SALIBA', team: 'France', position: 'DF', club: 'Arsenal FC (ENG)' },
@@ -2906,23 +2906,23 @@ const wcPlayerDatabase = [
   { number: 24, nameOnShirt: 'CHERKI', fullName: 'CHERKI', team: 'France', position: 'MF', club: 'Manchester City FC (ENG)' },
   { number: 25, nameOnShirt: 'AKLIOUCHE', fullName: 'AKLIOUCHE', team: 'France', position: 'MF', club: 'AS Monaco (FRA)' },
   { number: 26, nameOnShirt: 'LACROIX', fullName: 'LACROIX', team: 'France', position: 'DF', club: 'Crystal Palace FC (ENG)' },
-  { number: 1, nameOnShirt: 'NEUER', fullName: 'NEUER', team: 'Germany', position: 'GK', club: 'FC Bayern München (GER)' },
-  { number: 2, nameOnShirt: 'RUDIGER', fullName: 'RUDIGER', team: 'Germany', position: 'DF', club: 'Real Madrid C. F. (ESP)' },
+  { number: 1, nameOnShirt: 'NEUER', fullName: 'Manuel Neuer', team: 'Germany', position: 'GK', club: 'FC Bayern München (GER)' },
+  { number: 2, nameOnShirt: 'RUDIGER', fullName: 'Antonio Rudiger', team: 'Germany', position: 'DF', club: 'Real Madrid C. F. (ESP)' },
   { number: 3, nameOnShirt: 'ANTON', fullName: 'ANTON', team: 'Germany', position: 'DF', club: 'Borussia Dortmund (GER)' },
   { number: 4, nameOnShirt: 'TAH', fullName: 'TAH', team: 'Germany', position: 'DF', club: 'FC Bayern München (GER)' },
   { number: 5, nameOnShirt: 'PAVLOVIC', fullName: 'PAVLOVIC', team: 'Germany', position: 'MF', club: 'FC Bayern München (GER)' },
-  { number: 6, nameOnShirt: 'KIMMICH', fullName: 'KIMMICH', team: 'Germany', position: 'DF', club: 'FC Bayern München (GER)' },
-  { number: 7, nameOnShirt: 'HAVERTZ', fullName: 'HAVERTZ', team: 'Germany', position: 'FW', club: 'Arsenal FC (ENG)' },
+  { number: 6, nameOnShirt: 'KIMMICH', fullName: 'Joshua Kimmich', team: 'Germany', position: 'DF', club: 'FC Bayern München (GER)' },
+  { number: 7, nameOnShirt: 'HAVERTZ', fullName: 'Kai Havertz', team: 'Germany', position: 'FW', club: 'Arsenal FC (ENG)' },
   { number: 8, nameOnShirt: 'GORETZKA', fullName: 'GORETZKA', team: 'Germany', position: 'MF', club: 'FC Bayern München (GER)' },
   { number: 9, nameOnShirt: 'LEWELING', fullName: 'LEWELING', team: 'Germany', position: 'MF', club: 'VfB Stuttgart (GER)' },
-  { number: 10, nameOnShirt: 'MUSIALA', fullName: 'MUSIALA', team: 'Germany', position: 'MF', club: 'FC Bayern München (GER)' },
+  { number: 10, nameOnShirt: 'MUSIALA', fullName: 'Jamal Musiala', team: 'Germany', position: 'MF', club: 'FC Bayern München (GER)' },
   { number: 11, nameOnShirt: 'WOLTEMADE', fullName: 'WOLTEMADE', team: 'Germany', position: 'FW', club: 'Newcastle United FC (ENG)' },
   { number: 12, nameOnShirt: 'BAUMANN', fullName: 'BAUMANN', team: 'Germany', position: 'GK', club: 'TSG Hoffenheim (GER)' },
   { number: 13, nameOnShirt: 'GROß', fullName: 'GROß', team: 'Germany', position: 'MF', club: 'Brighton &amp; Hove Albion FC (ENG)' },
   { number: 14, nameOnShirt: 'BEIER', fullName: 'BEIER', team: 'Germany', position: 'FW', club: 'Borussia Dortmund (GER)' },
   { number: 15, nameOnShirt: 'SCHLOTTERBECK', fullName: 'SCHLOTTERBECK', team: 'Germany', position: 'DF', club: 'Borussia Dortmund (GER)' },
   { number: 16, nameOnShirt: 'STILLER', fullName: 'STILLER', team: 'Germany', position: 'MF', club: 'VfB Stuttgart (GER)' },
-  { number: 17, nameOnShirt: 'WIRTZ', fullName: 'WIRTZ', team: 'Germany', position: 'MF', club: 'Liverpool FC (ENG)' },
+  { number: 17, nameOnShirt: 'WIRTZ', fullName: 'Florian Wirtz', team: 'Germany', position: 'MF', club: 'Liverpool FC (ENG)' },
   { number: 18, nameOnShirt: 'BROWN', fullName: 'BROWN', team: 'Germany', position: 'DF', club: 'Eintracht Frankfurt (GER)' },
   { number: 19, nameOnShirt: 'SANÉ', fullName: 'SANÉ', team: 'Germany', position: 'MF', club: 'Galatasaray SK (TUR)' },
   { number: 20, nameOnShirt: 'AMIRI', fullName: 'AMIRI', team: 'Germany', position: 'MF', club: '1. FSV Mainz 05 (GER)' },
@@ -2945,7 +2945,7 @@ const wcPlayerDatabase = [
   { number: 11, nameOnShirt: 'JEREMY', fullName: 'JEREMY', team: 'Spain', position: 'FW', club: 'Crystal Palace FC (ENG)' },
   { number: 12, nameOnShirt: 'PEDRO PORRO', fullName: 'PEDRO PORRO', team: 'Spain', position: 'DF', club: 'Tottenham Hotspur FC (ENG)' },
   { number: 13, nameOnShirt: 'JOAN GARCÍA', fullName: 'JOAN GARCÍA', team: 'Spain', position: 'GK', club: 'FC Barcelona (ESP)' },
-  { number: 14, nameOnShirt: 'LAPORTE', fullName: 'LAPORTE', team: 'Spain', position: 'DF', club: 'Athletic Club (ESP)' },
+  { number: 14, nameOnShirt: 'LAPORTE', fullName: 'Aymeric Laporte', team: 'Spain', position: 'DF', club: 'Athletic Club (ESP)' },
   { number: 15, nameOnShirt: 'ALEX B.', fullName: 'ALEX B.', team: 'Spain', position: 'MF', club: 'Atlético De Madrid (ESP)' },
   { number: 16, nameOnShirt: 'RODRIGO', fullName: 'RODRIGO', team: 'Spain', position: 'MF', club: 'Manchester City FC (ENG)' },
   { number: 17, nameOnShirt: 'WILLIAMS JR', fullName: 'WILLIAMS JR', team: 'Spain', position: 'FW', club: 'Athletic Club (ESP)' },
@@ -2964,8 +2964,8 @@ const wcPlayerDatabase = [
   { number: 4, nameOnShirt: 'TOMAS A.', fullName: 'TOMAS A.', team: 'Portugal', position: 'DF', club: 'SL Benca (POR)' },
   { number: 5, nameOnShirt: 'DALOT', fullName: 'DALOT', team: 'Portugal', position: 'DF', club: 'Manchester United FC (ENG)' },
   { number: 6, nameOnShirt: 'MATHEUS N.', fullName: 'MATHEUS N.', team: 'Portugal', position: 'MF', club: 'Manchester City FC (ENG)' },
-  { number: 7, nameOnShirt: 'RONALDO', fullName: 'RONALDO', team: 'Portugal', position: 'FW', club: 'Al Nassr FC (KSA)' },
-  { number: 8, nameOnShirt: 'B. FERNANDES', fullName: 'B. FERNANDES', team: 'Portugal', position: 'MF', club: 'Manchester United FC (ENG)' },
+  { number: 7, nameOnShirt: 'RONALDO', fullName: 'Cristiano Ronaldo', team: 'Portugal', position: 'FW', club: 'Al Nassr FC (KSA)' },
+  { number: 8, nameOnShirt: 'B. FERNANDES', fullName: 'Bruno Fernandes', team: 'Portugal', position: 'MF', club: 'Manchester United FC (ENG)' },
   { number: 9, nameOnShirt: 'G. RAMOS', fullName: 'G. RAMOS', team: 'Portugal', position: 'FW', club: 'Paris Saint-Germain (FRA)' },
   { number: 10, nameOnShirt: 'BERNARDO', fullName: 'BERNARDO', team: 'Portugal', position: 'MF', club: 'Manchester City FC (ENG)' },
   { number: 11, nameOnShirt: 'JOÃO FÉLIX', fullName: 'JOÃO FÉLIX', team: 'Portugal', position: 'FW', club: 'Al Nassr FC (KSA)' },
@@ -2994,7 +2994,7 @@ const wcPlayerDatabase = [
   { number: 8, nameOnShirt: 'GRAVENBERCH', fullName: 'GRAVENBERCH', team: 'Netherlands', position: 'MF', club: 'Liverpool FC (ENG)' },
   { number: 9, nameOnShirt: 'WEGHORST', fullName: 'WEGHORST', team: 'Netherlands', position: 'FW', club: 'AFC Ajax (NED)' },
   { number: 10, nameOnShirt: 'MEMPHIS', fullName: 'MEMPHIS', team: 'Netherlands', position: 'FW', club: 'SC Corinthians (BRA)' },
-  { number: 11, nameOnShirt: 'GAKPO', fullName: 'GAKPO', team: 'Netherlands', position: 'FW', club: 'Liverpool FC (ENG)' },
+  { number: 11, nameOnShirt: 'GAKPO', fullName: 'Cody Gakpo', team: 'Netherlands', position: 'FW', club: 'Liverpool FC (ENG)' },
   { number: 12, nameOnShirt: 'WIEFFER', fullName: 'WIEFFER', team: 'Netherlands', position: 'DF', club: 'Brighton &amp; Hove Albion FC (ENG)' },
   { number: 13, nameOnShirt: 'ROEFS', fullName: 'ROEFS', team: 'Netherlands', position: 'GK', club: 'Sunderland AFC (ENG)' },
   { number: 14, nameOnShirt: 'REIJNDERS', fullName: 'REIJNDERS', team: 'Netherlands', position: 'MF', club: 'Manchester City FC (ENG)' },
@@ -3010,17 +3010,17 @@ const wcPlayerDatabase = [
   { number: 24, nameOnShirt: 'SUMMERVILLE', fullName: 'SUMMERVILLE', team: 'Netherlands', position: 'FW', club: 'West Ham United FC (ENG)' },
   { number: 25, nameOnShirt: 'HATO', fullName: 'HATO', team: 'Netherlands', position: 'DF', club: 'Chelsea FC (ENG)' },
   { number: 26, nameOnShirt: 'Q. TIMBER', fullName: 'Q. TIMBER', team: 'Netherlands', position: 'MF', club: 'Olympique Marseille (FRA)' },
-  { number: 1, nameOnShirt: 'COURTOIS', fullName: 'COURTOIS', team: 'Belgium', position: 'GK', club: 'Real Madrid C. F. (ESP)' },
+  { number: 1, nameOnShirt: 'COURTOIS', fullName: 'Thibaut Courtois', team: 'Belgium', position: 'GK', club: 'Real Madrid C. F. (ESP)' },
   { number: 2, nameOnShirt: 'DEBAST', fullName: 'DEBAST', team: 'Belgium', position: 'DF', club: 'Sporting CP (POR)' },
   { number: 3, nameOnShirt: 'THIATE', fullName: 'THIATE', team: 'Belgium', position: 'DF', club: 'Eintracht Frankfurt (GER)' },
   { number: 4, nameOnShirt: 'MECHELE', fullName: 'MECHELE', team: 'Belgium', position: 'DF', club: 'Club Brugge (BEL)' },
   { number: 5, nameOnShirt: 'DE CUYPER', fullName: 'DE CUYPER', team: 'Belgium', position: 'DF', club: 'Brighton &amp; Hove Albion FC (ENG)' },
   { number: 6, nameOnShirt: 'WITSEL', fullName: 'WITSEL', team: 'Belgium', position: 'MF', club: 'Girona FC (ESP)' },
-  { number: 7, nameOnShirt: 'DE BRUYNE', fullName: 'DE BRUYNE', team: 'Belgium', position: 'MF', club: 'SSC Napoli (ITA)' },
+  { number: 7, nameOnShirt: 'DE BRUYNE', fullName: 'Kevin De Bruyne', team: 'Belgium', position: 'MF', club: 'SSC Napoli (ITA)' },
   { number: 8, nameOnShirt: 'TIELEMANS', fullName: 'TIELEMANS', team: 'Belgium', position: 'MF', club: 'Aston Villa FC (ENG)' },
-  { number: 9, nameOnShirt: 'LUKAKU', fullName: 'LUKAKU', team: 'Belgium', position: 'FW', club: 'SSC Napoli (ITA)' },
+  { number: 9, nameOnShirt: 'LUKAKU', fullName: 'Romelu Lukaku', team: 'Belgium', position: 'FW', club: 'SSC Napoli (ITA)' },
   { number: 10, nameOnShirt: 'TROSSARD', fullName: 'TROSSARD', team: 'Belgium', position: 'FW', club: 'Arsenal FC (ENG)' },
-  { number: 11, nameOnShirt: 'DOKU', fullName: 'DOKU', team: 'Belgium', position: 'FW', club: 'Manchester City FC (ENG)' },
+  { number: 11, nameOnShirt: 'DOKU', fullName: 'Jeremy Doku', team: 'Belgium', position: 'FW', club: 'Manchester City FC (ENG)' },
   { number: 12, nameOnShirt: 'LAMMENS', fullName: 'LAMMENS', team: 'Belgium', position: 'GK', club: 'Manchester United FC (ENG)' },
   { number: 13, nameOnShirt: 'PENDERS', fullName: 'PENDERS', team: 'Belgium', position: 'GK', club: 'RC Strasbourg (FRA)' },
   { number: 14, nameOnShirt: 'LUKEBAKIO', fullName: 'LUKEBAKIO', team: 'Belgium', position: 'FW', club: 'SL Benca (POR)' },
@@ -3044,8 +3044,8 @@ const wcPlayerDatabase = [
   { number: 6, nameOnShirt: 'BERG', fullName: 'BERG', team: 'Norway', position: 'MF', club: 'FK Bodø/Glimt (NOR)' },
   { number: 7, nameOnShirt: 'SØRLOTH', fullName: 'SØRLOTH', team: 'Norway', position: 'FW', club: 'Atlético De Madrid (ESP)' },
   { number: 8, nameOnShirt: 'BERGE', fullName: 'BERGE', team: 'Norway', position: 'MF', club: 'Fulham FC (ENG)' },
-  { number: 9, nameOnShirt: 'BRAUT HAALAND', fullName: 'BRAUT HAALAND', team: 'Norway', position: 'FW', club: 'Manchester City FC (ENG)' },
-  { number: 10, nameOnShirt: 'ØDEGAARD', fullName: 'ØDEGAARD', team: 'Norway', position: 'MF', club: 'Arsenal FC (ENG)' },
+  { number: 9, nameOnShirt: 'BRAUT HAALAND', fullName: 'Erling Haaland', team: 'Norway', position: 'FW', club: 'Manchester City FC (ENG)' },
+  { number: 10, nameOnShirt: 'ØDEGAARD', fullName: 'Martin Odegaard', team: 'Norway', position: 'MF', club: 'Arsenal FC (ENG)' },
   { number: 11, nameOnShirt: 'STRAND LARSEN', fullName: 'STRAND LARSEN', team: 'Norway', position: 'FW', club: 'Crystal Palace FC (ENG)' },
   { number: 12, nameOnShirt: 'TANGVIK', fullName: 'TANGVIK', team: 'Norway', position: 'GK', club: 'Hamburger SV (GER)' },
   { number: 13, nameOnShirt: 'SELVIK', fullName: 'SELVIK', team: 'Norway', position: 'GK', club: 'Watford FC (ENG)' },
@@ -3140,7 +3140,7 @@ const wcPlayerDatabase = [
   { number: 24, nameOnShirt: 'WANNER', fullName: 'WANNER', team: 'Austria', position: 'MF', club: 'PSV Eindhoven (NED)' },
   { number: 25, nameOnShirt: 'SVOBODA', fullName: 'SVOBODA', team: 'Austria', position: 'DF', club: 'Venezia FC (ITA)' },
   { number: 26, nameOnShirt: 'SCHÖPF', fullName: 'SCHÖPF', team: 'Austria', position: 'MF', club: 'Wolfsberger AC (AUT)' },
-  { number: 1, nameOnShirt: 'LIVAKOVIC', fullName: 'LIVAKOVIC', team: 'Croatia', position: 'GK', club: 'GNK Dinamo Zagreb (CRO)' },
+  { number: 1, nameOnShirt: 'LIVAKOVIC', fullName: 'Dominik Livakovic', team: 'Croatia', position: 'GK', club: 'GNK Dinamo Zagreb (CRO)' },
   { number: 2, nameOnShirt: 'STANISIC', fullName: 'STANISIC', team: 'Croatia', position: 'DF', club: 'FC Bayern München (GER)' },
   { number: 3, nameOnShirt: 'PONGRACIC', fullName: 'PONGRACIC', team: 'Croatia', position: 'DF', club: 'ACF Fiorentina (ITA)' },
   { number: 4, nameOnShirt: 'GVARDIOL', fullName: 'GVARDIOL', team: 'Croatia', position: 'DF', club: 'Manchester City FC (ENG)' },
@@ -3148,12 +3148,12 @@ const wcPlayerDatabase = [
   { number: 6, nameOnShirt: 'SUTALO', fullName: 'SUTALO', team: 'Croatia', position: 'DF', club: 'AFC Ajax (NED)' },
   { number: 7, nameOnShirt: 'MORO', fullName: 'MORO', team: 'Croatia', position: 'MF', club: 'Bologna FC (ITA)' },
   { number: 8, nameOnShirt: 'KOVACIC', fullName: 'KOVACIC', team: 'Croatia', position: 'MF', club: 'Manchester City FC (ENG)' },
-  { number: 9, nameOnShirt: 'KRAMARIC', fullName: 'KRAMARIC', team: 'Croatia', position: 'FW', club: 'TSG Hoffenheim (GER)' },
-  { number: 10, nameOnShirt: 'MODRIC', fullName: 'MODRIC', team: 'Croatia', position: 'MF', club: 'AC Milan (ITA)' },
+  { number: 9, nameOnShirt: 'KRAMARIC', fullName: 'Andrej Kramaric', team: 'Croatia', position: 'FW', club: 'TSG Hoffenheim (GER)' },
+  { number: 10, nameOnShirt: 'MODRIC', fullName: 'Luka Modric', team: 'Croatia', position: 'MF', club: 'AC Milan (ITA)' },
   { number: 11, nameOnShirt: 'BUDIMIR', fullName: 'BUDIMIR', team: 'Croatia', position: 'FW', club: 'CA Osasuna (ESP)' },
   { number: 12, nameOnShirt: 'PANDUR', fullName: 'PANDUR', team: 'Croatia', position: 'GK', club: 'Hull City FC (ENG)' },
   { number: 13, nameOnShirt: 'VLASIC', fullName: 'VLASIC', team: 'Croatia', position: 'MF', club: 'Torino FC (ITA)' },
-  { number: 14, nameOnShirt: 'PERISIC', fullName: 'PERISIC', team: 'Croatia', position: 'FW', club: 'PSV Eindhoven (NED)' },
+  { number: 14, nameOnShirt: 'PERISIC', fullName: 'Ivan Perisic', team: 'Croatia', position: 'FW', club: 'PSV Eindhoven (NED)' },
   { number: 15, nameOnShirt: 'PASALIC', fullName: 'PASALIC', team: 'Croatia', position: 'MF', club: 'Atalanta Bergamo (ITA)' },
   { number: 16, nameOnShirt: 'BATURINA', fullName: 'BATURINA', team: 'Croatia', position: 'MF', club: 'Como (ITA)' },
   { number: 17, nameOnShirt: 'P. SUCIC', fullName: 'P. SUCIC', team: 'Croatia', position: 'MF', club: 'FC Internazionale Milano (ITA)' },
@@ -3428,30 +3428,30 @@ const wcPlayerDatabase = [
   { number: 26, nameOnShirt: 'DOORNBUSCH', fullName: 'DOORNBUSCH', team: 'Curaçao', position: 'GK', club: 'VVV Venlo (NED)' },
   { number: 1, nameOnShirt: 'MUSSO', fullName: 'MUSSO', team: 'Argentina', position: 'GK', club: 'Atlético De Madrid (ESP)' },
   { number: 2, nameOnShirt: 'BALERDI', fullName: 'BALERDI', team: 'Argentina', position: 'DF', club: 'Olympique Marseille (FRA)' },
-  { number: 3, nameOnShirt: 'TAGLIAFICO', fullName: 'TAGLIAFICO', team: 'Argentina', position: 'DF', club: 'Olympique Lyonnais (FRA)' },
-  { number: 4, nameOnShirt: 'MONTIEL', fullName: 'MONTIEL', team: 'Argentina', position: 'DF', club: 'CA River Plate (ARG)' },
-  { number: 5, nameOnShirt: 'PAREDES', fullName: 'PAREDES', team: 'Argentina', position: 'MF', club: 'CA Boca Juniors (ARG)' },
+  { number: 3, nameOnShirt: 'TAGLIAFICO', fullName: 'Nicolas Tagliafico', team: 'Argentina', position: 'DF', club: 'Olympique Lyonnais (FRA)' },
+  { number: 4, nameOnShirt: 'MONTIEL', fullName: 'Gonzalo Montiel', team: 'Argentina', position: 'DF', club: 'CA River Plate (ARG)' },
+  { number: 5, nameOnShirt: 'PAREDES', fullName: 'Leandro Paredes', team: 'Argentina', position: 'MF', club: 'CA Boca Juniors (ARG)' },
   { number: 6, nameOnShirt: 'MARTÍNEZ', fullName: 'MARTÍNEZ', team: 'Argentina', position: 'DF', club: 'Manchester United FC (ENG)' },
-  { number: 7, nameOnShirt: 'DE PAUL', fullName: 'DE PAUL', team: 'Argentina', position: 'MF', club: 'Inter Miami CF (USA)' },
+  { number: 7, nameOnShirt: 'DE PAUL', fullName: 'Rodrigo De Paul', team: 'Argentina', position: 'MF', club: 'Inter Miami CF (USA)' },
   { number: 8, nameOnShirt: 'BARCO', fullName: 'BARCO', team: 'Argentina', position: 'MF', club: 'RC Strasbourg (FRA)' },
-  { number: 9, nameOnShirt: 'J. ALVAREZ', fullName: 'J. ALVAREZ', team: 'Argentina', position: 'FW', club: 'Atlético De Madrid (ESP)' },
-  { number: 10, nameOnShirt: 'MESSI', fullName: 'MESSI', team: 'Argentina', position: 'FW', club: 'Inter Miami CF (USA)' },
-  { number: 11, nameOnShirt: 'LO CELSO', fullName: 'LO CELSO', team: 'Argentina', position: 'MF', club: 'Real Betis (ESP)' },
+  { number: 9, nameOnShirt: 'J. ALVAREZ', fullName: 'Julian Alvarez', team: 'Argentina', position: 'FW', club: 'Atlético De Madrid (ESP)' },
+  { number: 10, nameOnShirt: 'MESSI', fullName: 'Lionel Messi', team: 'Argentina', position: 'FW', club: 'Inter Miami CF (USA)' },
+  { number: 11, nameOnShirt: 'LO CELSO', fullName: 'Giovani Lo Celso', team: 'Argentina', position: 'MF', club: 'Real Betis (ESP)' },
   { number: 12, nameOnShirt: 'RULLI', fullName: 'RULLI', team: 'Argentina', position: 'GK', club: 'Olympique Marseille (FRA)' },
-  { number: 13, nameOnShirt: 'ROMERO', fullName: 'ROMERO', team: 'Argentina', position: 'DF', club: 'Tottenham Hotspur FC (ENG)' },
+  { number: 13, nameOnShirt: 'ROMERO', fullName: 'Cristian Romero', team: 'Argentina', position: 'DF', club: 'Tottenham Hotspur FC (ENG)' },
   { number: 14, nameOnShirt: 'PALACIOS', fullName: 'PALACIOS', team: 'Argentina', position: 'MF', club: 'Bayer Leverkusen (GER)' },
   { number: 15, nameOnShirt: 'N. GONZÁLEZ', fullName: 'N. GONZÁLEZ', team: 'Argentina', position: 'MF', club: 'Atlético De Madrid (ESP)' },
   { number: 16, nameOnShirt: 'ALMADA', fullName: 'ALMADA', team: 'Argentina', position: 'FW', club: 'Atlético De Madrid (ESP)' },
   { number: 17, nameOnShirt: 'SIMEONE', fullName: 'SIMEONE', team: 'Argentina', position: 'FW', club: 'Atlético De Madrid (ESP)' },
   { number: 18, nameOnShirt: 'NICO PAZ', fullName: 'NICO PAZ', team: 'Argentina', position: 'FW', club: 'Como (ITA)' },
-  { number: 19, nameOnShirt: 'OTAMENDI', fullName: 'OTAMENDI', team: 'Argentina', position: 'DF', club: 'SL Benca (POR)' },
-  { number: 20, nameOnShirt: 'MAC ALLISTER', fullName: 'MAC ALLISTER', team: 'Argentina', position: 'MF', club: 'Liverpool FC (ENG)' },
+  { number: 19, nameOnShirt: 'OTAMENDI', fullName: 'Nicolas Otamendi', team: 'Argentina', position: 'DF', club: 'SL Benca (POR)' },
+  { number: 20, nameOnShirt: 'MAC ALLISTER', fullName: 'Alexis Mac Allister', team: 'Argentina', position: 'MF', club: 'Liverpool FC (ENG)' },
   { number: 21, nameOnShirt: 'LOPEZ', fullName: 'LOPEZ', team: 'Argentina', position: 'FW', club: 'SE Palmeiras (BRA)' },
   { number: 22, nameOnShirt: 'L. MARTÍNEZ', fullName: 'L. MARTÍNEZ', team: 'Argentina', position: 'FW', club: 'FC Internazionale Milano (ITA)' },
   { number: 23, nameOnShirt: 'E. MARTÍNEZ', fullName: 'E. MARTÍNEZ', team: 'Argentina', position: 'GK', club: 'Aston Villa FC (ENG)' },
   { number: 24, nameOnShirt: 'E. FERNÁNDEZ', fullName: 'E. FERNÁNDEZ', team: 'Argentina', position: 'MF', club: 'Chelsea FC (ENG)' },
   { number: 25, nameOnShirt: 'MEDINA', fullName: 'MEDINA', team: 'Argentina', position: 'DF', club: 'Olympique Marseille (FRA)' },
-  { number: 26, nameOnShirt: 'MOLINA', fullName: 'MOLINA', team: 'Argentina', position: 'DF', club: 'Atlético De Madrid (ESP)' },
+  { number: 26, nameOnShirt: 'MOLINA', fullName: 'Nahuel Molina', team: 'Argentina', position: 'DF', club: 'Atlético De Madrid (ESP)' },
   { number: 1, nameOnShirt: 'A. BECKER', fullName: 'A. BECKER', team: 'Brazil', position: 'GK', club: 'Liverpool FC (ENG)' },
   { number: 2, nameOnShirt: 'WESLEY', fullName: 'WESLEY', team: 'Brazil', position: 'DF', club: 'AS Roma (ITA)' },
   { number: 3, nameOnShirt: 'GABRIEL', fullName: 'GABRIEL', team: 'Brazil', position: 'DF', club: 'Arsenal FC (ENG)' },
@@ -3461,8 +3461,8 @@ const wcPlayerDatabase = [
   { number: 7, nameOnShirt: 'VINI JR.', fullName: 'VINI JR.', team: 'Brazil', position: 'FW', club: 'Real Madrid C. F. (ESP)' },
   { number: 8, nameOnShirt: 'BRUNO G.', fullName: 'BRUNO G.', team: 'Brazil', position: 'MF', club: 'Newcastle United FC (ENG)' },
   { number: 9, nameOnShirt: 'CUNHA', fullName: 'CUNHA', team: 'Brazil', position: 'FW', club: 'Manchester United FC (ENG)' },
-  { number: 10, nameOnShirt: 'NEYMAR JR', fullName: 'NEYMAR JR', team: 'Brazil', position: 'FW', club: 'Santos FC (BRA)' },
-  { number: 11, nameOnShirt: 'RAPHINHA', fullName: 'RAPHINHA', team: 'Brazil', position: 'FW', club: 'FC Barcelona (ESP)' },
+  { number: 10, nameOnShirt: 'NEYMAR JR', fullName: 'Neymar Jr', team: 'Brazil', position: 'FW', club: 'Santos FC (BRA)' },
+  { number: 11, nameOnShirt: 'RAPHINHA', fullName: 'Raphinha', team: 'Brazil', position: 'FW', club: 'FC Barcelona (ESP)' },
   { number: 12, nameOnShirt: 'WEVERTON', fullName: 'WEVERTON', team: 'Brazil', position: 'GK', club: 'Grêmio FBPA (BRA)' },
   { number: 13, nameOnShirt: 'DANILO', fullName: 'DANILO', team: 'Brazil', position: 'DF', club: 'CR Flamengo (BRA)' },
   { number: 14, nameOnShirt: 'BREMER', fullName: 'BREMER', team: 'Brazil', position: 'DF', club: 'Juventus FC (ITA)' },
@@ -3536,7 +3536,7 @@ const wcPlayerDatabase = [
   { number: 4, nameOnShirt: 'CÁCERES', fullName: 'CÁCERES', team: 'Paraguay', position: 'DF', club: 'FC Dynamo Moscow (RUS)' },
   { number: 5, nameOnShirt: 'BALBUENA', fullName: 'BALBUENA', team: 'Paraguay', position: 'DF', club: 'Grêmio FBPA (BRA)' },
   { number: 6, nameOnShirt: 'ALONSO', fullName: 'ALONSO', team: 'Paraguay', position: 'DF', club: 'Atlético Mineiro (BRA)' },
-  { number: 7, nameOnShirt: 'SOSA', fullName: 'SOSA', team: 'Paraguay', position: 'MF', club: 'SE Palmeiras (BRA)' },
+  { number: 7, nameOnShirt: 'SOSA', fullName: 'Josip Sosa', team: 'Paraguay', position: 'MF', club: 'SE Palmeiras (BRA)' },
   { number: 8, nameOnShirt: 'D. GOMEZ', fullName: 'D. GOMEZ', team: 'Paraguay', position: 'MF', club: 'Brighton &amp; Hove Albion FC (ENG)' },
   { number: 9, nameOnShirt: 'SANABRIA', fullName: 'SANABRIA', team: 'Paraguay', position: 'FW', club: 'US Cremonese (ITA)' },
   { number: 10, nameOnShirt: 'M. ALMIRÓN', fullName: 'M. ALMIRÓN', team: 'Paraguay', position: 'MF', club: 'Atlanta United FC (USA)' },
@@ -3794,10 +3794,36 @@ function formatScorer(scorerStr, team = null) {
     displayName = name;
   }
   
+  // Look up full name from database
+  let fullName = displayName;
+  let jerseyNumber = null;
+  let position = null;
+  let club = null;
+  
+  // Find the player in the database
+  const candidates = team 
+    ? wcPlayerDatabase.filter(p => p.team.toLowerCase() === team.toLowerCase())
+    : wcPlayerDatabase;
+  
+  for (const player of candidates) {
+    // Check if this player matches (by nameOnShirt or fullName)
+    if (player.nameOnShirt.toUpperCase() === displayName.toUpperCase() || 
+        player.fullName.toUpperCase() === displayName.toUpperCase()) {
+      // If fullName is different from nameOnShirt, use fullName for display
+      if (player.fullName !== player.nameOnShirt) {
+        fullName = player.fullName;
+      }
+      jerseyNumber = player.number;
+      position = player.position;
+      club = player.club;
+      break;
+    }
+  }
+  
   const isPenalty = minute.includes('(p)');
   const isOG = minute.includes('(OG)');
   
-  return { name: displayName, minute, isPenalty, isOG };
+  return { name: fullName, displayName: displayName, minute, isPenalty, isOG, jerseyNumber, position, club };
 }
 
 // Helper function to build scorers HTML for a team
@@ -3812,11 +3838,17 @@ function buildScorersHtml(scorers, isHomeTeam = true, teamName = null) {
     
     // Check if this is an own goal using the player database
     // If player doesn\'t belong to the team they\'re listed under, it\'s an OG
-    const playerTeam = officialSquadPlayers[parsed.name];
+    const playerTeam = officialSquadPlayers[parsed.name] || officialSquadPlayers[parsed.displayName];
     const isOG = parsed.isOG || (playerTeam && teamName && playerTeam !== teamName);
     const ogClass = isOG ? ' scorer-og' : '';
     
-    return `<span class="scorer-item${penaltyClass}${ogClass}">${parsed.name}${isOG ? ' (OG)' : ''} <span class="scorer-minute">${parsed.minute}</span></span>`;
+    // Format: (number) | POS | NAME ON SHIRT | CLUB
+    let displayText = parsed.name;
+    if (parsed.jerseyNumber) {
+      displayText = `(${parsed.jerseyNumber}) | ${parsed.position} | ${parsed.name} | ${parsed.club}`;
+    }
+    
+    return `<span class="scorer-item${penaltyClass}${ogClass}">${displayText}${isOG ? ' (OG)' : ''} <span class="scorer-minute">${parsed.minute}</span></span>`;
   }).join('');
 }
 
@@ -3938,7 +3970,14 @@ function computeTopScorers() {
         }
         
         if (!scorerCounts[name]) {
-          scorerCounts[name] = { goals: 0, country: actualCreditedTeam, latestGoalTime: 0 };
+          scorerCounts[name] = { 
+            goals: 0, 
+            country: actualCreditedTeam, 
+            latestGoalTime: 0,
+            jerseyNumber: parsed.jerseyNumber,
+            position: parsed.position,
+            club: parsed.club
+          };
         } else {
           // Update country if this scorer now scores for a different team
           scorerCounts[name].country = actualCreditedTeam;
@@ -3968,7 +4007,14 @@ function computeTopScorers() {
         }
         
         if (!scorerCounts[name]) {
-          scorerCounts[name] = { goals: 0, country: actualCreditedTeam, latestGoalTime: 0 };
+          scorerCounts[name] = { 
+            goals: 0, 
+            country: actualCreditedTeam, 
+            latestGoalTime: 0,
+            jerseyNumber: parsed.jerseyNumber,
+            position: parsed.position,
+            club: parsed.club
+          };
         } else {
           // Update country if this scorer now scores for a different team
           scorerCounts[name].country = actualCreditedTeam;
@@ -3984,7 +4030,15 @@ function computeTopScorers() {
   
   // Convert to array and sort by goal count (desc), then by latest goal time (desc - most recent first)
   const sortedScorers = Object.entries(scorerCounts)
-    .map(([name, data]) => ({ name, goals: data.goals, country: data.country, latestGoalTime: data.latestGoalTime }))
+    .map(([name, data]) => ({ 
+      name, 
+      goals: data.goals, 
+      country: data.country, 
+      latestGoalTime: data.latestGoalTime,
+      jerseyNumber: data.jerseyNumber,
+      position: data.position,
+      club: data.club
+    }))
     .sort((a, b) => {
       // First sort by goals (descending)
       if (b.goals !== a.goals) {
@@ -4080,10 +4134,16 @@ function renderTopScorers() {
     // Hide rows 4+ when collapsed
     const rowHidden = hasMoreThanThree && index >= 3;
     
+    // Format: (number) | POS | NAME | CLUB
+    let playerInfoHtml = `<span class="scorer-name"><span class="scorer-first-name">${firstName}</span> <span class="scorer-last-name">${lastName}</span></span>`;
+    if (scorer.jerseyNumber) {
+      playerInfoHtml = `<span class="scorer-details">(${scorer.jerseyNumber}) | ${scorer.position} | ${scorer.name} | ${scorer.club}</span>`;
+    }
+    
     html += `
       <tr class="${rankClass}" ${rowHidden ? 'style="display: none;"' : ''}>
         <td class="rank-col">${rankDisplay}</td>
-        <td class="player-col">${portraitHtml}${flagHtml}<span class="scorer-name"><span class="scorer-first-name">${firstName}</span> <span class="scorer-last-name">${lastName}</span></span></td>
+        <td class="player-col">${portraitHtml}${flagHtml}${playerInfoHtml}</td>
         <td class="goals-col"><span class="goals-badge">${scorer.goals}</span></td>
       </tr>
     `;
