@@ -1870,10 +1870,9 @@ function renderTopScorers() {
       lastName = scorer.name;
     }
     
-    // Get portrait for top 3 scorers only (based on actual rank, not tied rank)
+    // Get portrait for top 3 positions (rank 1, 2, or 3)
     let portraitHtml = '';
-    if (displayRank <= 3 && !isTied) {
-      // Only show portrait for the actual top 3 (not tied players)
+    if (displayRank <= 3) {
       const portraitUrl = getPlayerPortrait(scorer.name);
       if (portraitUrl) {
         portraitHtml = `<img class="scorer-portrait" src="${portraitUrl}" alt="${scorer.name}" onerror="this.style.display='none'" />`;
