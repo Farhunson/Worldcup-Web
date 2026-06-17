@@ -2921,14 +2921,10 @@ footer {
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: 16px;
-  font-weight: bold;
-}
-
-.top-scorers-table .scorer-portrait-placeholder svg {
-  width: 24px;
-  height: 24px;
-  fill: white;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1;
 }
 
 /* Top 3 specific portrait styling */
@@ -2945,6 +2941,19 @@ footer {
 .top-scorers-table .rank-3 .scorer-portrait {
   border-color: #CD7F32;
   box-shadow: 0 0 12px rgba(205, 127, 50, 0.4);
+}
+
+/* Placeholder rank colors */
+.top-scorers-table .rank-1 .scorer-portrait-placeholder {
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+}
+
+.top-scorers-table .rank-2 .scorer-portrait-placeholder {
+  background: linear-gradient(135deg, #C0C0C0 0%, #A0A0A0 100%);
+}
+
+.top-scorers-table .rank-3 .scorer-portrait-placeholder {
+  background: linear-gradient(135deg, #CD7F32 0%, #8B4513 100%);
 }
 
 .top-scorers-table .team-flag-name {

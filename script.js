@@ -1871,12 +1871,18 @@ function renderTopScorers() {
     // Get portrait for top 3 positions (index 0, 1, 2 = positions 1, 2, 3)
     let portraitHtml = '';
     if (index < 3) {
+      // Get initials for fallback
+      const initials = nameParts.length >= 2 
+        ? nameParts[0][0] + nameParts[nameParts.length - 1][0] 
+        : scorer.name.substring(0, 2);
+      
       const portraitUrl = getPlayerPortrait(scorer.name);
       if (portraitUrl) {
-        portraitHtml = `<img class="scorer-portrait" src="${portraitUrl}" alt="${scorer.name}" onerror="this.style.display='none'" />`;
+        // Add error handler to show initials if image fails
+        portraitHtml = `<img class="scorer-portrait" src="${portraitUrl}" alt="${scorer.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';" /><span class="scorer-portrait-placeholder" style="display:none;">${initials.toUpperCase()}</span>`;
       } else {
-        // Use placeholder silhouette
-        portraitHtml = `<span class="scorer-portrait-placeholder"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="4"/><path d="M12 14c-4 0-8 2-8 4v2h16v-2c0-2-4-4-8-4z"/></svg></span>`;
+        // No URL, show initials directly
+        portraitHtml = `<span class="scorer-portrait-placeholder">${initials.toUpperCase()}</span>`;
       }
     }
     
