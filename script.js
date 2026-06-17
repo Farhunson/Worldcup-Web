@@ -510,7 +510,7 @@ function getMatchDateTimeLabel(matchNo, venue, fallbackDate, fallbackTime) {
   // Fallback to original schedule data (stored in local venue time)
   if (fallbackDate) {
     // Parse the schedule date/time which is stored as local venue time
-    // The date string format is "2026-06-14T05:00:00" (local time at venue)
+    // The date string format is "2026-06-14T05:00:00" (local time at venue) or "2026-06-14" (date only)
     const dateStr = fallbackDate.endsWith('Z') ? fallbackDate.slice(0, -1) : fallbackDate;
     
     // Get venue timezone for parsing the schedule data
@@ -520,9 +520,29 @@ function getMatchDateTimeLabel(matchNo, venue, fallbackDate, fallbackTime) {
     const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     
     // Parse the local venue date/time components
-    const [year, month, dayTime] = dateStr.split('T');
-    const [day, timePart] = dayTime.split(':');
-    const [hours, minutes] = timePart.split(':').map(Number);
+    // Handle both formats: "2026-06-14T05:00:00" and "2026-06-14"
+    let year, month, day, hours, minutes;
+    
+    if (dateStr.includes('T')) {
+      // Full format with time: "2026-06-14T05:00:00"
+      const [datePart, timePart] = dateStr.split('T');
+      [year, month, day] = datePart.split('-');
+      const timeParts = timePart.split(':');
+      hours = parseInt(timeParts[0]) || 0;
+      minutes = parseInt(timeParts[1]) || 0;
+    } else {
+      // Date-only format: "2026-06-14"
+      [year, month, day] = dateStr.split('-');
+      // Parse time from fallbackTime parameter (format "HH:MM")
+      if (fallbackTime && fallbackTime.includes(':')) {
+        const timeParts = fallbackTime.split(':');
+        hours = parseInt(timeParts[0]) || 0;
+        minutes = parseInt(timeParts[1]) || 0;
+      } else {
+        hours = 0;
+        minutes = 0;
+      }
+    }
     
     // Convert venue local time to UTC using the correct timezone
     // Create a formatter to check what UTC time corresponds to the venue local time
