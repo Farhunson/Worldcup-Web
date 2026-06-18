@@ -4001,24 +4001,45 @@ function isOwnGoalByDatabase(fullName, scoringForTeam) {
 }
 
 // Helper function to build scorers HTML for a team
-// scorersObj: the scorers object from state.apiScorers (contains homeTeamDbName/awayTeamDbName)
-// side: 'home' or 'away'
-// displayTeamName: the project team name for display (e.g., "USA", "England")
-function buildScorersHtml(scorersObj, side, displayTeamName = null) {
-  const scorers = side === 'home' ? scorersObj.home : scorersObj.away;
-  if (!scorers || scorers.length === 0) {
+// scorersObjOrArray: either the full scorers object from state.apiScorers, or just the array
+// sideOrIsHome: either 'home'/'away' string or boolean isHomeTeam
+// teamName: optional - the project team name
+function buildScorersHtml(scorersObjOrArray, sideOrIsHome, teamName = null) {
+  let scorersArray;
+  let isHomeTeam;
+  let scorersObj = null;
+  
+  // Detect if first argument is scorers object or array
+  if (Array.isArray(scorersObjOrArray)) {
+    scorersArray = scorersObjOrArray;
+    isHomeTeam = sideOrIsHome === true || sideOrIsHome === 'home';
+  } else if (typeof scorersObjOrArray === 'object' && scorersObjOrArray !== null) {
+    // It's a scorers object
+    scorersObj = scorersObjOrArray;
+    isHomeTeam = sideOrIsHome === true || sideOrIsHome === 'home';
+    scorersArray = isHomeTeam ? scorersObj.home : scorersObj.away;
+  } else {
+    // Legacy format: scorersArray, isHomeTeam, teamName
+    scorersArray = arguments[0];
+    isHomeTeam = arguments[1] === true || arguments[1] === 'home';
+    teamName = arguments[2] || teamName;
+  }
+  
+  if (!scorersArray || scorersArray.length === 0) {
     return '<span class="no-scorers">-</span>';
   }
   
-  // Get the database team name for matching
-  const dbTeamName = side === 'home' ? scorersObj.homeTeamDbName : scorersObj.awayTeamDbName;
+  // Get the database team name if available
+  let dbTeamName = teamName;
+  if (scorersObj) {
+    dbTeamName = isHomeTeam ? scorersObj.homeTeamDbName : scorersObj.awayTeamDbName;
+  }
   
-  return scorers.map(scorerStr => {
+  return scorersArray.map(scorerStr => {
     const parsed = formatScorer(scorerStr, dbTeamName);
     const penaltyClass = parsed.isPenalty ? ' scorer-penalty' : '';
     
     // Check if this is an own goal using isOwnGoalByDatabase
-    // If player doesn't belong to the team they're listed under (according to database), it's an OG
     const isOG = parsed.isOG || isOwnGoalByDatabase(parsed.name, dbTeamName);
     const ogClass = isOG ? ' scorer-og' : '';
     
