@@ -3956,8 +3956,13 @@ function formatScorer(scorerStr, team = null) {
     name = cleanStr.trim();
   }
   
+  // Debug: Log scorer name
+  console.log('formatScorer:', { name, team, scorerStr });
+  
   // Use the new findPlayerByFullName function for accurate database matching
   const player = findPlayerByFullName(name, team);
+  
+  console.log('Player found:', player ? player.fullName : 'NULL', 'Number:', player?.number);
   
   let fullName = name;
   let displayName = name;
