@@ -4100,8 +4100,11 @@ function computeTopScorers() {
   };
   
   // First pass: track player appearances in home/away scorers
+  console.log('computeTopScorers - Total matches with scorers:', Object.keys(state.apiScorers).length);
+  
   for (const matchNo in state.apiScorers) {
     const matchScorers = state.apiScorers[matchNo];
+    console.log('Match', matchNo, 'scorers:', { home: matchScorers.home, away: matchScorers.away });
     
     // Use API team names for database matching (they match the 'team' attribute in wcPlayerDatabase)
     const homeDbTeam = matchScorers.homeTeamDbName || null;  // e.g., "Argentina"
