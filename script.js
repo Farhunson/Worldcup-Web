@@ -970,57 +970,107 @@ function hasScorerData(matchNo) {
 }
 
 const officialSquadConversions = {
-  'Arling Halnd': 'HÅLAND',
+  // Top scorers from API - map to nameOnShirt in database
+  'Arling Halnd': 'BRAUT HAALAND',
+  'Erling Haaland': 'BRAUT HAALAND',
   'Liv Avstigard': 'ØSTIGÅRD',
+  'Leo Østigård': 'ØSTIGÅRD',
   'Livnl Msi': 'MESSI',
-  'K. Mbappé': 'MBAPPÉ',
+  'Lionel Messi': 'MESSI',
+  'K. Mbappé': 'MBAPPE',
+  'K. Mbappe': 'MBAPPE',
+  'Kylian Mbappé': 'MBAPPE',
+  'Kylian Mbappe': 'MBAPPE',
   'B. Barcola': 'BARCOLA',
+  'Bradley Barcola': 'BARCOLA',
   'K. Havertz': 'HAVERTZ',
+  'Kai Havertz': 'HAVERTZ',
   'J. Musiala': 'MUSIALA',
+  'Jamal Musiala': 'MUSIALA',
   'N. Schlotterbeck': 'SCHLOTTERBECK',
   'N. Brown': 'N. BROWN',
   'Felix Nmecha': 'NMECHA',
+  'Deniz Undav': 'UNDAV',
   'D. Undav': 'UNDAV',
   'F. Balogun': 'BALOGUN',
+  'Folarin Balogun': 'BALOGUN',
   'G. Reyna': 'REYNA',
+  'Giovanni Reyna': 'REYNA',
   'D. Bobadilla': 'BOBADILLA',
-  'Y.Ayari': 'AYARI',
+  'Y. Ayari': 'AYARI',
+  'Yasin Ayari': 'AYARI',
   'A. Isak': 'ISAK',
+  'Alexander Isak': 'ISAK',
   'V. Gyökeres': 'GYÖKERES',
+  'Viktor Gyökeres': 'GYÖKERES',
   'M. Svanberg': 'SVANBERG',
-  'J. Quiñones': 'QUIÑONES',
-  'R. Jiménez': 'JIMÉNEZ',
-  'I.B. Hwang': 'HWANG',
-  'H.G. Oh': 'OH',
+  'Mattias Svanberg': 'SVANBERG',
+  'J. Quiñones': 'QUINONES',
+  'J. Quinones': 'QUINONES',
+  'R. Jiménez': 'JIMENEZ',
+  'R. Jimenez': 'JIMENEZ',
+  'Raul Jimenez': 'JIMENEZ',
+  'I.B. Hwang': 'I.B. HWANG',
+  'H.G. Oh': 'H.G. OH',
+  'Romano Schmid': 'SCHMID',
   'Rvmanv Ashmid': 'SCHMID',
   'Izn Alarb': 'Y. AL-ARAB',
-  'Ali Avlvan': 'ALI AL-ARAB',
-  'L. Krejčí': 'KREJCI',
+  'Ali Avlvan': 'Y. AL-ARAB',
+  'Yazan Al-Arab': 'Y. AL-ARAB',
+  'L. Krejčí': 'L. KREJCI',
+  'L. Krejci': 'L. KREJCI',
   'C. Larin': 'LARIN',
+  'Cyle Larin': 'LARIN',
   'B. Khoukhi': 'KHOUKHI',
+  'Boualem Khoukhi': 'KHOUKHI',
   'Breel Embolo': 'EMBOLO',
-  'V. Júnior': 'VINÍCIUS JR',
+  'V. Júnior': 'VINICIUS JR',
+  'V. Junior': 'VINICIUS JR',
+  'Vinicius Jr': 'VINICIUS JR',
   'I. Saibari': 'SAIBARI',
+  'Ismael Saibari': 'SAIBARI',
   'J. McGinn': 'MCGINN',
+  'John McGinn': 'MCGINN',
   'Nestory Irankunda': 'IRANKUNDA',
   'C. Metcalfe': 'METCALFE',
+  'Connor Metcalfe': 'METCALFE',
   'Virgil van Dijk': 'VAN DIJK',
   'C. Summerville': 'SUMMERVILLE',
+  'Crysencio Summerville': 'SUMMERVILLE',
   'K. Nakamura': 'NAKAMURA',
+  'Keito Nakamura': 'NAKAMURA',
   'K. Ogawa': 'OGAWA',
+  'Koki Ogawa': 'OGAWA',
+  'Kōki Ogawa': 'OGAWA',
   'A. Diallo': 'A. DIALLO',
+  'Abdoulaye Diallo': 'A. DIALLO',
   'O. Rekik': 'REKIK',
-  'Mohamed Hany': 'HANY',
-  'Emam Ashour': 'ASHOUR',
+  'Omar Rekik': 'REKIK',
+  'Mohamed Hany': 'M. HANY',
+  'Emam Ashour': 'M. ASHOUR',
   'Ramin Rezaiian': 'REZAEIAN',
+  'Ramin Rezaeian': 'REZAEIAN',
   'Mohammad Mohebi': 'MOHEBI',
   'Elijah Just': 'JUST',
   'Abdulelah Al-Amri': 'AL-AMRI',
-  'Maximiliano Araújo': 'ARAÚJO',
+  'Maximiliano Araújo': 'ARAUJO',
+  'Maximiliano Araujo': 'ARAUJO',
   'I. Mbaye': 'MBAYE',
+  'Ibrahim Mbaye': 'MBAYE',
   'Aimn Hsin': 'REGIFE',
-  'Jovo Lukić': 'LUKIĆ',
+  'Jovo Lukić': 'LUKIC',
+  'Jovo Lukic': 'LUKIC',
   'Aymen Hussein': 'HUSSEIN',
+  // Additional common names
+  'Harry Kane': 'KANE',
+  'Jude Bellingham': 'BELLINGHAM',
+  'Marcus Rashford': 'RASHFORD',
+  'Bukayo Saka': 'SAKA',
+  'Phil Foden': 'FODEN',
+  'Declan Rice': 'RICE',
+  'Mohamed Salah': 'M. SALAH',
+  'Cristiano Ronaldo': 'RONALDO',
+  'Kylian Mbappe': 'MBAPPE',
 };
 
 
@@ -3800,28 +3850,61 @@ function findPlayerByFullName(apiName, team = null) {
   let bestMatch = null;
   let bestScore = 0;
   
+  // Normalize the API name for better matching
+  const normalizeName = (name) => {
+    return name
+      .toUpperCase()
+      .replace(/[.-]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  };
+  
+  const normalizedApiName = normalizeName(apiName);
+  const apiNameParts = normalizedApiName.split(' ').filter(p => p.length > 0);
+  
   // Filter by team if provided
   const candidates = team 
     ? wcPlayerDatabase.filter(p => p.team.toLowerCase() === team.toLowerCase())
     : wcPlayerDatabase;
   
   for (const player of candidates) {
-    // Match against fullName first
-    let score = fuzzyMatch(apiName, player.fullName);
+    const normalizedFullName = normalizeName(player.fullName);
+    const normalizedShirtName = normalizeName(player.nameOnShirt);
+    
+    let score = 0;
     let matchPlayer = player;
     
+    // Exact match bonus
+    if (normalizedApiName === normalizedFullName) {
+      score = 1.0;
+    }
+    // Contains match
+    else if (normalizedFullName.includes(normalizedApiName) || normalizedApiName.includes(normalizedFullName)) {
+      score = 0.8;
+    }
+    // Fuzzy match on fullName
+    else {
+      score = fuzzyMatch(normalizedApiName, normalizedFullName);
+    }
+    
     // Also check against nameOnShirt
-    const shirtScore = fuzzyMatch(apiName, player.nameOnShirt) * 0.95;
+    const shirtScore = fuzzyMatch(normalizedApiName, normalizedShirtName) * 0.9;
     if (shirtScore > score) {
       score = shirtScore;
       matchPlayer = player;
     }
     
-    // Also check partial matches on fullName
-    const parts = apiName.split(/\s+/);
+    // Bonus for matching initials (e.g., "K. Mbappé" matches "Kylian Mbappé")
+    const initials = apiNameParts.map(p => p[0]).join('');
+    if (initials.length > 0 && normalizedFullName.startsWith(initials)) {
+      score += 0.3;
+    }
+    
+    // Bonus for partial matches on significant parts
+    const parts = apiNameParts.filter(p => p.length > 1);
     for (const part of parts) {
-      if (part.length > 2 && player.fullName.toUpperCase().includes(part.toUpperCase())) {
-        score += 0.2;
+      if (normalizedFullName.includes(part)) {
+        score += 0.15;
       }
     }
     
@@ -3831,7 +3914,7 @@ function findPlayerByFullName(apiName, team = null) {
     }
   }
   
-  return bestScore > 0.4 ? bestMatch : null;
+  return bestScore > 0.35 ? bestMatch : null;
 }
 
 function formatScorer(scorerStr, team = null) {
