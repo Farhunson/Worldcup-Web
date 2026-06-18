@@ -901,9 +901,14 @@ async function fetchLiveScores() {
             const homeScorersRaw = parseScorers(game.home_scorers);
             const awayScorersRaw = parseScorers(game.away_scorers);
             
+            // Store scorer data with API team names for proper matching
             state.apiScorers[targetMatch.matchNo] = {
               home: homeScorersRaw,
-              away: awayScorersRaw
+              away: awayScorersRaw,
+              homeTeamApiName: homeApiName,      // e.g., "Argentina"
+              awayTeamApiName: awayApiName,      // e.g., "Brazil"
+              homeTeamDbName: homeProjectName,    // e.g., "Argentina" (for db lookup)
+              awayTeamDbName: awayProjectName     // e.g., "Brazil" (for db lookup)
             };
           } catch (e) {
             // Failed to parse scorers JSON, ignore
@@ -3728,10 +3733,68 @@ function levenshteinDistance(str1, str2) {
 }
 
 // Find best match from database
-function findBestMatch(apiName, team = null) {
+function findBestMatch(apiName, team = null, useFullName = false) {
   // First check explicit conversions
   if (officialSquadConversions[apiName]) {
     return officialSquadConversions[apiName];
+  }
+  
+  let bestMatch = null;
+  let bestScore = 0;
+  
+  // Filter by team if provided - match against the 'team' attribute in wcPlayerDatabase
+  const candidates = team 
+    ? wcPlayerDatabase.filter(p => p.team.toLowerCase() === team.toLowerCase())
+    : wcPlayerDatabase;
+  
+  for (const player of candidates) {
+    let score = 0;
+    let matchTarget = null;
+    
+    if (useFullName) {
+      // Match against fullName in database (primary)
+      score = fuzzyMatch(apiName, player.fullName);
+      matchTarget = player.fullName;
+      
+      // Also check against nameOnShirt as fallback
+      const shirtScore = fuzzyMatch(apiName, player.nameOnShirt) * 0.95;
+      if (shirtScore > score) {
+        score = shirtScore;
+        matchTarget = player.fullName; // Return fullName even if matched against nameOnShirt
+      }
+    } else {
+      // Legacy mode - match against nameOnShirt
+      score = fuzzyMatch(apiName, player.nameOnShirt);
+      matchTarget = player.nameOnShirt;
+      
+      // Also check fullName
+      const fullScore = fuzzyMatch(apiName, player.fullName) * 0.9;
+      if (fullScore > score) {
+        score = fullScore;
+        matchTarget = player.fullName;
+      }
+    }
+    
+    if (score > bestScore) {
+      bestScore = score;
+      bestMatch = matchTarget;
+    }
+  }
+  
+  // Only return if confidence is above threshold
+  return bestScore > 0.5 ? bestMatch : apiName;
+}
+
+// Helper function to find player in database by fullName with fuzzy matching
+function findPlayerByFullName(apiName, team = null) {
+  // First check explicit conversions
+  if (officialSquadConversions[apiName]) {
+    const convertedName = officialSquadConversions[apiName];
+    // Find the player by converted nameOnShirt
+    const candidates = team 
+      ? wcPlayerDatabase.filter(p => p.team.toLowerCase() === team.toLowerCase())
+      : wcPlayerDatabase;
+    return candidates.find(p => p.nameOnShirt.toUpperCase() === convertedName.toUpperCase());
   }
   
   let bestMatch = null;
@@ -3743,23 +3806,32 @@ function findBestMatch(apiName, team = null) {
     : wcPlayerDatabase;
   
   for (const player of candidates) {
-    // Check against full name
+    // Match against fullName first
     let score = fuzzyMatch(apiName, player.fullName);
-    if (score > bestScore) {
-      bestScore = score;
-      bestMatch = player.fullName;
+    let matchPlayer = player;
+    
+    // Also check against nameOnShirt
+    const shirtScore = fuzzyMatch(apiName, player.nameOnShirt) * 0.95;
+    if (shirtScore > score) {
+      score = shirtScore;
+      matchPlayer = player;
     }
     
-    // Check against nickname
-    const nickScore = fuzzyMatch(apiName, player.nickname) * 0.9;
-    if (nickScore > bestScore) {
-      bestScore = nickScore;
-      bestMatch = player.fullName;
+    // Also check partial matches on fullName
+    const parts = apiName.split(/\s+/);
+    for (const part of parts) {
+      if (part.length > 2 && player.fullName.toUpperCase().includes(part.toUpperCase())) {
+        score += 0.2;
+      }
+    }
+    
+    if (score > bestScore) {
+      bestScore = score;
+      bestMatch = matchPlayer;
     }
   }
   
-  // Only return if confidence is above threshold
-  return bestScore > 0.5 ? bestMatch : apiName;
+  return bestScore > 0.4 ? bestMatch : null;
 }
 
 function formatScorer(scorerStr, team = null) {
@@ -3772,9 +3844,6 @@ function formatScorer(scorerStr, team = null) {
   
   // Parse the scorer string - format is like "Name 90'" or "Name 45'+5'(p)" or "Name 90+6'" (extra time)
   // Extract name and minute/penalty info
-  // Match: everything before the minute (with optional OG or penalty), then the minute
-  // Handles formats: 90', 90+6', 90+5'(p), 7'(OG), etc.
-  // Minute pattern: digits, optional apostrophe, optional plus, optional digits, optional apostrophe, optional (OG), optional (p)
   const match = cleanStr.match(/^(.+?)\s+(\d+[']?\+?\d*'?(\(OG\))?\s*(\(p\))?)$/);
   let name;
   let minute = '';
@@ -3785,42 +3854,26 @@ function formatScorer(scorerStr, team = null) {
     name = cleanStr.trim();
   }
   
-  // Apply name conversion with fuzzy matching fallback
-  let displayName = officialSquadConversions[name];
-  if (!displayName) {
-    // Try fuzzy matching from database
-    displayName = findBestMatch(name, team);
-  }
-  if (!displayName) {
-    displayName = name;
-  }
+  // Use the new findPlayerByFullName function for accurate database matching
+  // This matches the API scorer name against fullName in wcPlayerDatabase
+  const player = findPlayerByFullName(name, team);
   
-  // Look up full name from database - ALWAYS try to get fullName
-  let fullName = displayName;
+  let fullName = name;
+  let displayName = name;
   let jerseyNumber = null;
   let position = null;
   let club = null;
   
-  // Find the player in the database by matching against nameOnShirt or displayName
-  const searchName = displayName.toUpperCase();
-  const player = wcPlayerDatabase.find(p => 
-    p.nameOnShirt.toUpperCase() === searchName || 
-    p.fullName.toUpperCase() === searchName ||
-    p.fullName.toUpperCase().includes(searchName) ||
-    searchName.includes(p.fullName.toUpperCase())
-  );
-  
   if (player) {
-    // Use fullName if available and different from nameOnShirt, otherwise capitalize displayName
-    fullName = (player.fullName && player.fullName !== player.nameOnShirt) 
-      ? player.fullName 
-      : displayName.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+    // Found a match in the database - use player's data
+    displayName = player.nameOnShirt;
+    fullName = player.fullName;
     jerseyNumber = player.number;
     position = player.position;
     club = player.club;
   } else {
-    // Fallback: capitalize the displayName
-    fullName = displayName.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+    // Fallback: capitalize the name
+    fullName = name.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
   }
   
   const isPenalty = minute.includes('(p)');
@@ -3839,10 +3892,9 @@ function buildScorersHtml(scorers, isHomeTeam = true, teamName = null) {
     const parsed = formatScorer(scorerStr, teamName);
     const penaltyClass = parsed.isPenalty ? ' scorer-penalty' : '';
     
-    // Check if this is an own goal using the player database
-    // If player doesn\'t belong to the team they\'re listed under, it\'s an OG
-    const playerTeam = officialSquadPlayers[parsed.name] || officialSquadPlayers[parsed.displayName];
-    const isOG = parsed.isOG || (playerTeam && teamName && playerTeam !== teamName);
+    // Check if this is an own goal using isOwnGoalByDatabase
+    // If player doesn't belong to the team they're listed under (according to database), it's an OG
+    const isOG = parsed.isOG || isOwnGoalByDatabase(parsed.name, teamName);
     const ogClass = isOG ? ' scorer-og' : '';
     
     // Display: Full Name (OG) Minute
@@ -3914,13 +3966,14 @@ function computeTopScorers() {
   // First pass: track player appearances in home/away scorers
   for (const matchNo in state.apiScorers) {
     const matchScorers = state.apiScorers[matchNo];
-    const match = findMatchByNo(Number(matchNo));
-    const homeTeam = match?.team1 || null;
-    const awayTeam = match?.team2 || null;
     
-    // Track home scorers
+    // Use API team names for database matching (they match the 'team' attribute in wcPlayerDatabase)
+    const homeDbTeam = matchScorers.homeTeamDbName || null;  // e.g., "Argentina"
+    const awayDbTeam = matchScorers.awayTeamDbName || null;  // e.g., "Brazil"
+    
+    // Track home scorers - use homeDbTeam for matching against database
     for (const scorerStr of matchScorers.home || []) {
-      const parsed = formatScorer(scorerStr, homeTeam);
+      const parsed = formatScorer(scorerStr, homeDbTeam);
       if (parsed.name) {
         if (!playerTeamAppearances[parsed.name]) {
           playerTeamAppearances[parsed.name] = { home: false, away: false };
@@ -3931,7 +3984,7 @@ function computeTopScorers() {
     
     // Track away scorers
     for (const scorerStr of matchScorers.away || []) {
-      const parsed = formatScorer(scorerStr, awayTeam);
+      const parsed = formatScorer(scorerStr, awayDbTeam);
       if (parsed.name) {
         if (!playerTeamAppearances[parsed.name]) {
           playerTeamAppearances[parsed.name] = { home: false, away: false };
@@ -3944,29 +3997,31 @@ function computeTopScorers() {
   // Second pass: process goals with OG detection
   for (const matchNo in state.apiScorers) {
     const matchScorers = state.apiScorers[matchNo];
-    const match = findMatchByNo(Number(matchNo));
     
     // Get match local_date from state.apiMatchTimes (format: "06/13/2026 21:00")
     const localDateStr = state.apiMatchTimes[matchNo];
     const matchTime = parseLocalDate(localDateStr);
     
-    // Get country for home and away teams
-    const homeTeam = match?.team1 || null;
-    const awayTeam = match?.team2 || null;
+    // Use API team names for database matching
+    const homeDbTeam = matchScorers.homeTeamDbName || null;  // For formatScorer
+    const awayDbTeam = matchScorers.awayTeamDbName || null;  // For formatScorer
+    
+    // Get project team names for display
+    const match = findMatchByNo(Number(matchNo));
+    const homeProjectTeam = match?.team1 || null;  // For display
+    const awayProjectTeam = match?.team2 || null;  // For display
     
     // Process home team scorers
     for (const scorerStr of matchScorers.home || []) {
-      const parsed = formatScorer(scorerStr, homeTeam);
+      const parsed = formatScorer(scorerStr, homeDbTeam);
       const name = parsed.name;
       if (name) {
-        // Check if this is an own goal
-        // If player doesn\'t belong to home team (according to database), it\'s an OG
-        // Credit OG to away team (the team that benefited)
-        const creditedTeam = homeTeam;
-        const isOG = parsed.isOG || isOwnGoalByDatabase(name, homeTeam);
+        // Check if this is an own goal using database lookup
+        // The player should belong to homeDbTeam in the database
+        const isOG = parsed.isOG || isOwnGoalByDatabase(name, homeDbTeam);
         
-        // If scoring for away team or it\'s a likely OG, credit to away team
-        const actualCreditedTeam = isOG ? awayTeam : homeTeam;
+        // Credit to the team that benefited (OG goes to opposing team)
+        const creditedTeam = isOG ? awayProjectTeam : homeProjectTeam;
         
         // Skip counting this goal if it\'s an OG (we don\'t count OG in top scorers)
         if (isOG) {
@@ -3976,7 +4031,7 @@ function computeTopScorers() {
         if (!scorerCounts[name]) {
           scorerCounts[name] = { 
             goals: 0, 
-            country: actualCreditedTeam, 
+            country: creditedTeam, 
             latestGoalTime: 0,
             jerseyNumber: parsed.jerseyNumber,
             position: parsed.position,
@@ -3984,7 +4039,7 @@ function computeTopScorers() {
           };
         } else {
           // Update country if this scorer now scores for a different team
-          scorerCounts[name].country = actualCreditedTeam;
+          scorerCounts[name].country = creditedTeam;
         }
         scorerCounts[name].goals++;
         // Update latest goal time (most recent goal from this match)
@@ -3996,14 +4051,14 @@ function computeTopScorers() {
     
     // Process away team scorers
     for (const scorerStr of matchScorers.away || []) {
-      const parsed = formatScorer(scorerStr, awayTeam);
+      const parsed = formatScorer(scorerStr, awayDbTeam);
       const name = parsed.name;
       if (name) {
         // Check if this is an own goal
-        const isOG = parsed.isOG || isOwnGoalByDatabase(name, awayTeam);
+        const isOG = parsed.isOG || isOwnGoalByDatabase(name, awayDbTeam);
         
-        // If scoring for home team or it\'s a likely OG, credit to home team
-        const actualCreditedTeam = isOG ? homeTeam : awayTeam;
+        // Credit to the team that benefited
+        const creditedTeam = isOG ? homeProjectTeam : awayProjectTeam;
         
         // Skip counting this goal if it\'s an OG (we don\'t count OG in top scorers)
         if (isOG) {
