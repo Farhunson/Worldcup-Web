@@ -3956,8 +3956,13 @@ function formatScorer(scorerStr, team = null) {
     name = cleanStr.trim();
   }
   
+  // Debug: Log scorer name
+  console.log('formatScorer:', { name, team, scorerStr });
+  
   // Use the new findPlayerByFullName function for accurate database matching
   const player = findPlayerByFullName(name, team);
+  
+  console.log('Player found:', player ? player.fullName : 'NULL', 'Number:', player?.number);
   
   let fullName = name;
   let displayName = name;
@@ -4095,8 +4100,11 @@ function computeTopScorers() {
   };
   
   // First pass: track player appearances in home/away scorers
+  console.log('computeTopScorers - Total matches with scorers:', Object.keys(state.apiScorers).length);
+  
   for (const matchNo in state.apiScorers) {
     const matchScorers = state.apiScorers[matchNo];
+    console.log('Match', matchNo, 'scorers:', { home: matchScorers.home, away: matchScorers.away });
     
     // Use API team names for database matching (they match the 'team' attribute in wcPlayerDatabase)
     const homeDbTeam = matchScorers.homeTeamDbName || null;  // e.g., "Argentina"
