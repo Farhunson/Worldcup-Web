@@ -2948,7 +2948,7 @@ const wcPlayerDatabase = [
   { number: 13, nameOnShirt: 'JOAN GARCÍA', fullName: 'JOAN GARCÍA', team: 'Spain', position: 'GK', club: 'FC Barcelona (ESP)' },
   { number: 14, nameOnShirt: 'LAPORTE', fullName: 'Aymeric Laporte', team: 'Spain', position: 'DF', club: 'Athletic Club (ESP)' },
   { number: 15, nameOnShirt: 'ALEX B.', fullName: 'ALEX B.', team: 'Spain', position: 'MF', club: 'Atlético De Madrid (ESP)' },
-  { number: 16, nameOnShirt: 'RODRIGO', fullName: 'RODRIGO', team: 'Spain', position: 'MF', club: 'Manchester City FC (ENG)' },
+  { number: 16, nameOnShirt: 'RODRIGO', fullName: 'Rodri', team: 'Spain', position: 'MF', club: 'Manchester City FC (ENG)' },
   { number: 17, nameOnShirt: 'WILLIAMS JR', fullName: 'WILLIAMS JR', team: 'Spain', position: 'FW', club: 'Athletic Club (ESP)' },
   { number: 18, nameOnShirt: 'ZUBIMENDI', fullName: 'ZUBIMENDI', team: 'Spain', position: 'MF', club: 'Arsenal FC (ENG)' },
   { number: 19, nameOnShirt: 'LAMINE YAMAL', fullName: 'LAMINE YAMAL', team: 'Spain', position: 'FW', club: 'FC Barcelona (ESP)' },
@@ -3795,30 +3795,32 @@ function formatScorer(scorerStr, team = null) {
     displayName = name;
   }
   
-  // Look up full name from database
+  // Look up full name from database - ALWAYS try to get fullName
   let fullName = displayName;
   let jerseyNumber = null;
   let position = null;
   let club = null;
   
-  // Find the player in the database
-  const candidates = team 
-    ? wcPlayerDatabase.filter(p => p.team.toLowerCase() === team.toLowerCase())
-    : wcPlayerDatabase;
+  // Find the player in the database by matching against nameOnShirt or displayName
+  const searchName = displayName.toUpperCase();
+  const player = wcPlayerDatabase.find(p => 
+    p.nameOnShirt.toUpperCase() === searchName || 
+    p.fullName.toUpperCase() === searchName ||
+    p.fullName.toUpperCase().includes(searchName) ||
+    searchName.includes(p.fullName.toUpperCase())
+  );
   
-  for (const player of candidates) {
-    // Check if this player matches (by nameOnShirt or fullName)
-    if (player.nameOnShirt.toUpperCase() === displayName.toUpperCase() || 
-        player.fullName.toUpperCase() === displayName.toUpperCase()) {
-      // If fullName is different from nameOnShirt, use fullName for display
-      if (player.fullName !== player.nameOnShirt) {
-        fullName = player.fullName;
-      }
-      jerseyNumber = player.number;
-      position = player.position;
-      club = player.club;
-      break;
-    }
+  if (player) {
+    // Use fullName if available and different from nameOnShirt, otherwise capitalize displayName
+    fullName = (player.fullName && player.fullName !== player.nameOnShirt) 
+      ? player.fullName 
+      : displayName.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+    jerseyNumber = player.number;
+    position = player.position;
+    club = player.club;
+  } else {
+    // Fallback: capitalize the displayName
+    fullName = displayName.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
   }
   
   const isPenalty = minute.includes('(p)');
