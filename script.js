@@ -3882,6 +3882,23 @@ function formatScorer(scorerStr, team = null) {
   return { name: fullName, displayName: displayName, minute, isPenalty, isOG, jerseyNumber, position, club };
 }
 
+// Helper function to check if a goal is an own goal by looking up the player in wcPlayerDatabase
+// Compare: does this player's fullName match a player from the scoringForTeam?
+function isOwnGoalByDatabase(fullName, scoringForTeam) {
+  if (!fullName || !scoringForTeam) return false;
+  
+  // Find the player in wcPlayerDatabase by fullName or nameOnShirt
+  const player = wcPlayerDatabase.find(p => 
+    p.fullName.toUpperCase() === fullName.toUpperCase() || 
+    p.nameOnShirt.toUpperCase() === fullName.toUpperCase()
+  );
+  
+  if (player && player.team !== scoringForTeam) {
+    return true; // Player belongs to a different team = own goal
+  }
+  return false;
+}
+
 // Helper function to build scorers HTML for a team
 function buildScorersHtml(scorers, isHomeTeam = true, teamName = null) {
   if (!scorers || scorers.length === 0) {
@@ -3937,21 +3954,6 @@ function computeTopScorers() {
       return new Date(year, month - 1, day, hour, minute).getTime();
     }
     return 0;
-  };
-  
-  // Helper function to check if a goal is an own goal by looking up the player in wcPlayerDatabase
-  // Compare: does this player's fullName match a player from the scoringForTeam?
-  const isOwnGoalByDatabase = (fullName, scoringForTeam) => {
-    // Find the player in wcPlayerDatabase by fullName or nameOnShirt
-    const player = wcPlayerDatabase.find(p => 
-      p.fullName.toUpperCase() === fullName.toUpperCase() || 
-      p.nameOnShirt.toUpperCase() === fullName.toUpperCase()
-    );
-    
-    if (player && scoringForTeam && player.team !== scoringForTeam) {
-      return true; // Player belongs to a different team = own goal
-    }
-    return false;
   };
   
   // Helper function to check if a player appears in both home and away scorers (heuristic OG detection)
