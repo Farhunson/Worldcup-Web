@@ -1,13 +1,52 @@
 const STORAGE_KEY = 'wc2026Scoreboard';
 const state = {
   scores: {},
+  // Fallback scorer data for matches when API is down
+  // This data comes from the API and is hardcoded here as backup
+  apiScorers: {
+    // Match 17: France vs Senegal - K. Mbappé 2 goals, B. Barcola 1
+    '17': {
+      home: ['K. Mbappé 66\'', 'B. Barcola 82\'', 'K. Mbappé 90+6\''],
+      away: ['I. Mbaye 90+5\''],
+      homeTeamApiName: 'France',
+      awayTeamApiName: 'Senegal',
+      homeTeamDbName: 'France',
+      awayTeamDbName: 'Senegal'
+    },
+    // Match 18: Iraq vs Norway - Erling Haaland 2 goals
+    '18': {
+      home: ['Aymen Hussein 39\''],
+      away: ['Erling Haaland 29\'', 'Erling Haaland 43\'', 'Leo Østigård 76\'', 'Aymen Hussein 90+7\''],
+      homeTeamApiName: 'Iraq',
+      awayTeamApiName: 'Norway',
+      homeTeamDbName: 'IR Iran',
+      awayTeamDbName: 'Norway'
+    },
+    // Match 19: Argentina vs Algeria - Lionel Messi 3 goals
+    '19': {
+      home: ['Lionel Messi 17\'', 'Lionel Messi 60\'', 'Lionel Messi 76\''],
+      away: [],
+      homeTeamApiName: 'Argentina',
+      awayTeamApiName: 'Algeria',
+      homeTeamDbName: 'Argentina',
+      awayTeamDbName: 'Algeria'
+    },
+    // Match 22: England vs Croatia - H. Kane 2 goals
+    '22': {
+      home: ['H. Kane 12\'(p)', 'H. Kane 42\'', 'J. Bellingham 47\'', 'M. Rashford 85\''],
+      away: ['M. Baturina 36\'', 'P. Musa 45+5\''],
+      homeTeamApiName: 'England',
+      awayTeamApiName: 'Croatia',
+      homeTeamDbName: 'England',
+      awayTeamDbName: 'Croatia'
+    },
+  },
   collapsedGroups: {},
   lastApiUpdate: null,
   apiSourcedMatches: {}, // Track which matches have scores from API
   apiMatchTimes: {}, // Store API match times (UTC) for timezone conversion
   liveMatches: {}, // Track which matches are currently live
   finishedMatches: {}, // Track which matches are finished from API
-  apiScorers: {}, // Store scorer data from API { matchNo: { home: [...], away: [...] } }
 };
 loadState();
 
@@ -714,6 +753,10 @@ function loadState() {
       state.apiMatchTimes = stored.apiMatchTimes || {};
       state.liveMatches = stored.liveMatches || {};
       state.finishedMatches = stored.finishedMatches || {};
+      // Only load apiScorers from localStorage if present, otherwise keep hardcoded data
+      if (stored.apiScorers && Object.keys(stored.apiScorers).length > 0) {
+        state.apiScorers = stored.apiScorers;
+      }
     }
   } catch {
     state.scores = {};
@@ -993,6 +1036,12 @@ const officialSquadConversions = {
   'K. Mbappe': 'MBAPPE',
   'Kylian Mbappé': 'MBAPPE',
   'Kylian Mbappe': 'MBAPPE',
+  'H. Kane': 'KANE',
+  'Harry Kane': 'KANE',
+  'J. Bellingham': 'BELLINGHAM',
+  'Jude Bellingham': 'BELLINGHAM',
+  'M. Rashford': 'RASHFORD',
+  'Marcus Rashford': 'RASHFORD',
   'B. Barcola': 'BARCOLA',
   'Bradley Barcola': 'BARCOLA',
   'K. Havertz': 'HAVERTZ',
@@ -1076,13 +1125,17 @@ const officialSquadConversions = {
   // Additional common names
   'Harry Kane': 'KANE',
   'Jude Bellingham': 'BELLINGHAM',
+  'J. Bellingham': 'BELLINGHAM',
   'Marcus Rashford': 'RASHFORD',
+  'M. Rashford': 'RASHFORD',
   'Bukayo Saka': 'SAKA',
   'Phil Foden': 'FODEN',
   'Declan Rice': 'RICE',
   'Mohamed Salah': 'M. SALAH',
   'Cristiano Ronaldo': 'RONALDO',
   'Kylian Mbappe': 'MBAPPE',
+  'H. Kane': 'KANE',
+  'Harry Kane': 'KANE',
   // Corrupted API names - garbled by the API
   'Dnil Mvnvz': 'D. MUÑOZ',  // Daniel Muñoz (Colombia)
   'Kalb Iirnki': 'CALEB',      // Caleb Yirenkyi (Ghana)
