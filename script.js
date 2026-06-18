@@ -4060,7 +4060,7 @@ function computeTopScorers() {
         const isOG = parsed.isOG || isOwnGoalByDatabase(name, awayDbTeam);
         
         // Credit to the team that benefited
-        const creditedTeam = isOG ? homeProjectTeam : awayProjectTeam;
+        const actualCreditedTeam = isOG ? homeProjectTeam : awayProjectTeam;
         
         // Skip counting this goal if it\'s an OG (we don\'t count OG in top scorers)
         if (isOG) {
