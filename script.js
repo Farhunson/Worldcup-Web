@@ -3937,9 +3937,20 @@ function formatScorer(scorerStr, team = null) {
     name = cleanStr.trim();
   }
   
-  // Use the new findPlayerByFullName function for accurate database matching
-  // This matches the API scorer name against fullName in wcPlayerDatabase
+  // Debug logging for missing players
   const player = findPlayerByFullName(name, team);
+  
+  if (!player) {
+    console.log('PLAYER NOT FOUND:', { name, team, scorerStr });
+    // Try to find the player manually for debugging
+    const candidates = team 
+      ? wcPlayerDatabase.filter(p => p.team.toLowerCase() === team.toLowerCase())
+      : wcPlayerDatabase;
+    console.log('Team candidates:', candidates.length, 'players in', team);
+    if (candidates.length > 0 && candidates.length < 30) {
+      console.log('Sample players:', candidates.slice(0, 5).map(p => ({name: p.nameOnShirt, full: p.fullName})));
+    }
+  }
   
   let fullName = name;
   let displayName = name;
