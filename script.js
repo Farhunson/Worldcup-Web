@@ -4148,7 +4148,7 @@ function renderTopScorers() {
       <tr class="${rankClass}" ${rowHidden ? 'style="display: none;"' : ''}>
         <td class="rank-col">${rankDisplay}</td>
         <td class="player-col">${portraitHtml}${playerDisplay}</td>
-        <td class="goals-col"><span class="goals-badge">${scorer.goals} goals</span></td>
+        <td class="goals-col"><span class="goals-badge">${scorer.goals}</span></td>
       </tr>
     `;
   });
