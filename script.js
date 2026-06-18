@@ -1083,6 +1083,13 @@ const officialSquadConversions = {
   'Mohamed Salah': 'M. SALAH',
   'Cristiano Ronaldo': 'RONALDO',
   'Kylian Mbappe': 'MBAPPE',
+  // Corrupted API names - garbled by the API
+  'Dnil Mvnvz': 'D. MUÑOZ',  // Daniel Muñoz (Colombia)
+  'Kalb Iirnki': 'CALEB',      // Caleb Yirenkyi (Ghana)
+  // Correct database nameOnShirt values
+  'V. Júnior': 'VINI JR.',
+  'V. Junior': 'VINI JR.',
+  'Vinicius Jr': 'VINI JR.',
 };
 
 
