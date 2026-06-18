@@ -20,6 +20,18 @@ const apiTeamNameMap = {
   'Canada': 'Canada',
   'Bosnia and Herzegovina': 'Bosnia/Herzeg.',
   'United States': 'USA',
+  // Map from API name to full database team name
+};
+
+// Map from API name to full team name used in wcPlayerDatabase
+const apiToDbTeamName = {
+  'Mexico': 'Mexico',
+  'South Africa': 'South Africa',
+  'South Korea': 'Rep. of Korea',
+  'Czech Republic': 'Czechia',
+  'Canada': 'Canada',
+  'Bosnia and Herzegovina': 'Bosnia and Herzegovina',
+  'United States': 'United States',
   'Paraguay': 'Paraguay',
   'Qatar': 'Qatar',
   'Switzerland': 'Switzerland',
@@ -37,7 +49,7 @@ const apiTeamNameMap = {
   'Sweden': 'Sweden',
   'Tunisia': 'Tunisia',
   'Spain': 'Spain',
-  'Cape Verde': 'Cape Verde',
+  'Cape Verde': 'Cabo Verde',
   'Saudi Arabia': 'Saudi Arabia',
   'Uruguay': 'Uruguay',
   'Belgium': 'Belgium',
@@ -53,7 +65,7 @@ const apiTeamNameMap = {
   'Austria': 'Austria',
   'Jordan': 'Jordan',
   'Colombia': 'Colombia',
-  'Democratic Republic of the Congo': 'DR Congo',
+  'Democratic Republic of the Congo': 'Congo DR',
   'Portugal': 'Portugal',
   'Uzbekistan': 'Uzbekistan',
   'Croatia': 'Croatia',
@@ -905,10 +917,10 @@ async function fetchLiveScores() {
             state.apiScorers[targetMatch.matchNo] = {
               home: homeScorersRaw,
               away: awayScorersRaw,
-              homeTeamApiName: homeApiName,      // e.g., "Argentina"
-              awayTeamApiName: awayApiName,      // e.g., "Brazil"
-              homeTeamDbName: homeProjectName,    // e.g., "Argentina" (for db lookup)
-              awayTeamDbName: awayProjectName     // e.g., "Brazil" (for db lookup)
+              homeTeamApiName: homeApiName,                    // e.g., "Argentina"
+              awayTeamApiName: awayApiName,                    // e.g., "Brazil"
+              homeTeamDbName: apiToDbTeamName[homeApiName] || homeApiName,  // e.g., "Argentina"
+              awayTeamDbName: apiToDbTeamName[awayApiName] || awayApiName   // e.g., "Brazil"
             };
           } catch (e) {
             // Failed to parse scorers JSON, ignore
@@ -1071,6 +1083,13 @@ const officialSquadConversions = {
   'Mohamed Salah': 'M. SALAH',
   'Cristiano Ronaldo': 'RONALDO',
   'Kylian Mbappe': 'MBAPPE',
+  // Corrupted API names - garbled by the API
+  'Dnil Mvnvz': 'D. MUÑOZ',  // Daniel Muñoz (Colombia)
+  'Kalb Iirnki': 'CALEB',      // Caleb Yirenkyi (Ghana)
+  // Correct database nameOnShirt values
+  'V. Júnior': 'VINI JR.',
+  'V. Junior': 'VINI JR.',
+  'Vinicius Jr': 'VINI JR.',
 };
 
 
@@ -3938,7 +3957,6 @@ function formatScorer(scorerStr, team = null) {
   }
   
   // Use the new findPlayerByFullName function for accurate database matching
-  // This matches the API scorer name against fullName in wcPlayerDatabase
   const player = findPlayerByFullName(name, team);
   
   let fullName = name;
@@ -3983,18 +4001,25 @@ function isOwnGoalByDatabase(fullName, scoringForTeam) {
 }
 
 // Helper function to build scorers HTML for a team
-function buildScorersHtml(scorers, isHomeTeam = true, teamName = null) {
+// scorersObj: the scorers object from state.apiScorers (contains homeTeamDbName/awayTeamDbName)
+// side: 'home' or 'away'
+// displayTeamName: the project team name for display (e.g., "USA", "England")
+function buildScorersHtml(scorersObj, side, displayTeamName = null) {
+  const scorers = side === 'home' ? scorersObj.home : scorersObj.away;
   if (!scorers || scorers.length === 0) {
     return '<span class="no-scorers">-</span>';
   }
   
+  // Get the database team name for matching
+  const dbTeamName = side === 'home' ? scorersObj.homeTeamDbName : scorersObj.awayTeamDbName;
+  
   return scorers.map(scorerStr => {
-    const parsed = formatScorer(scorerStr, teamName);
+    const parsed = formatScorer(scorerStr, dbTeamName);
     const penaltyClass = parsed.isPenalty ? ' scorer-penalty' : '';
     
     // Check if this is an own goal using isOwnGoalByDatabase
     // If player doesn't belong to the team they're listed under (according to database), it's an OG
-    const isOG = parsed.isOG || isOwnGoalByDatabase(parsed.name, teamName);
+    const isOG = parsed.isOG || isOwnGoalByDatabase(parsed.name, dbTeamName);
     const ogClass = isOG ? ' scorer-og' : '';
     
     // Display: Full Name (OG) Minute
@@ -4702,8 +4727,8 @@ function buildGroupMatches(group, matches) {
       let scorersHtml = '';
       if (showScorers) {
         const scorers = getMatchScorers(match.matchNo);
-        const homeScorersHtml = buildScorersHtml(scorers.home, true, match.team1);
-        const awayScorersHtml = buildScorersHtml(scorers.away, false, match.team2);
+        const homeScorersHtml = buildScorersHtml(scorers, 'home', match.team1);
+        const awayScorersHtml = buildScorersHtml(scorers, 'away', match.team2);
         const totalScorers = scorers.home.length + scorers.away.length;
         scorersHtml = `
           <div class="scorers-row collapsed" data-match="${match.matchNo}">
@@ -5044,8 +5069,8 @@ function buildMatchCardHtml(match, stage, rankings, thirdPlaceTeams, knockoutMap
   let scorersHtml = '';
   if (showScorers) {
     const scorers = getMatchScorers(match.matchNo);
-    const homeScorersHtml = buildScorersHtml(scorers.home, true, teamA.name);
-    const awayScorersHtml = buildScorersHtml(scorers.away, false, teamB.name);
+    const homeScorersHtml = buildScorersHtml(scorers, 'home', teamA.name);
+    const awayScorersHtml = buildScorersHtml(scorers, 'away', teamB.name);
     const totalScorers = scorers.home.length + scorers.away.length;
     scorersHtml = `
       <div class="scorers-row bracket-scorers collapsed" data-match="${match.matchNo}">
@@ -5286,8 +5311,8 @@ function buildTodaysMatchCard(match) {
   let scorersHtml = '';
   if (showScorers) {
     const scorers = getMatchScorers(match.matchNo);
-    const homeScorersHtml = buildScorersHtml(scorers.home, true, match.team1);
-    const awayScorersHtml = buildScorersHtml(scorers.away, false, match.team2);
+    const homeScorersHtml = buildScorersHtml(scorers, 'home', match.team1);
+    const awayScorersHtml = buildScorersHtml(scorers, 'away', match.team2);
     const totalScorers = scorers.home.length + scorers.away.length;
     scorersHtml = `
       <div class="scorers-row todays-scorers collapsed" data-match="${match.matchNo}">
