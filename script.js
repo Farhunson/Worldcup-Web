@@ -3859,11 +3859,8 @@ function findPlayerByFullName(apiName, team = null) {
   // First check explicit conversions
   if (officialSquadConversions[apiName]) {
     const convertedName = officialSquadConversions[apiName];
-    // Find the player by converted nameOnShirt
-    const candidates = team 
-      ? wcPlayerDatabase.filter(p => p.team.toLowerCase() === team.toLowerCase())
-      : wcPlayerDatabase;
-    return candidates.find(p => p.nameOnShirt.toUpperCase() === convertedName.toUpperCase());
+    // Find the player by converted nameOnShirt (search ALL teams for this)
+    return wcPlayerDatabase.find(p => p.nameOnShirt.toUpperCase() === convertedName.toUpperCase());
   }
   
   let bestMatch = null;
@@ -3881,10 +3878,9 @@ function findPlayerByFullName(apiName, team = null) {
   const normalizedApiName = normalizeName(apiName);
   const apiNameParts = normalizedApiName.split(' ').filter(p => p.length > 0);
   
-  // Filter by team if provided
-  const candidates = team 
-    ? wcPlayerDatabase.filter(p => p.team.toLowerCase() === team.toLowerCase())
-    : wcPlayerDatabase;
+  // Search ALL players (don't filter by team for fuzzy matching)
+  // Team filtering is too strict because API names don't match database names exactly
+  const candidates = wcPlayerDatabase;
   
   for (const player of candidates) {
     const normalizedFullName = normalizeName(player.fullName);
@@ -3896,6 +3892,10 @@ function findPlayerByFullName(apiName, team = null) {
     // Exact match bonus
     if (normalizedApiName === normalizedFullName) {
       score = 1.0;
+    }
+    // Exact match against nameOnShirt
+    else if (normalizedApiName === normalizedShirtName) {
+      score = 0.95;
     }
     // Contains match
     else if (normalizedFullName.includes(normalizedApiName) || normalizedApiName.includes(normalizedFullName)) {
