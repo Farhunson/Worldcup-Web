@@ -3151,13 +3151,13 @@ function renderBracket(rankings, thirdPlaceTeams, assignments, allGroupsComplete
 function buildBracketSide(side, rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete) {
   let html = '';
   
-  // Both sides: SF → QF → R16 → R32 in DOM order
-  // Home side (left): R32 will be far left (outside), SF closest to center
+  // DOM order: R32 → R16 → QF → SF
+  // Home side (left): R32 far left (outside), SF closest to center
   // Away side (right): SF closest to center, R32 far right (outside)
-  html += buildSideStage('sf', side, rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete);
-  html += buildSideStage('qf', side, rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete);
-  html += buildSideStage('r16', side, rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete);
   html += buildSideStage('r32', side, rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete);
+  html += buildSideStage('r16', side, rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete);
+  html += buildSideStage('qf', side, rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete);
+  html += buildSideStage('sf', side, rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete);
   
   return html;
 }
