@@ -3117,7 +3117,7 @@ function renderBracket(rankings, thirdPlaceTeams, assignments, allGroupsComplete
 
   // Build home and away columns
   html += `<div class="bracket-main">`;
-  html += `<div class="bracket-side bracket-side-home">`;
+  html += `<div class="bracket-side bracket-stage-home">`;
   
   // Home side: R32 → R16 → QF → SF
   html += buildBracketSide('home', rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete);
@@ -3129,7 +3129,7 @@ function renderBracket(rankings, thirdPlaceTeams, assignments, allGroupsComplete
   html += buildCenterMatches(rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete);
   html += `</div>`;
   
-  html += `<div class="bracket-side bracket-side-away">`;
+  html += `<div class="bracket-side bracket-stage-away">`;
   
   // Away side: R32 → R16 → QF → SF
   html += buildBracketSide('away', rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete);
