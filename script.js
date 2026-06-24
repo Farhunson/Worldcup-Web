@@ -3151,20 +3151,13 @@ function renderBracket(rankings, thirdPlaceTeams, assignments, allGroupsComplete
 function buildBracketSide(side, rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete) {
   let html = '';
   
-  if (side === 'home') {
-    // Home side: R32 → R16 → QF → SF (left to right, toward center)
-    html += buildSideStage('r32', side, rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete);
-    html += buildSideStage('r16', side, rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete);
-    html += buildSideStage('qf', side, rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete);
-    html += buildSideStage('sf', side, rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete);
-  } else {
-    // Away side: SF → QF → R16 → R32 (left to right, toward outside)
-    // Reverse order so SF is closest to center, R32 is farthest
-    html += buildSideStage('sf', side, rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete);
-    html += buildSideStage('qf', side, rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete);
-    html += buildSideStage('r16', side, rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete);
-    html += buildSideStage('r32', side, rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete);
-  }
+  // Both sides: SF → QF → R16 → R32 in DOM order
+  // Home side (left): R32 will be far left (outside), SF closest to center
+  // Away side (right): SF closest to center, R32 far right (outside)
+  html += buildSideStage('sf', side, rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete);
+  html += buildSideStage('qf', side, rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete);
+  html += buildSideStage('r16', side, rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete);
+  html += buildSideStage('r32', side, rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete);
   
   return html;
 }
