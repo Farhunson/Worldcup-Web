@@ -1251,11 +1251,11 @@ tr.advancement-best-third td {
   height: 100%;
 }
 
-.bracket-side-home {
+.bracket-stage-home {
   flex-direction: row;
 }
 
-.bracket-side-away {
+.bracket-stage-away {
   flex-direction: row-reverse;  /* Mirror: SF closer to center, R32 far right */
 }
 
@@ -1355,46 +1355,71 @@ tr.advancement-best-third td {
 .bracket-stage-matches {
   display: flex;
   flex-direction: column;
-  justify-content: center;  /* Vertically center match pairs */
-  gap: 8px;
-  height: 100%;  /* Fill the stage height */
+  gap: 0;
+  position: relative;
 }
 
-/* Fixed height for each stage to ensure proper convergence */
+/* Each round has progressively larger top margin to align with feed sources */
 .bracket-stage-r32 .bracket-stage-matches {
-  min-height: 800px;
+  padding-top: 0;
 }
 
 .bracket-stage-r16 .bracket-stage-matches {
-  min-height: 400px;
+  padding-top: 44px;
 }
 
 .bracket-stage-qf .bracket-stage-matches {
-  min-height: 200px;
+  padding-top: 110px;
 }
 
 .bracket-stage-sf .bracket-stage-matches {
-  min-height: 100px;
+  padding-top: 240px;
 }
 
-/* Ensure bracket-pair takes remaining space */
-.bracket-pair {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 8px;
-  min-height: 0;
-}
-
-/* ── Bracket Pair (groups 2 matches for connectors) ────────────────── */
+/* Bracket-pair wrapper */
 .bracket-pair {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   gap: 8px;
   position: relative;
+  margin-bottom: 8px;
 }
+
+/* ── Individual Match Card Positioning ────────────────────────────── */
+/* R32 matches flow linearly - no special positioning needed */
+.bracket-stage-r32 .bracket-pair {
+  margin-bottom: 8px;
+}
+
+/* R16 matches: use margin-top to position pairs between R32 matches */
+.bracket-stage-r16 .bracket-pair {
+  margin-bottom: 8px;
+}
+
+.bracket-stage-r16.bracket-stage-home .bracket-pair:nth-child(1) { margin-top: 0; }
+.bracket-stage-r16.bracket-stage-home .bracket-pair:nth-child(2) { margin-top: 88px; }
+.bracket-stage-r16.bracket-stage-home .bracket-pair:nth-child(3) { margin-top: 176px; }
+.bracket-stage-r16.bracket-stage-home .bracket-pair:nth-child(4) { margin-top: 264px; }
+
+.bracket-stage-r16.bracket-stage-away .bracket-pair:nth-child(1) { margin-top: 0; }
+.bracket-stage-r16.bracket-stage-away .bracket-pair:nth-child(2) { margin-top: 88px; }
+.bracket-stage-r16.bracket-stage-away .bracket-pair:nth-child(3) { margin-top: 176px; }
+.bracket-stage-r16.bracket-stage-away .bracket-pair:nth-child(4) { margin-top: 264px; }
+
+/* QF matches: use margin-top to position pairs between R16 matches */
+.bracket-stage-qf .bracket-pair {
+  margin-bottom: 8px;
+}
+
+.bracket-stage-qf.bracket-stage-home .bracket-pair:nth-child(1) { margin-top: 0; }
+.bracket-stage-qf.bracket-stage-home .bracket-pair:nth-child(2) { margin-top: 176px; }
+
+.bracket-stage-qf.bracket-stage-away .bracket-pair:nth-child(1) { margin-top: 0; }
+.bracket-stage-qf.bracket-stage-away .bracket-pair:nth-child(2) { margin-top: 176px; }
+
+/* SF matches: center between QF pairs */
+.bracket-stage-sf.bracket-stage-home .bracket-match-node { margin-top: 44px; }
+.bracket-stage-sf.bracket-stage-away .bracket-match-node { margin-top: 44px; }
 
 /* ── Bracket Connector Lines with Arrows ───────────────────────────── */
 .bracket-connector {
@@ -1403,68 +1428,12 @@ tr.advancement-best-third td {
   pointer-events: none;
 }
 
-/* Home side connector - horizontal line going right */
-.bracket-side-home .bracket-connector-h {
-  right: -28px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 28px;
-  height: 2px;
-  background: linear-gradient(90deg, var(--border) 0%, var(--primary) 100%);
+/* R32 connectors: horizontal lines from each match, vertical lines from pairs */
+.bracket-stage-r32 .bracket-pair {
+  position: relative;
 }
 
-/* Home side connector - vertical line for pairs */
-.bracket-side-home .bracket-connector-v {
-  right: -28px;
-  width: 2px;
-  background: var(--border);
-}
-
-/* Away side connector - horizontal line going left */
-.bracket-side-away .bracket-connector-h {
-  left: -28px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 28px;
-  height: 2px;
-  background: linear-gradient(270deg, var(--border) 0%, var(--primary) 100%);
-}
-
-/* Away side connector - vertical line for pairs */
-.bracket-side-away .bracket-connector-v {
-  left: -28px;
-  width: 2px;
-  background: var(--border);
-}
-
-/* Arrow indicator on connectors */
-.bracket-connector-h::after {
-  content: '';
-  position: absolute;
-  right: -4px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 0;
-  height: 0;
-  border-left: 6px solid var(--primary);
-  border-top: 4px solid transparent;
-  border-bottom: 4px solid transparent;
-}
-
-.bracket-side-away .bracket-connector-h::after {
-  right: auto;
-  left: -4px;
-  transform: translateY(-50%) rotate(180deg);
-}
-
-/* Enhanced connector styling */
-.bracket-connector-v {
-  top: 25%;
-  bottom: 25%;
-}
-
-/* R32 specific connectors - connect to R16 */
-.bracket-stage-r32 .bracket-match-node::after {
+.bracket-stage-r32.bracket-stage-home .bracket-match-node::after {
   content: '';
   position: absolute;
   top: 50%;
@@ -1472,21 +1441,19 @@ tr.advancement-best-third td {
   width: 28px;
   height: 2px;
   background: linear-gradient(90deg, var(--border) 0%, var(--primary) 100%);
-  z-index: 1;
 }
 
-.bracket-stage-r32 .bracket-pair::after {
+.bracket-stage-r32.bracket-stage-home .bracket-pair::after {
   content: '';
   position: absolute;
   right: -28px;
-  top: 25%;
-  bottom: 25%;
+  top: 50%;
+  bottom: -50%;
   width: 2px;
   background: var(--border);
-  z-index: 1;
+  transform: translateY(-50%);
 }
 
-/* Away side connectors - lines go to the left toward center */
 .bracket-stage-r32.bracket-stage-away .bracket-match-node::before {
   content: '';
   position: absolute;
@@ -1495,22 +1462,21 @@ tr.advancement-best-third td {
   width: 28px;
   height: 2px;
   background: linear-gradient(270deg, var(--border) 0%, var(--primary) 100%);
-  z-index: 1;
 }
 
 .bracket-stage-r32.bracket-stage-away .bracket-pair::before {
   content: '';
   position: absolute;
   left: -28px;
-  top: 25%;
-  bottom: 25%;
+  top: 50%;
+  bottom: -50%;
   width: 2px;
   background: var(--border);
-  z-index: 1;
+  transform: translateY(-50%);
 }
 
-/* R16 connectors */
-.bracket-stage-r16 .bracket-match-node::after {
+/* R16 connectors to QF */
+.bracket-stage-r16.bracket-stage-home .bracket-match-node::after {
   content: '';
   position: absolute;
   top: 50%;
@@ -1518,18 +1484,6 @@ tr.advancement-best-third td {
   width: 28px;
   height: 2px;
   background: linear-gradient(90deg, var(--border) 0%, var(--primary) 100%);
-  z-index: 1;
-}
-
-.bracket-stage-r16 .bracket-pair::after {
-  content: '';
-  position: absolute;
-  right: -28px;
-  top: 25%;
-  bottom: 25%;
-  width: 2px;
-  background: var(--border);
-  z-index: 1;
 }
 
 .bracket-stage-r16.bracket-stage-away .bracket-match-node::before {
@@ -1540,22 +1494,10 @@ tr.advancement-best-third td {
   width: 28px;
   height: 2px;
   background: linear-gradient(270deg, var(--border) 0%, var(--primary) 100%);
-  z-index: 1;
 }
 
-.bracket-stage-r16.bracket-stage-away .bracket-pair::before {
-  content: '';
-  position: absolute;
-  left: -28px;
-  top: 25%;
-  bottom: 25%;
-  width: 2px;
-  background: var(--border);
-  z-index: 1;
-}
-
-/* QF connectors */
-.bracket-stage-qf .bracket-match-node::after {
+/* QF connectors to SF */
+.bracket-stage-qf.bracket-stage-home .bracket-match-node::after {
   content: '';
   position: absolute;
   top: 50%;
@@ -1563,18 +1505,6 @@ tr.advancement-best-third td {
   width: 28px;
   height: 2px;
   background: linear-gradient(90deg, var(--border) 0%, var(--primary) 100%);
-  z-index: 1;
-}
-
-.bracket-stage-qf .bracket-pair::after {
-  content: '';
-  position: absolute;
-  right: -28px;
-  top: 25%;
-  bottom: 25%;
-  width: 2px;
-  background: var(--border);
-  z-index: 1;
 }
 
 .bracket-stage-qf.bracket-stage-away .bracket-match-node::before {
@@ -1585,22 +1515,10 @@ tr.advancement-best-third td {
   width: 28px;
   height: 2px;
   background: linear-gradient(270deg, var(--border) 0%, var(--primary) 100%);
-  z-index: 1;
 }
 
-.bracket-stage-qf.bracket-stage-away .bracket-pair::before {
-  content: '';
-  position: absolute;
-  left: -28px;
-  top: 25%;
-  bottom: 25%;
-  width: 2px;
-  background: var(--border);
-  z-index: 1;
-}
-
-/* SF connectors - only one horizontal line */
-.bracket-stage-sf .bracket-match-node::after {
+/* SF connectors to Final */
+.bracket-stage-sf.bracket-stage-home .bracket-match-node::after {
   content: '';
   position: absolute;
   top: 50%;
@@ -1608,11 +1526,6 @@ tr.advancement-best-third td {
   width: 28px;
   height: 2px;
   background: linear-gradient(90deg, var(--border) 0%, var(--primary) 100%);
-  z-index: 1;
-}
-
-.bracket-stage-sf.bracket-stage-away .bracket-match-node::after {
-  display: none; /* Hide right-side line for away SF, we'll use left */
 }
 
 .bracket-stage-sf.bracket-stage-away .bracket-match-node::before {
@@ -1623,7 +1536,33 @@ tr.advancement-best-third td {
   width: 28px;
   height: 2px;
   background: linear-gradient(270deg, var(--border) 0%, var(--primary) 100%);
-  z-index: 1;
+}
+
+/* Arrow indicators */
+.bracket-stage-home .bracket-match-node::after {
+  position: absolute;
+  right: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid var(--primary);
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  z-index: 2;
+}
+
+.bracket-stage-away .bracket-match-node::before {
+  position: absolute;
+  left: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-right: 6px solid var(--primary);
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  z-index: 2;
 }
 
 /* ── Match Node Card ───────────────────────────────────────────────── */
@@ -1692,22 +1631,32 @@ tr.advancement-best-third td {
     width: 200px;
   }
   
-  /* Responsive min-heights */
-  .bracket-stage-r32 .bracket-stage-matches {
-    min-height: 600px;
-  }
-  
+  /* Adjust padding for responsive */
   .bracket-stage-r16 .bracket-stage-matches {
-    min-height: 300px;
+    padding-top: 36px;
   }
   
   .bracket-stage-qf .bracket-stage-matches {
-    min-height: 150px;
+    padding-top: 90px;
   }
   
   .bracket-stage-sf .bracket-stage-matches {
-    min-height: 80px;
+    padding-top: 200px;
   }
+  
+  /* Adjust pair margins for responsive */
+  .bracket-stage-r16.bracket-stage-home .bracket-pair:nth-child(2) { margin-top: 70px; }
+  .bracket-stage-r16.bracket-stage-home .bracket-pair:nth-child(3) { margin-top: 140px; }
+  .bracket-stage-r16.bracket-stage-home .bracket-pair:nth-child(4) { margin-top: 210px; }
+  .bracket-stage-r16.bracket-stage-away .bracket-pair:nth-child(2) { margin-top: 70px; }
+  .bracket-stage-r16.bracket-stage-away .bracket-pair:nth-child(3) { margin-top: 140px; }
+  .bracket-stage-r16.bracket-stage-away .bracket-pair:nth-child(4) { margin-top: 210px; }
+  
+  .bracket-stage-qf.bracket-stage-home .bracket-pair:nth-child(2) { margin-top: 140px; }
+  .bracket-stage-qf.bracket-stage-away .bracket-pair:nth-child(2) { margin-top: 140px; }
+  
+  .bracket-stage-sf.bracket-stage-home .bracket-match-node { margin-top: 36px; }
+  .bracket-stage-sf.bracket-stage-away .bracket-match-node { margin-top: 36px; }
   
   .bracket-center {
     padding: 0 20px;
@@ -1720,22 +1669,32 @@ tr.advancement-best-third td {
     width: 180px;
   }
   
-  /* Responsive min-heights */
-  .bracket-stage-r32 .bracket-stage-matches {
-    min-height: 500px;
-  }
-  
+  /* Further adjust padding for smaller screens */
   .bracket-stage-r16 .bracket-stage-matches {
-    min-height: 250px;
+    padding-top: 30px;
   }
   
   .bracket-stage-qf .bracket-stage-matches {
-    min-height: 120px;
+    padding-top: 75px;
   }
   
   .bracket-stage-sf .bracket-stage-matches {
-    min-height: 60px;
+    padding-top: 165px;
   }
+  
+  /* Further adjust pair margins */
+  .bracket-stage-r16.bracket-stage-home .bracket-pair:nth-child(2) { margin-top: 58px; }
+  .bracket-stage-r16.bracket-stage-home .bracket-pair:nth-child(3) { margin-top: 116px; }
+  .bracket-stage-r16.bracket-stage-home .bracket-pair:nth-child(4) { margin-top: 174px; }
+  .bracket-stage-r16.bracket-stage-away .bracket-pair:nth-child(2) { margin-top: 58px; }
+  .bracket-stage-r16.bracket-stage-away .bracket-pair:nth-child(3) { margin-top: 116px; }
+  .bracket-stage-r16.bracket-stage-away .bracket-pair:nth-child(4) { margin-top: 174px; }
+  
+  .bracket-stage-qf.bracket-stage-home .bracket-pair:nth-child(2) { margin-top: 116px; }
+  .bracket-stage-qf.bracket-stage-away .bracket-pair:nth-child(2) { margin-top: 116px; }
+  
+  .bracket-stage-sf.bracket-stage-home .bracket-match-node { margin-top: 30px; }
+  .bracket-stage-sf.bracket-stage-away .bracket-match-node { margin-top: 30px; }
   
   .bracket-center {
     min-width: 220px;
