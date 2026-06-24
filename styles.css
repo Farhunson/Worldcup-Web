@@ -1250,7 +1250,7 @@ tr.advancement-best-third td {
 }
 
 .bracket-side-home {
-  flex-direction: row-reverse;
+  flex-direction: row;
 }
 
 .bracket-side-away {
@@ -1354,20 +1354,24 @@ tr.advancement-best-third td {
 }
 
 /* Adjust spacing based on stage to create bracket convergence */
-/* Home side: stages progress from R32 (top) to SF (bottom) */
-.bracket-stage-r16.bracket-stage-home .bracket-stage-matches {
-  margin-top: 120px;
+/* Home side: SF at bottom (closest to center), R32 at top (far from center) */
+.bracket-stage-sf.bracket-stage-home .bracket-stage-matches {
+  margin-top: 0px;
 }
 
 .bracket-stage-qf.bracket-stage-home .bracket-stage-matches {
   margin-top: 280px;
 }
 
-.bracket-stage-sf.bracket-stage-home .bracket-stage-matches {
+.bracket-stage-r16.bracket-stage-home .bracket-stage-matches {
   margin-top: 600px;
 }
 
-/* Away side: stages progress from SF (top) to R32 (bottom) - reversed order */
+.bracket-stage-r32.bracket-stage-home .bracket-stage-matches {
+  margin-top: 960px;
+}
+
+/* Away side: SF at top (closest to center), R32 at bottom (far from center) */
 .bracket-stage-sf.bracket-stage-away .bracket-stage-matches {
   margin-top: 0px;
 }
@@ -1469,7 +1473,7 @@ tr.advancement-best-third td {
 }
 
 /* Away side connectors - lines go to the left toward center */
-.bracket-side-away .bracket-match-node::after {
+.bracket-side-away .bracket-match-node::before {
   content: '';
   position: absolute;
   top: 50%;
@@ -1480,7 +1484,7 @@ tr.advancement-best-third td {
   z-index: 1;
 }
 
-.bracket-side-away .bracket-pair::after {
+.bracket-side-away .bracket-pair::before {
   content: '';
   position: absolute;
   left: -28px;
@@ -1507,16 +1511,20 @@ tr.advancement-best-third td {
   }
   
   /* Home side */
-  .bracket-stage-r16.bracket-stage-home .bracket-stage-matches {
-    margin-top: 80px;
+  .bracket-stage-sf.bracket-stage-home .bracket-stage-matches {
+    margin-top: 0px;
   }
   
   .bracket-stage-qf.bracket-stage-home .bracket-stage-matches {
     margin-top: 200px;
   }
   
-  .bracket-stage-sf.bracket-stage-home .bracket-stage-matches {
+  .bracket-stage-r16.bracket-stage-home .bracket-stage-matches {
     margin-top: 440px;
+  }
+  
+  .bracket-stage-r32.bracket-stage-home .bracket-stage-matches {
+    margin-top: 700px;
   }
   
   /* Away side */
@@ -1548,16 +1556,20 @@ tr.advancement-best-third td {
   }
   
   /* Home side */
-  .bracket-stage-r16.bracket-stage-home .bracket-stage-matches {
-    margin-top: 60px;
+  .bracket-stage-sf.bracket-stage-home .bracket-stage-matches {
+    margin-top: 0px;
   }
   
   .bracket-stage-qf.bracket-stage-home .bracket-stage-matches {
     margin-top: 160px;
   }
   
-  .bracket-stage-sf.bracket-stage-home .bracket-stage-matches {
+  .bracket-stage-r16.bracket-stage-home .bracket-stage-matches {
     margin-top: 360px;
+  }
+  
+  .bracket-stage-r32.bracket-stage-home .bracket-stage-matches {
+    margin-top: 560px;
   }
   
   /* Away side */
