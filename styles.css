@@ -1254,7 +1254,7 @@ tr.advancement-best-third td {
 }
 
 .bracket-side-away {
-  flex-direction: row;
+  flex-direction: row-reverse;  /* Mirror: SF closer to center, R32 far right */
 }
 
 /* ── Bracket Center (Third Place & Final) ────────────────────────── */
@@ -1371,21 +1371,22 @@ tr.advancement-best-third td {
   margin-top: 960px;
 }
 
-/* Away side: SF at top (closest to center), R32 at bottom (far from center) */
+/* Away side (with row-reverse): SF is visually rightmost, R32 is leftmost */
+/* Margins are swapped because row-reverse flips the visual order */
 .bracket-stage-sf.bracket-stage-away .bracket-stage-matches {
-  margin-top: 0px;
+  margin-top: 960px;
 }
 
 .bracket-stage-qf.bracket-stage-away .bracket-stage-matches {
-  margin-top: 280px;
-}
-
-.bracket-stage-r16.bracket-stage-away .bracket-stage-matches {
   margin-top: 600px;
 }
 
+.bracket-stage-r16.bracket-stage-away .bracket-stage-matches {
+  margin-top: 280px;
+}
+
 .bracket-stage-r32.bracket-stage-away .bracket-stage-matches {
-  margin-top: 960px;
+  margin-top: 0px;
 }
 
 /* ── Bracket Pair (groups 2 matches for connectors) ────────────────── */
@@ -1527,21 +1528,21 @@ tr.advancement-best-third td {
     margin-top: 700px;
   }
   
-  /* Away side */
+  /* Away side (with row-reverse, SF is visually rightmost, R32 is leftmost) */
   .bracket-stage-sf.bracket-stage-away .bracket-stage-matches {
-    margin-top: 0px;
+    margin-top: 700px;
   }
   
   .bracket-stage-qf.bracket-stage-away .bracket-stage-matches {
-    margin-top: 200px;
-  }
-  
-  .bracket-stage-r16.bracket-stage-away .bracket-stage-matches {
     margin-top: 440px;
   }
   
+  .bracket-stage-r16.bracket-stage-away .bracket-stage-matches {
+    margin-top: 200px;
+  }
+  
   .bracket-stage-r32.bracket-stage-away .bracket-stage-matches {
-    margin-top: 700px;
+    margin-top: 0px;
   }
   
   .bracket-center {
@@ -1572,21 +1573,21 @@ tr.advancement-best-third td {
     margin-top: 560px;
   }
   
-  /* Away side */
+  /* Away side (with row-reverse, SF is visually rightmost, R32 is leftmost) */
   .bracket-stage-sf.bracket-stage-away .bracket-stage-matches {
-    margin-top: 0px;
+    margin-top: 560px;
   }
   
   .bracket-stage-qf.bracket-stage-away .bracket-stage-matches {
-    margin-top: 160px;
-  }
-  
-  .bracket-stage-r16.bracket-stage-away .bracket-stage-matches {
     margin-top: 360px;
   }
   
+  .bracket-stage-r16.bracket-stage-away .bracket-stage-matches {
+    margin-top: 160px;
+  }
+  
   .bracket-stage-r32.bracket-stage-away .bracket-stage-matches {
-    margin-top: 560px;
+    margin-top: 0px;
   }
   
   .bracket-center {
