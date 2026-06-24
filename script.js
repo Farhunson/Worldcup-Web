@@ -3087,21 +3087,55 @@ function buildStageHtml(stage, matches, rankings, thirdPlaceTeams, knockoutMap, 
   `;
 }
 
-function renderBracket(rankings, thirdPlaceTeams, assignments, allGroupsComplete) {
-  const grouped = scheduleData.knockoutMatches.reduce((acc, match) => {
-    acc[match.stage] = acc[match.stage] || [];
-    acc[match.stage].push(match);
-    return acc;
-  }, {});
+// Define the bracket structure with home/away side assignment
+// Home side (left): Groups A, C, E, F, I, L → R16: M89, M90, M91, M92
+// Away side (right): Groups B, D, G, H, J, K → R16: M93, M94, M95, M96
+const BRACKET_STRUCTURE = {
+  r32: {
+    home: [73, 75, 74, 77, 76, 78, 79, 80],  // 2A/2B, 1F/2C, 1E/3rd, 1I/3rd, 1C/2F, 2E/2I, 1A/3rd, 1L/3rd
+    away: [83, 84, 81, 82, 85, 87, 86, 88]   // 2K/2L, 1H/2J, 1D/3rd, 1G/3rd, 1B/3rd, 1K/3rd, 1J/2H, 2D/2G
+  },
+  r16: {
+    home: [90, 89, 91, 92],  // W73/W75, W74/W77, W76/W78, W79/W80
+    away: [93, 94, 95, 96]   // W83/W84, W81/W82, W86/W88, W85/W87
+  },
+  qf: {
+    home: [97, 99],  // W89/W90, W91/W92
+    away: [98, 100]   // W93/W94, W95/W96
+  },
+  sf: {
+    home: [101],  // W97/W98
+    away: [102]    // W99/W100
+  },
+  third: [103],
+  final: [104]
+};
 
-  const stageOrder = ['r32', 'r16', 'qf', 'sf', 'third', 'final'];
+function renderBracket(rankings, thirdPlaceTeams, assignments, allGroupsComplete) {
   let html = '';
   const resultMap = computeKnockoutResults(rankings, thirdPlaceTeams, assignments, allGroupsComplete);
 
-  stageOrder.forEach((stage) => {
-    if (!grouped[stage]?.length) return;
-    html += buildStageHtml(stage, grouped[stage].sort((a, b) => a.matchNo - b.matchNo), rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete);
-  });
+  // Build home and away columns
+  html += `<div class="bracket-main">`;
+  html += `<div class="bracket-side bracket-side-home">`;
+  
+  // Home side: R32 → R16 → QF → SF
+  html += buildBracketSide('home', rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete);
+  
+  html += `</div>`;
+  
+  // Center: Third Place & Final
+  html += `<div class="bracket-center">`;
+  html += buildCenterMatches(rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete);
+  html += `</div>`;
+  
+  html += `<div class="bracket-side bracket-side-away">`;
+  
+  // Away side: R32 → R16 → QF → SF
+  html += buildBracketSide('away', rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete);
+  
+  html += `</div>`;
+  html += `</div>`; // End bracket-main
 
   bracketContainer.innerHTML = html;
 
@@ -3112,6 +3146,97 @@ function renderBracket(rankings, thirdPlaceTeams, assignments, allGroupsComplete
       updateScore(Number(matchNo), side, event.target.value);
     });
   });
+}
+
+function buildBracketSide(side, rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete) {
+  let html = '';
+  
+  if (side === 'home') {
+    // Home side: R32 → R16 → QF → SF (left to right, toward center)
+    html += buildSideStage('r32', side, rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete);
+    html += buildSideStage('r16', side, rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete);
+    html += buildSideStage('qf', side, rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete);
+    html += buildSideStage('sf', side, rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete);
+  } else {
+    // Away side: SF → QF → R16 → R32 (left to right, toward outside)
+    // Reverse order so SF is closest to center, R32 is farthest
+    html += buildSideStage('sf', side, rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete);
+    html += buildSideStage('qf', side, rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete);
+    html += buildSideStage('r16', side, rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete);
+    html += buildSideStage('r32', side, rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete);
+  }
+  
+  return html;
+}
+
+function buildSideStage(stage, side, rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete) {
+  const matchNos = BRACKET_STRUCTURE[stage][side];
+  if (!matchNos || matchNos.length === 0) return '';
+  
+  const matches = matchNos.map(no => scheduleData.knockoutMatches.find(m => m.matchNo === no)).filter(Boolean);
+  
+  // Group matches into pairs for connectors
+  let matchesHtml = '';
+  for (let i = 0; i < matches.length; i += 2) {
+    const pairMatches = [];
+    if (i < matches.length) pairMatches.push(matches[i]);
+    if (i + 1 < matches.length) pairMatches.push(matches[i + 1]);
+    
+    const pairHtml = pairMatches.map(m => 
+      buildMatchCardHtml(m, stage, rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete)
+    ).join('');
+    
+    matchesHtml += `<div class="bracket-pair bracket-pair-${side}">${pairHtml}</div>`;
+  }
+  
+  const sideLabel = side === 'home' ? 'Home' : 'Away';
+  
+  return `
+    <div class="bracket-stage bracket-stage-${stage} bracket-stage-${side}">
+      <div class="bracket-stage-header">
+        <span class="bracket-stage-label">${stageLabels[stage]}</span>
+      </div>
+      <div class="bracket-stage-matches">
+        ${matchesHtml}
+      </div>
+    </div>
+  `;
+}
+
+function buildCenterMatches(rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete) {
+  let html = '';
+  
+  // Third place match
+  const thirdMatch = scheduleData.knockoutMatches.find(m => m.matchNo === 103);
+  if (thirdMatch) {
+    html += `
+      <div class="bracket-stage bracket-stage-third bracket-stage-center">
+        <div class="bracket-stage-header">
+          <span class="bracket-stage-label">${stageLabels['third']}</span>
+        </div>
+        <div class="bracket-stage-matches bracket-stage-matches-center">
+          ${buildMatchCardHtml(thirdMatch, 'third', rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete)}
+        </div>
+      </div>
+    `;
+  }
+  
+  // Final match
+  const finalMatch = scheduleData.knockoutMatches.find(m => m.matchNo === 104);
+  if (finalMatch) {
+    html += `
+      <div class="bracket-stage bracket-stage-final bracket-stage-center">
+        <div class="bracket-stage-header">
+          <span class="bracket-stage-label">${stageLabels['final']}</span>
+        </div>
+        <div class="bracket-stage-matches bracket-stage-matches-center">
+          ${buildMatchCardHtml(finalMatch, 'final', rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete)}
+        </div>
+      </div>
+    `;
+  }
+  
+  return html;
 }
 
 function buildExportCsv() {

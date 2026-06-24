@@ -1210,11 +1210,9 @@ tr.advancement-best-third td {
 
 /* ── Bracket Container ─────────────────────────────────────────────── */
 .bracket-container {
-  display: flex;
-  flex-direction: row;
   overflow-x: auto;
-  gap: 28px;
-  padding: 20px 6px 40px;
+  overflow-y: visible;
+  padding: 20px 10px 40px;
   min-height: 400px;
   scrollbar-width: thin;
   scrollbar-color: var(--surface-strong) transparent;
@@ -1233,63 +1231,91 @@ tr.advancement-best-third td {
   border-radius: 4px;
 }
 
+/* ── Bracket Main Layout ──────────────────────────────────────────── */
+.bracket-main {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 0;
+  min-width: max-content;
+}
+
+/* ── Bracket Sides (Home & Away) ──────────────────────────────────── */
+.bracket-side {
+  display: flex;
+  flex-direction: row;
+  gap: 0;
+  align-items: flex-start;
+}
+
+.bracket-side-home {
+  flex-direction: row-reverse;
+}
+
+.bracket-side-away {
+  flex-direction: row;
+}
+
+/* ── Bracket Center (Third Place & Final) ────────────────────────── */
+.bracket-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 120px;
+  padding: 0 40px;
+  min-width: 280px;
+}
+
+.bracket-stage-matches-center {
+  justify-content: center;
+}
+
 /* ── Bracket Stage Column ──────────────────────────────────────────── */
 .bracket-stage {
   display: flex;
   flex-direction: column;
-  min-width: 260px;
-  max-width: 300px;
-  flex-shrink: 0;
   gap: 0;
   background: none;
   border: none;
   border-radius: 0;
   box-shadow: none;
+  width: 260px;
+}
+
+/* Adjust width for home/away sides */
+.bracket-side .bracket-stage {
+  width: 240px;
 }
 
 /* ── Stage Header Badge ────────────────────────────────────────────── */
 .bracket-stage-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 12px;
-  padding: 12px 20px;
-  border-radius: 12px;
-  margin-bottom: 20px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  margin-bottom: 16px;
   font-weight: 800;
-  font-size: 0.82rem;
-  letter-spacing: 0.08em;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   white-space: nowrap;
   background: var(--surface-soft);
   color: var(--text);
   border: 1px solid var(--border);
   backdrop-filter: blur(8px);
-  position: sticky;
-  top: 0;
-  z-index: 10;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .bracket-stage-label {
   font-family: 'FWC2026Condensed', 'FWC2026', Inter, system-ui, sans-serif;
   font-weight: 900;
-  flex: 1;
 }
 
 .bracket-stage-count {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.2);
-  font-size: 0.65rem;
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.9);
-  letter-spacing: 0.02em;
-  text-transform: lowercase;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: none;
 }
 
 /* Stage-specific header colors */
@@ -1311,20 +1337,51 @@ tr.advancement-best-third td {
 
 .bracket-stage-third .bracket-stage-header {
   border-top: 3px solid #6B7280;
+  background: linear-gradient(135deg, var(--surface-soft) 0%, rgba(107, 114, 128, 0.15) 100%);
 }
 
 .bracket-stage-final .bracket-stage-header {
   border-top: 3px solid #F59E0B;
-  box-shadow: 0 0 15px rgba(245, 158, 11, 0.25);
+  background: linear-gradient(135deg, var(--surface-soft) 0%, rgba(245, 158, 11, 0.15) 100%);
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
 }
 
 /* ── Stage Matches Container ───────────────────────────────────────── */
 .bracket-stage-matches {
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
   gap: 8px;
-  flex: 1;
+}
+
+/* Adjust spacing based on stage to create bracket convergence */
+/* Home side: stages progress from R32 (top) to SF (bottom) */
+.bracket-stage-r16.bracket-stage-home .bracket-stage-matches {
+  margin-top: 120px;
+}
+
+.bracket-stage-qf.bracket-stage-home .bracket-stage-matches {
+  margin-top: 280px;
+}
+
+.bracket-stage-sf.bracket-stage-home .bracket-stage-matches {
+  margin-top: 600px;
+}
+
+/* Away side: stages progress from SF (top) to R32 (bottom) - reversed order */
+.bracket-stage-sf.bracket-stage-away .bracket-stage-matches {
+  margin-top: 0px;
+}
+
+.bracket-stage-qf.bracket-stage-away .bracket-stage-matches {
+  margin-top: 280px;
+}
+
+.bracket-stage-r16.bracket-stage-away .bracket-stage-matches {
+  margin-top: 600px;
+}
+
+.bracket-stage-r32.bracket-stage-away .bracket-stage-matches {
+  margin-top: 960px;
 }
 
 /* ── Bracket Pair (groups 2 matches for connectors) ────────────────── */
@@ -1333,48 +1390,7 @@ tr.advancement-best-third td {
   flex-direction: column;
   gap: 8px;
   position: relative;
-}
-
-/* Right-side connector arm: horizontal line from each match node */
-.bracket-stage-r32 .bracket-match-node::after,
-.bracket-stage-r16 .bracket-match-node::after,
-.bracket-stage-qf .bracket-match-node::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  right: -14px;
-  width: 14px;
-  height: 2px;
-  background: var(--border);
-  z-index: 1;
-}
-
-/* Left-side connector arm: horizontal line into each match node */
-.bracket-stage-r16 .bracket-match-node::before,
-.bracket-stage-qf .bracket-match-node::before,
-.bracket-stage-sf .bracket-match-node::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: -14px;
-  width: 14px;
-  height: 2px;
-  background: var(--border);
-  z-index: 1;
-}
-
-/* Vertical bracket line connecting paired matches */
-.bracket-stage-r32 .bracket-pair::after,
-.bracket-stage-r16 .bracket-pair::after,
-.bracket-stage-qf .bracket-pair::after {
-  content: '';
-  position: absolute;
-  right: -14px;
-  top: 25%;
-  bottom: 25%;
-  width: 2px;
-  background: var(--border);
-  z-index: 1;
+  margin-bottom: 8px;
 }
 
 /* ── Match Node Card ───────────────────────────────────────────────── */
@@ -1426,6 +1442,145 @@ tr.advancement-best-third td {
 
 .bracket-stage-final .bracket-match-node:hover {
   box-shadow: 0 8px 30px rgba(245, 158, 11, 0.3);
+}
+
+/* ── Connector Lines ─────────────────────────────────────────────── */
+/* Home side connectors - lines go to the right toward center */
+.bracket-side-home .bracket-match-node::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -28px;
+  width: 28px;
+  height: 2px;
+  background: var(--border);
+  z-index: 1;
+}
+
+.bracket-side-home .bracket-pair::after {
+  content: '';
+  position: absolute;
+  right: -28px;
+  top: 25%;
+  bottom: 25%;
+  width: 2px;
+  background: var(--border);
+  z-index: 1;
+}
+
+/* Away side connectors - lines go to the left toward center */
+.bracket-side-away .bracket-match-node::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -28px;
+  width: 28px;
+  height: 2px;
+  background: var(--border);
+  z-index: 1;
+}
+
+.bracket-side-away .bracket-pair::after {
+  content: '';
+  position: absolute;
+  left: -28px;
+  top: 25%;
+  bottom: 25%;
+  width: 2px;
+  background: var(--border);
+  z-index: 1;
+}
+
+/* Third place and final in center */
+.bracket-stage-center .bracket-match-node {
+  margin: 0 auto;
+}
+
+/* ── Responsive Adjustments ──────────────────────────────────────── */
+@media (max-width: 1200px) {
+  .bracket-main {
+    min-width: 1000px;
+  }
+  
+  .bracket-side .bracket-stage {
+    width: 200px;
+  }
+  
+  /* Home side */
+  .bracket-stage-r16.bracket-stage-home .bracket-stage-matches {
+    margin-top: 80px;
+  }
+  
+  .bracket-stage-qf.bracket-stage-home .bracket-stage-matches {
+    margin-top: 200px;
+  }
+  
+  .bracket-stage-sf.bracket-stage-home .bracket-stage-matches {
+    margin-top: 440px;
+  }
+  
+  /* Away side */
+  .bracket-stage-sf.bracket-stage-away .bracket-stage-matches {
+    margin-top: 0px;
+  }
+  
+  .bracket-stage-qf.bracket-stage-away .bracket-stage-matches {
+    margin-top: 200px;
+  }
+  
+  .bracket-stage-r16.bracket-stage-away .bracket-stage-matches {
+    margin-top: 440px;
+  }
+  
+  .bracket-stage-r32.bracket-stage-away .bracket-stage-matches {
+    margin-top: 700px;
+  }
+  
+  .bracket-center {
+    padding: 0 20px;
+    gap: 80px;
+  }
+}
+
+@media (max-width: 768px) {
+  .bracket-side .bracket-stage {
+    width: 180px;
+  }
+  
+  /* Home side */
+  .bracket-stage-r16.bracket-stage-home .bracket-stage-matches {
+    margin-top: 60px;
+  }
+  
+  .bracket-stage-qf.bracket-stage-home .bracket-stage-matches {
+    margin-top: 160px;
+  }
+  
+  .bracket-stage-sf.bracket-stage-home .bracket-stage-matches {
+    margin-top: 360px;
+  }
+  
+  /* Away side */
+  .bracket-stage-sf.bracket-stage-away .bracket-stage-matches {
+    margin-top: 0px;
+  }
+  
+  .bracket-stage-qf.bracket-stage-away .bracket-stage-matches {
+    margin-top: 160px;
+  }
+  
+  .bracket-stage-r16.bracket-stage-away .bracket-stage-matches {
+    margin-top: 360px;
+  }
+  
+  .bracket-stage-r32.bracket-stage-away .bracket-stage-matches {
+    margin-top: 560px;
+  }
+  
+  .bracket-center {
+    min-width: 220px;
+    gap: 60px;
+  }
 }
 
 /* ── Match Inner (Team Rows) ───────────────────────────────────────── */
