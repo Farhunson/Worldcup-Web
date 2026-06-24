@@ -1398,6 +1398,236 @@ tr.advancement-best-third td {
   margin-bottom: 8px;
 }
 
+/* ── Bracket Connector Lines with Arrows ───────────────────────────── */
+.bracket-connector {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Home side connector - horizontal line going right */
+.bracket-side-home .bracket-connector-h {
+  right: -28px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--border) 0%, var(--primary) 100%);
+}
+
+/* Home side connector - vertical line for pairs */
+.bracket-side-home .bracket-connector-v {
+  right: -28px;
+  width: 2px;
+  background: var(--border);
+}
+
+/* Away side connector - horizontal line going left */
+.bracket-side-away .bracket-connector-h {
+  left: -28px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 2px;
+  background: linear-gradient(270deg, var(--border) 0%, var(--primary) 100%);
+}
+
+/* Away side connector - vertical line for pairs */
+.bracket-side-away .bracket-connector-v {
+  left: -28px;
+  width: 2px;
+  background: var(--border);
+}
+
+/* Arrow indicator on connectors */
+.bracket-connector-h::after {
+  content: '';
+  position: absolute;
+  right: -4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid var(--primary);
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+}
+
+.bracket-side-away .bracket-connector-h::after {
+  right: auto;
+  left: -4px;
+  transform: translateY(-50%) rotate(180deg);
+}
+
+/* Enhanced connector styling */
+.bracket-connector-v {
+  top: 25%;
+  bottom: 25%;
+}
+
+/* R32 specific connectors - connect to R16 */
+.bracket-stage-r32 .bracket-match-node::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -28px;
+  width: 28px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--border) 0%, var(--primary) 100%);
+  z-index: 1;
+}
+
+.bracket-stage-r32 .bracket-pair::after {
+  content: '';
+  position: absolute;
+  right: -28px;
+  top: 25%;
+  bottom: 25%;
+  width: 2px;
+  background: var(--border);
+  z-index: 1;
+}
+
+/* Away side connectors - lines go to the left toward center */
+.bracket-stage-r32.bracket-stage-away .bracket-match-node::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -28px;
+  width: 28px;
+  height: 2px;
+  background: linear-gradient(270deg, var(--border) 0%, var(--primary) 100%);
+  z-index: 1;
+}
+
+.bracket-stage-r32.bracket-stage-away .bracket-pair::before {
+  content: '';
+  position: absolute;
+  left: -28px;
+  top: 25%;
+  bottom: 25%;
+  width: 2px;
+  background: var(--border);
+  z-index: 1;
+}
+
+/* R16 connectors */
+.bracket-stage-r16 .bracket-match-node::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -28px;
+  width: 28px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--border) 0%, var(--primary) 100%);
+  z-index: 1;
+}
+
+.bracket-stage-r16 .bracket-pair::after {
+  content: '';
+  position: absolute;
+  right: -28px;
+  top: 25%;
+  bottom: 25%;
+  width: 2px;
+  background: var(--border);
+  z-index: 1;
+}
+
+.bracket-stage-r16.bracket-stage-away .bracket-match-node::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -28px;
+  width: 28px;
+  height: 2px;
+  background: linear-gradient(270deg, var(--border) 0%, var(--primary) 100%);
+  z-index: 1;
+}
+
+.bracket-stage-r16.bracket-stage-away .bracket-pair::before {
+  content: '';
+  position: absolute;
+  left: -28px;
+  top: 25%;
+  bottom: 25%;
+  width: 2px;
+  background: var(--border);
+  z-index: 1;
+}
+
+/* QF connectors */
+.bracket-stage-qf .bracket-match-node::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -28px;
+  width: 28px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--border) 0%, var(--primary) 100%);
+  z-index: 1;
+}
+
+.bracket-stage-qf .bracket-pair::after {
+  content: '';
+  position: absolute;
+  right: -28px;
+  top: 25%;
+  bottom: 25%;
+  width: 2px;
+  background: var(--border);
+  z-index: 1;
+}
+
+.bracket-stage-qf.bracket-stage-away .bracket-match-node::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -28px;
+  width: 28px;
+  height: 2px;
+  background: linear-gradient(270deg, var(--border) 0%, var(--primary) 100%);
+  z-index: 1;
+}
+
+.bracket-stage-qf.bracket-stage-away .bracket-pair::before {
+  content: '';
+  position: absolute;
+  left: -28px;
+  top: 25%;
+  bottom: 25%;
+  width: 2px;
+  background: var(--border);
+  z-index: 1;
+}
+
+/* SF connectors - only one horizontal line */
+.bracket-stage-sf .bracket-match-node::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -28px;
+  width: 28px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--border) 0%, var(--primary) 100%);
+  z-index: 1;
+}
+
+.bracket-stage-sf.bracket-stage-away .bracket-match-node::after {
+  display: none; /* Hide right-side line for away SF, we'll use left */
+}
+
+.bracket-stage-sf.bracket-stage-away .bracket-match-node::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -28px;
+  width: 28px;
+  height: 2px;
+  background: linear-gradient(270deg, var(--border) 0%, var(--primary) 100%);
+  z-index: 1;
+}
+
 /* ── Match Node Card ───────────────────────────────────────────────── */
 .bracket-match-node {
   position: relative;
@@ -1447,53 +1677,6 @@ tr.advancement-best-third td {
 
 .bracket-stage-final .bracket-match-node:hover {
   box-shadow: 0 8px 30px rgba(245, 158, 11, 0.3);
-}
-
-/* ── Connector Lines ─────────────────────────────────────────────── */
-/* Home side connectors - lines go to the right toward center */
-.bracket-side-home .bracket-match-node::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  right: -28px;
-  width: 28px;
-  height: 2px;
-  background: var(--border);
-  z-index: 1;
-}
-
-.bracket-side-home .bracket-pair::after {
-  content: '';
-  position: absolute;
-  right: -28px;
-  top: 25%;
-  bottom: 25%;
-  width: 2px;
-  background: var(--border);
-  z-index: 1;
-}
-
-/* Away side connectors - lines go to the left toward center */
-.bracket-side-away .bracket-match-node::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: -28px;
-  width: 28px;
-  height: 2px;
-  background: var(--border);
-  z-index: 1;
-}
-
-.bracket-side-away .bracket-pair::before {
-  content: '';
-  position: absolute;
-  left: -28px;
-  top: 25%;
-  bottom: 25%;
-  width: 2px;
-  background: var(--border);
-  z-index: 1;
 }
 
 /* Third place and final in center */

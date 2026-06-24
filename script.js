@@ -3168,24 +3168,85 @@ function buildSideStage(stage, side, rankings, thirdPlaceTeams, resultMap, assig
   
   const matches = matchNos.map(no => scheduleData.knockoutMatches.find(m => m.matchNo === no)).filter(Boolean);
   
-  // Group matches into pairs for connectors
+  // Define feed-in relationships for each stage
+  const feedMap = {
+    r32: {
+      home: [
+        { feeds: '90', matches: [73, 75] },    // 73+75 -> R16 match 90
+        { feeds: '89', matches: [74, 77] },    // 74+77 -> R16 match 89
+        { feeds: '92', matches: [76, 78] },    // 76+78 -> R16 match 92
+        { feeds: '91', matches: [79, 80] },    // 79+80 -> R16 match 91
+      ],
+      away: [
+        { feeds: '94', matches: [83, 84] },    // 83+84 -> R16 match 94
+        { feeds: '93', matches: [81, 82] },    // 81+82 -> R16 match 93
+        { feeds: '96', matches: [85, 87] },    // 85+87 -> R16 match 96
+        { feeds: '95', matches: [86, 88] },   // 86+88 -> R16 match 95
+      ]
+    },
+    r16: {
+      home: [
+        { feeds: '90', matches: [89, 90] },   // 89+90 -> QF match 90
+        { feeds: '91', matches: [91, 92] },   // 91+92 -> QF match 91
+      ],
+      away: [
+        { feeds: '97', matches: [93, 94] },   // 93+94 -> QF match 97
+        { feeds: '98', matches: [95, 96] },   // 95+96 -> QF match 98
+      ]
+    },
+    qf: {
+      home: [
+        { feeds: '101', matches: [97, 99] },  // 97+99 -> SF match 101
+        { feeds: '102', matches: [98, 100] }, // 98+100 -> SF match 102
+      ],
+      away: [
+        { feeds: '101', matches: [97, 99] },  // 97+99 -> SF match 101
+        { feeds: '102', matches: [98, 100] }, // 98+100 -> SF match 102
+      ]
+    },
+    sf: {
+      home: [
+        { feeds: '104', matches: [101, 102] }, // 101+102 -> Final match 104
+      ],
+      away: [
+        { feeds: '104', matches: [101, 102] }, // 101+102 -> Final match 104
+      ]
+    }
+  };
+  
+  const currentFeedMap = feedMap[stage]?.[side] || [];
+  
+  // Group matches into pairs for connectors with feed info
   let matchesHtml = '';
-  for (let i = 0; i < matches.length; i += 2) {
-    const pairMatches = [];
-    if (i < matches.length) pairMatches.push(matches[i]);
-    if (i + 1 < matches.length) pairMatches.push(matches[i + 1]);
-    
-    const pairHtml = pairMatches.map(m => 
-      buildMatchCardHtml(m, stage, rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete)
-    ).join('');
-    
-    matchesHtml += `<div class="bracket-pair bracket-pair-${side}">${pairHtml}</div>`;
+  
+  if (stage === 'r32' || stage === 'r16' || stage === 'qf') {
+    // Use feed map for proper alignment
+    currentFeedMap.forEach((feedGroup, groupIndex) => {
+      const pairHtml = feedGroup.matches.map(m => {
+        const match = matches.find(match => match.matchNo === m);
+        if (!match) return '';
+        return buildMatchCardHtml(match, stage, rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete);
+      }).join('');
+      
+      matchesHtml += `<div class="bracket-pair bracket-pair-${side}" data-feeds="${feedGroup.feeds}" data-pair-index="${groupIndex}">${pairHtml}</div>`;
+    });
+  } else {
+    // For SF (single match per pair), just render normally
+    for (let i = 0; i < matches.length; i += 2) {
+      const pairMatches = [];
+      if (i < matches.length) pairMatches.push(matches[i]);
+      if (i + 1 < matches.length) pairMatches.push(matches[i + 1]);
+      
+      const pairHtml = pairMatches.map(m => 
+        buildMatchCardHtml(m, stage, rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete)
+      ).join('');
+      
+      matchesHtml += `<div class="bracket-pair bracket-pair-${side}">${pairHtml}</div>`;
+    }
   }
   
-  const sideLabel = side === 'home' ? 'Home' : 'Away';
-  
   return `
-    <div class="bracket-stage bracket-stage-${stage} bracket-stage-${side}">
+    <div class="bracket-stage bracket-stage-${stage} bracket-stage-${side}" data-stage="${stage}" data-side="${side}">
       <div class="bracket-stage-header">
         <span class="bracket-stage-label">${stageLabels[stage]}</span>
       </div>
