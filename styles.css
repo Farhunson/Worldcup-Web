@@ -1308,152 +1308,10 @@ tr.advancement-best-third td {
 /* Subtle stage indicator bars at top of bracket */
 .bracket-grid-headers {
   display: grid;
-  grid-template-columns: repeat(9, 180px);
+  grid-template-columns: repeat(9, 240px);
   gap: 0;
   margin-bottom: 30px;
   padding: 0 10px;
-  min-width: max-content;
-}
-
-/* Desktop: Scale bracket to fit viewport without horizontal scroll */
-@media (min-width: 1200px) {
-  .bracket-section {
-    overflow-x: visible;
-    max-width: 100vw;
-    padding-left: 0;
-    padding-right: 0;
-  }
-  
-  .bracket-grid-layout {
-    overflow-x: visible;
-    padding: 20px 0;
-  }
-  
-  .bracket-grid-headers {
-    width: 100%;
-  }
-  
-  .bracket-grid-row {
-    width: 100%;
-  }
-  
-  .bracket-match-node {
-    width: 100%;
-    min-width: 120px;
-    min-height: 140px;
-    max-width: 180px;
-  }
-  
-  .bracket-cell-final,
-  .bracket-cell-third {
-    width: 100%;
-    min-width: 140px;
-    max-width: 180px;
-  }
-  
-  .bracket-team {
-    padding: 6px 8px;
-    gap: 6px;
-  }
-  
-  .bracket-team-name {
-    font-size: 0.8rem;
-  }
-  
-  .bracket-team .team-flag {
-    width: 28px;
-    min-width: 28px;
-    height: 18px;
-  }
-  
-  .bracket-score {
-    width: 36px !important;
-    height: 28px;
-    font-size: 0.85rem !important;
-  }
-  
-  .bracket-match-meta {
-    font-size: 0.65rem;
-  }
-  
-  .bracket-header-cell {
-    padding: 4px 8px;
-  }
-  
-  .bracket-header-cell::after {
-    font-size: 0.55rem;
-    bottom: -14px;
-  }
-}
-
-/* Mobile/Tablet: Allow horizontal scroll with larger touch-friendly cards */
-@media (max-width: 1199px) {
-  .bracket-section {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-  
-  .bracket-grid-layout {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    padding: 15px 0;
-  }
-  
-  .bracket-grid-headers {
-    display: grid;
-    grid-template-columns: repeat(9, 160px);
-    min-width: max-content;
-  }
-  
-  .bracket-grid-row {
-    display: grid;
-    grid-template-columns: repeat(9, 160px);
-    min-width: max-content;
-  }
-  
-  .bracket-match-node {
-    width: 150px;
-    min-height: 200px;
-    max-width: 150px;
-  }
-  
-  .bracket-cell-final,
-  .bracket-cell-third {
-    width: 150px;
-    min-height: 200px;
-    max-width: 150px;
-    margin: 4px 5px;
-  }
-  
-  .bracket-team {
-    padding: 6px 10px;
-    gap: 8px;
-  }
-  
-  .bracket-team-name {
-    font-size: 0.85rem;
-  }
-  
-  .bracket-team .team-flag {
-    width: 32px;
-    min-width: 32px;
-    height: 20px;
-  }
-  
-  .bracket-score {
-    width: 40px !important;
-    height: 28px;
-    font-size: 0.9rem !important;
-  }
-  
-  .bracket-match-meta {
-    font-size: 0.7rem;
-  }
-  
-  .bracket-header-cell::after {
-    font-size: 0.55rem;
-    bottom: -14px;
-  }
 }
 
 .bracket-header-cell {
@@ -1523,13 +1381,12 @@ tr.advancement-best-third td {
 
 .bracket-grid-row {
   display: grid;
-  grid-template-columns: repeat(9, 180px);
+  grid-template-columns: repeat(9, 240px);
   gap: 0;
   min-height: 120px;
   position: relative;
   z-index: 1;
   animation: rowSlideIn 0.6s ease-out backwards;
-  width: max-content;
 }
 
 @keyframes rowSlideIn {
@@ -1600,7 +1457,7 @@ tr.advancement-best-third td {
   border-radius: 14px;
   margin: 4px 10px;
   min-height: 180px;
-  width: 160px;
+  width: 220px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2046,7 +1903,7 @@ tr.advancement-best-third td {
     border-color 0.3s ease;
   cursor: pointer;
   z-index: 2;
-  width: 160px;
+  width: 220px;
   min-height: 180px;
   animation: fadeSlideIn 0.5s ease-out backwards;
 }
