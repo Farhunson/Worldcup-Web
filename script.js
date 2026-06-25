@@ -2998,6 +2998,17 @@ function buildMatchCardHtml(match, stage, rankings, thirdPlaceTeams, knockoutMap
   const { dateLabel, timeLabel, tzAbbr } = getMatchDateTimeLabel(match.matchNo, match.venue, match.date, match.time);
   const timeDisplay = tzAbbr ? `${timeLabel} ${tzAbbr}` : timeLabel;
   
+  // Stage indicator badge
+  const stageLabels = {
+    'r32': 'R32',
+    'r16': 'R16',
+    'qf': 'QF',
+    'sf': 'SF',
+    'final': 'Final',
+    'third': '3rd'
+  };
+  const stageBadge = `<span class="bracket-stage-badge bracket-stage-${stage}">${stageLabels[stage] || stage.toUpperCase()}</span>`;
+  
   // Get scorer data for this match
   const showScorers = hasScorerData(match.matchNo);
   let scorersHtml = '';
@@ -3023,6 +3034,7 @@ function buildMatchCardHtml(match, stage, rankings, thirdPlaceTeams, knockoutMap
   
   return `
     <div class="bracket-match-node" data-matchno="${match.matchNo}" data-stage="${stage}">
+      ${stageBadge}
       ${stage === 'final' ? '<div class="bracket-trophy-overlay"><svg class="trophy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 9H4a2 2 0 01-2-2V5a2 2 0 012-2h2M18 9h2a2 2 0 002-2V5a2 2 0 00-2-2h-2M12 17v4M8 21h8M9 17h6M12 13v4"/></svg></div>' : ''}
       <div class="bracket-match-inner">
         <div class="bracket-team ${isTBDA ? 'placeholder' : ''}">
@@ -3135,19 +3147,6 @@ function buildVisualBracket(rankings, thirdPlaceTeams, knockoutMap, assignments,
   // Build the bracket grid based on Excel layout
   // 9 columns: 0=R32-L, 1=R16-L, 2=QF-L, 3=SF-L, 4=Finals, 5=SF-R, 6=QF-R, 7=R16-R, 8=R32-R
   let html = `<div class="bracket-grid-layout">`;
-  
-  // Build column headers with stage indicators
-  html += `<div class="bracket-grid-headers">`;
-  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-r32-left" data-stage="R32"></div>`;
-  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-r16-left" data-stage="R16"></div>`;
-  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-qf-left" data-stage="QF"></div>`;
-  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-sf-left" data-stage="SF"></div>`;
-  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-final" data-stage="Final"></div>`;
-  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-sf-right" data-stage="SF"></div>`;
-  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-qf-right" data-stage="QF"></div>`;
-  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-r16-right" data-stage="R16"></div>`;
-  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-r32-right" data-stage="R32"></div>`;
-  html += `</div>`;
   
   // Build each row of the grid
   BRACKET_GRID_LAYOUT.forEach((rowConfig, rowIndex) => {
