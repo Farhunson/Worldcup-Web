@@ -1819,19 +1819,70 @@ tr.advancement-best-third td {
 /* ── Match Node Card ───────────────────────────────────────────────── */
 .bracket-match-node {
   position: relative;
-  background: var(--surface-soft);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding-top: 14px;
+  background: transparent;
+  border-radius: 28px;
   overflow: hidden;
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    border-color 0.3s ease;
+    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   z-index: 2;
   width: 220px;
-  min-height: 180px;
   animation: fadeSlideIn 0.5s ease-out backwards;
+}
+
+/* Match Header - Like group-card-header */
+.bracket-match-header {
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--match-header-bg, linear-gradient(135deg, #3B82F6, #2563EB));
+  border-radius: 28px 28px 0 0;
+}
+
+/* Match Body - Like group-panel */
+.bracket-match-body {
+  border: 5px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 28px 28px;
+  padding: 12px 14px;
+  background: var(--surface-soft);
+  min-height: 160px;
+}
+
+.bracket-match-node:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+}
+
+.bracket-match-node:hover .bracket-match-body {
+  border-color: var(--primary);
+}
+
+/* Dark theme support */
+:root[data-theme="dark"] .bracket-match-body {
+  background: var(--surface-2);
+}
+
+/* Match Number - styling for header text */
+.bracket-match-number {
+  font-family: 'FWC2026Condensed', 'FWC2026', Inter, system-ui, sans-serif;
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: #FFFFFF;
+  letter-spacing: 0.02em;
+}
+
+.bracket-match-header .trophy-icon {
+  width: 24px;
+  height: 24px;
+  stroke: #FFFFFF;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.bracket-match-header .third-icon {
+  font-size: 1.2rem;
+  opacity: 0.9;
 }
 
 @keyframes fadeSlideIn {
@@ -1868,7 +1919,7 @@ tr.advancement-best-third td {
   border-color: var(--primary);
 }
 
-/* Match-specific border colors (Left side - Blues/Greens) */
+/* Match-specific header colors (Left side - Blues/Greens) */
 .bracket-match-node[data-matchno="74"],
 .bracket-match-node[data-matchno="77"],
 .bracket-match-node[data-matchno="73"],
@@ -1876,7 +1927,7 @@ tr.advancement-best-third td {
 .bracket-match-node[data-matchno="89"],
 .bracket-match-node[data-matchno="90"],
 .bracket-match-node[data-matchno="97"] {
-  border-top: 3px solid #87B0F2;
+  --match-header-bg: linear-gradient(135deg, #87B0F2, #6B93D6);
 }
 
 .bracket-match-node[data-matchno="83"],
@@ -1886,10 +1937,10 @@ tr.advancement-best-third td {
 .bracket-match-node[data-matchno="93"],
 .bracket-match-node[data-matchno="94"],
 .bracket-match-node[data-matchno="98"] {
-  border-top: 3px solid #87D8D1;
+  --match-header-bg: linear-gradient(135deg, #87D8D1, #6BC4BC);
 }
 
-/* Match-specific border colors (Right side - Teals/Pinks) */
+/* Match-specific header colors (Right side - Teals/Pinks) */
 .bracket-match-node[data-matchno="76"],
 .bracket-match-node[data-matchno="78"],
 .bracket-match-node[data-matchno="79"],
@@ -1897,7 +1948,7 @@ tr.advancement-best-third td {
 .bracket-match-node[data-matchno="91"],
 .bracket-match-node[data-matchno="92"],
 .bracket-match-node[data-matchno="99"] {
-  border-top: 3px solid #00A486;
+  --match-header-bg: linear-gradient(135deg, #00A486, #008F70);
 }
 
 .bracket-match-node[data-matchno="86"],
@@ -1907,24 +1958,22 @@ tr.advancement-best-third td {
 .bracket-match-node[data-matchno="96"],
 .bracket-match-node[data-matchno="95"],
 .bracket-match-node[data-matchno="100"] {
-  border-top: 3px solid #CA0D5F;
+  --match-header-bg: linear-gradient(135deg, #CA0D5F, #A80B4E);
 }
 
 /* SF, Final, and Third Place Special Design */
 .bracket-match-node[data-matchno="101"],
 .bracket-match-node[data-matchno="102"] {
-  border-top: 3px solid #A648BA;
+  --match-header-bg: linear-gradient(135deg, #A648BA, #8B3CA0);
 }
 
 .bracket-match-node[data-matchno="103"] {
-  border-top: 3px solid #CD7F32;
+  --match-header-bg: linear-gradient(135deg, #CD7F32, #B06A28);
 }
 
 .bracket-match-node[data-matchno="104"] {
-  border-top: 4px solid #EFBF04;
-  border-left: 4px solid #EFBF04;
-  background: linear-gradient(135deg, var(--surface-soft) 0%, rgba(239, 191, 4, 0.08) 100%);
-  box-shadow: 0 4px 24px rgba(239, 191, 4, 0.2);
+  --match-header-bg: linear-gradient(135deg, #EFBF04, #D4A703);
+  --match-header-border: 5px solid #EFBF04;
   animation: fadeSlideIn 0.5s ease-out backwards, pulseGold 3s ease-in-out infinite;
 }
 
@@ -1938,38 +1987,7 @@ tr.advancement-best-third td {
 }
 
 .bracket-match-node[data-matchno="104"]:hover {
-  transform: translateY(-3px) scale(1.03);
   box-shadow: 0 12px 40px rgba(239, 191, 4, 0.4);
-}
-
-/* World Cup Trophy Icon in Final Card */
-.bracket-match-node[data-matchno="104"]::before {
-  content: '🏆';
-  position: absolute;
-  top: 8px;
-  right: 10px;
-  font-size: 1.2rem;
-  opacity: 0.6;
-  animation: trophyBounce 2s ease-in-out infinite;
-}
-
-@keyframes trophyBounce {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-3px);
-  }
-}
-
-/* Third Place Match Card - Special Design */
-.bracket-match-node[data-matchno="103"]::before {
-  content: '🥉';
-  position: absolute;
-  top: 8px;
-  right: 10px;
-  font-size: 1rem;
-  opacity: 0.5;
 }
 
 /* Subtle corner accents for each stage */

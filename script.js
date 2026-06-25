@@ -3017,36 +3017,41 @@ function buildMatchCardHtml(match, stage, rankings, thirdPlaceTeams, knockoutMap
   
   return `
     <div class="bracket-match-node" data-matchno="${match.matchNo}" data-stage="${stage}">
-      ${stage === 'final' ? '<div class="bracket-trophy-overlay"><svg class="trophy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 9H4a2 2 0 01-2-2V5a2 2 0 012-2h2M18 9h2a2 2 0 002-2V5a2 2 0 00-2-2h-2M12 17v4M8 21h8M9 17h6M12 13v4"/></svg></div>' : ''}
-      <div class="bracket-match-inner">
-        <div class="bracket-team ${isTBDA ? 'placeholder' : ''}">
-          <div class="bracket-team-info">
-            ${isTBDA ? '<span class="team-flag">🏳️</span>' : formatFlag(teamA.name)}
-            <span class="bracket-team-name">
-              ${isTBDA ? (teamA.name === 'TBD' ? (teamA.note || match.pos1) : teamA.name) : getTeamInitials(teamA.name)}
-            </span>
+      <div class="bracket-match-header">
+        <span class="bracket-match-number">M${match.matchNo}</span>
+        ${stage === 'final' ? '<svg class="trophy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 9H4a2 2 0 01-2-2V5a2 2 0 012-2h2M18 9h2a2 2 0 002-2V5a2 2 0 00-2-2h-2M12 17v4M8 21h8M9 17h6M12 13v4"/></svg>' : ''}
+        ${stage === 'third' ? '<span class="third-icon">🥉</span>' : ''}
+      </div>
+      <div class="bracket-match-body">
+        <div class="bracket-match-inner">
+          <div class="bracket-team ${isTBDA ? 'placeholder' : ''}">
+            <div class="bracket-team-info">
+              ${isTBDA ? '<span class="team-flag">🏳️</span>' : formatFlag(teamA.name)}
+              <span class="bracket-team-name">
+                ${isTBDA ? (teamA.name === 'TBD' ? (teamA.note || match.pos1) : teamA.name) : getTeamInitials(teamA.name)}
+              </span>
+            </div>
+            <input class="score-input bracket-score" type="number" min="0" value="${scoreA}" data-match="${match.matchNo}" data-side="score1" ${disabledAttr} />
           </div>
-          <input class="score-input bracket-score" type="number" min="0" value="${scoreA}" data-match="${match.matchNo}" data-side="score1" ${disabledAttr} />
+          <div class="bracket-team ${isTBDB ? 'placeholder' : ''}">
+            <div class="bracket-team-info">
+              ${isTBDB ? '<span class="team-flag">🏳️</span>' : formatFlag(teamB.name)}
+              <span class="bracket-team-name">
+                ${isTBDB ? (teamB.name === 'TBD' ? (teamB.note || match.pos2) : teamB.name) : getTeamInitials(teamB.name)}
+              </span>
+            </div>
+            <input class="score-input bracket-score" type="number" min="0" value="${scoreB}" data-match="${match.matchNo}" data-side="score2" ${disabledAttr} />
+          </div>
         </div>
-        <div class="bracket-team ${isTBDB ? 'placeholder' : ''}">
-          <div class="bracket-team-info">
-            ${isTBDB ? '<span class="team-flag">🏳️</span>' : formatFlag(teamB.name)}
-            <span class="bracket-team-name">
-              ${isTBDB ? (teamB.name === 'TBD' ? (teamB.note || match.pos2) : teamB.name) : getTeamInitials(teamB.name)}
-            </span>
+        ${scorersHtml}
+        <div class="bracket-match-meta">
+          <span class="bracket-datetime">${dateLabel} · ${timeDisplay} ${apiBadge}</span>
+          <div class="bracket-venue">
+            <div class="bracket-stadium-name">${getStadiumName(match.venue) || ''}</div>
+            <div class="bracket-city-name">${getCityName(match.venue) || ''}</div>
           </div>
-          <input class="score-input bracket-score" type="number" min="0" value="${scoreB}" data-match="${match.matchNo}" data-side="score2" ${disabledAttr} />
         </div>
       </div>
-      ${scorersHtml}
-      <div class="bracket-match-meta">
-        <span class="bracket-datetime">${dateLabel} · ${timeDisplay} ${apiBadge}</span>
-        <div class="bracket-venue">
-          <div class="bracket-stadium-name">${getStadiumName(match.venue) || ''}</div>
-          <div class="bracket-city-name">${getCityName(match.venue) || ''}</div>
-        </div>
-      </div>
-      <div class="bracket-match-number">M${match.matchNo}</div>
     </div>
   `;
 }
