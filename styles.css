@@ -1308,7 +1308,7 @@ tr.advancement-best-third td {
 /* ── Bracket Grid Headers ──────────────────────────────────────────── */
 .bracket-grid-headers {
   display: grid;
-  grid-template-columns: repeat(9, 240px) 40px;
+  grid-template-columns: 240px 240px 240px 240px 280px 240px 240px 240px 240px;
   gap: 0;
   padding: 20px 10px 0;
   margin-bottom: 0;
@@ -1337,10 +1337,6 @@ tr.advancement-best-third td {
   border-left: 1px solid var(--border);
 }
 
-.bracket-header-third {
-  color: #CD7F32;
-}
-
 /* Dark theme support */
 :root[data-theme="dark"] .bracket-grid-header {
   background: var(--surface-2);
@@ -1348,7 +1344,7 @@ tr.advancement-best-third td {
 
 .bracket-grid-row {
   display: grid;
-  grid-template-columns: repeat(9, 240px) 40px;
+  grid-template-columns: 240px 240px 240px 240px 280px 240px 240px 240px 240px;
   gap: 0;
   min-height: 120px;
   position: relative;
@@ -1429,7 +1425,7 @@ tr.advancement-best-third td {
   border-radius: 14px;
   margin: 4px 10px;
   min-height: 180px;
-  width: 280px;
+  width: 260px;
   display: flex;
   align-items: center;
   justify-content: center;
