@@ -1308,7 +1308,7 @@ tr.advancement-best-third td {
 /* ── Bracket Grid Headers ──────────────────────────────────────────── */
 .bracket-grid-headers {
   display: grid;
-  grid-template-columns: repeat(9, 240px);
+  grid-template-columns: repeat(9, 240px) 40px;
   gap: 0;
   padding: 20px 10px 0;
   margin-bottom: 0;
@@ -1337,6 +1337,10 @@ tr.advancement-best-third td {
   border-left: 1px solid var(--border);
 }
 
+.bracket-header-third {
+  color: #CD7F32;
+}
+
 /* Dark theme support */
 :root[data-theme="dark"] .bracket-grid-header {
   background: var(--surface-2);
@@ -1344,7 +1348,7 @@ tr.advancement-best-third td {
 
 .bracket-grid-row {
   display: grid;
-  grid-template-columns: repeat(9, 240px);
+  grid-template-columns: repeat(9, 240px) 40px;
   gap: 0;
   min-height: 120px;
   position: relative;
@@ -1425,32 +1429,32 @@ tr.advancement-best-third td {
   border-radius: 14px;
   margin: 4px 10px;
   min-height: 180px;
-  width: 220px;
+  width: 280px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .bracket-cell-final {
-  border: 2px solid #F59E0B;
-  box-shadow: 0 4px 24px rgba(245, 158, 11, 0.2);
-  background: linear-gradient(135deg, var(--surface-soft) 0%, rgba(245, 158, 11, 0.08) 100%);
+  border: 2px solid #EFBF04;
+  box-shadow: 0 4px 24px rgba(239, 191, 4, 0.2);
+  background: linear-gradient(135deg, var(--surface-soft) 0%, rgba(239, 191, 4, 0.08) 100%);
   animation: cellPulseGold 3s ease-in-out infinite;
 }
 
 @keyframes cellPulseGold {
   0%, 100% {
-    box-shadow: 0 4px 24px rgba(245, 158, 11, 0.2);
+    box-shadow: 0 4px 24px rgba(239, 191, 4, 0.2);
   }
   50% {
-    box-shadow: 0 4px 32px rgba(245, 158, 11, 0.35);
+    box-shadow: 0 4px 32px rgba(239, 191, 4, 0.35);
   }
 }
 
 .bracket-cell-third {
-  border: 2px solid #9CA3AF;
-  box-shadow: 0 4px 16px rgba(156, 163, 175, 0.15);
-  background: linear-gradient(135deg, var(--surface-soft) 0%, rgba(156, 163, 175, 0.08) 100%);
+  border: 2px solid #CD7F32;
+  box-shadow: 0 4px 16px rgba(205, 127, 50, 0.15);
+  background: linear-gradient(135deg, var(--surface-soft) 0%, rgba(205, 127, 50, 0.08) 100%);
 }
 
 /* Final column - spans rows but we use individual cells */
@@ -1874,11 +1878,12 @@ tr.advancement-best-third td {
 
 /* ── Special Match Cards (Final & Third Place) - Today's Match Style ─ */
 .bracket-special-match {
-  width: 260px;
+  width: 100%;
+  max-width: 260px;
   border-radius: 14px;
   background: var(--surface-soft);
-  border: 1px solid var(--border);
-  padding: 14px 16px;
+  border: none;
+  padding: 0;
 }
 
 .bracket-special-match:hover {
