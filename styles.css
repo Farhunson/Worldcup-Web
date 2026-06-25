@@ -1245,24 +1245,24 @@ tr.advancement-best-third td {
 
 .bracket-grid-headers {
   display: grid;
-  grid-template-columns: repeat(9, minmax(180px, 1fr));
+  grid-template-columns: repeat(9, 240px);
   gap: 0;
   margin-bottom: 20px;
   padding: 0 10px;
 }
 
 .bracket-header-cell {
-  padding: 12px 16px;
+  padding: 14px 16px;
   font-family: 'FWC2026Condensed', 'FWC2026', Inter, system-ui, sans-serif;
   font-weight: 900;
-  font-size: 0.75rem;
-  letter-spacing: 0.08em;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   text-align: center;
   background: var(--surface-soft);
   color: var(--text);
-  border-top: 3px solid transparent;
-  border-radius: 8px 8px 0 0;
+  border-top: 4px solid transparent;
+  border-radius: 10px 10px 0 0;
 }
 
 /* Header colors for different stages */
@@ -1284,23 +1284,23 @@ tr.advancement-best-third td {
 }
 .bracket-col-final {
   border-top-color: #F59E0B;
-  background: linear-gradient(135deg, var(--surface-soft) 0%, rgba(245, 158, 11, 0.1) 100%);
+  background: linear-gradient(135deg, var(--surface-soft) 0%, rgba(245, 158, 11, 0.15) 100%);
 }
 
 .bracket-grid-row {
   display: grid;
-  grid-template-columns: repeat(9, minmax(180px, 1fr));
+  grid-template-columns: repeat(9, 240px);
   gap: 0;
-  min-height: 85px;
+  min-height: 120px;
 }
 
 .bracket-grid-cell {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 8px;
+  padding: 10px;
   border-right: 1px solid var(--border);
-  min-height: 85px;
+  min-height: 120px;
 }
 
 .bracket-grid-cell:last-child {
@@ -1331,10 +1331,11 @@ tr.advancement-best-third td {
 .bracket-cell-final,
 .bracket-cell-third {
   background: var(--surface-soft);
-  border-left: 3px solid #F59E0B;
-  border-radius: 12px;
-  margin: 4px 8px;
-  min-height: 75px;
+  border-left: 4px solid #F59E0B;
+  border-radius: 14px;
+  margin: 4px 10px;
+  min-height: 147px;
+  width: 220px;
 }
 
 .bracket-cell-third {
@@ -1751,14 +1752,16 @@ tr.advancement-best-third td {
   position: relative;
   background: var(--surface-soft);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  padding-top: 12px;
+  border-radius: 14px;
+  padding-top: 14px;
   overflow: hidden;
   transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1),
     box-shadow 0.22s cubic-bezier(0.4, 0, 0.2, 1),
     border-color 0.22s ease;
   cursor: pointer;
   z-index: 2;
+  width: 220px;
+  height: 147px;
 }
 
 .bracket-match-node:hover {
@@ -1769,27 +1772,27 @@ tr.advancement-best-third td {
 
 /* Left accent border per stage */
 .bracket-stage-r32 .bracket-match-node {
-  border-left: 3px solid #3B82F6;
+  border-left: 4px solid #3B82F6;
 }
 
 .bracket-stage-r16 .bracket-match-node {
-  border-left: 3px solid #10B981;
+  border-left: 4px solid #10B981;
 }
 
 .bracket-stage-qf .bracket-match-node {
-  border-left: 3px solid #F59E0B;
+  border-left: 4px solid #F59E0B;
 }
 
 .bracket-stage-sf .bracket-match-node {
-  border-left: 3px solid #8B5CF6;
+  border-left: 4px solid #8B5CF6;
 }
 
 .bracket-stage-third .bracket-match-node {
-  border-left: 3px solid #9CA3AF;
+  border-left: 4px solid #9CA3AF;
 }
 
 .bracket-stage-final .bracket-match-node {
-  border-left: 3px solid #F59E0B;
+  border-left: 4px solid #F59E0B;
   box-shadow: 0 4px 20px rgba(245, 158, 11, 0.15);
 }
 
@@ -1801,14 +1804,16 @@ tr.advancement-best-third td {
 .bracket-match-inner {
   display: flex;
   flex-direction: column;
+  height: calc(100% - 40px);
 }
 
 .bracket-team {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 12px;
-  gap: 8px;
+  padding: 10px 14px;
+  gap: 10px;
+  flex: 1;
   transition: background 0.15s ease;
 }
 
@@ -1827,14 +1832,14 @@ tr.advancement-best-third td {
 .bracket-team-info {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   min-width: 0;
   flex: 1;
 }
 
 .bracket-team-name {
   font-weight: 700;
-  font-size: 0.88rem;
+  font-size: 0.95rem;
   color: var(--text);
   white-space: nowrap;
   overflow: hidden;
@@ -1845,9 +1850,9 @@ tr.advancement-best-third td {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  min-width: 32px;
-  height: 20px;
+  width: 36px;
+  min-width: 36px;
+  height: 22px;
   border-radius: 0 8px 0 8px;
   overflow: hidden;
   background: #FFFFFF;
@@ -1864,10 +1869,10 @@ tr.advancement-best-third td {
 
 /* Score inputs inside bracket match */
 .bracket-score {
-  width: 44px !important;
-  height: 30px;
+  width: 48px !important;
+  height: 34px;
   padding: 4px 0 !important;
-  font-size: 0.9rem !important;
+  font-size: 1rem !important;
   border-radius: 8px !important;
   text-align: center;
   flex-shrink: 0;
