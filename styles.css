@@ -1337,52 +1337,57 @@ tr.advancement-best-third td {
     width: 100%;
   }
   
+  .bracket-grid-cell {
+    padding: 6px;
+  }
+  
   .bracket-match-node {
     width: 100%;
-    min-width: 120px;
-    min-height: 140px;
-    max-width: 180px;
+    max-width: 100%;
+    min-height: 150px;
+    padding-top: 10px;
   }
   
   .bracket-cell-final,
   .bracket-cell-third {
     width: 100%;
-    min-width: 140px;
-    max-width: 180px;
+    max-width: 100%;
+    min-height: 150px;
+    margin: 4px 6px;
   }
   
   .bracket-team {
-    padding: 6px 8px;
+    padding: 5px 8px;
     gap: 6px;
   }
   
   .bracket-team-name {
-    font-size: 0.8rem;
+    font-size: 0.78rem;
   }
   
   .bracket-team .team-flag {
-    width: 28px;
-    min-width: 28px;
-    height: 18px;
+    width: 26px;
+    min-width: 26px;
+    height: 16px;
   }
   
   .bracket-score {
-    width: 36px !important;
-    height: 28px;
-    font-size: 0.85rem !important;
+    width: 32px !important;
+    height: 26px;
+    font-size: 0.8rem !important;
   }
   
   .bracket-match-meta {
-    font-size: 0.65rem;
+    font-size: 0.6rem;
   }
   
   .bracket-header-cell {
-    padding: 4px 8px;
+    padding: 4px 6px;
   }
   
   .bracket-header-cell::after {
-    font-size: 0.55rem;
-    bottom: -14px;
+    font-size: 0.5rem;
+    bottom: -12px;
   }
 }
 
@@ -1494,9 +1499,11 @@ tr.advancement-best-third td {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 10px;
+  padding: 8px;
   border-right: 1px solid var(--border);
   min-height: 120px;
+  overflow: visible;
+  box-sizing: border-box;
 }
 
 .bracket-grid-cell:last-child {
@@ -1528,13 +1535,14 @@ tr.advancement-best-third td {
 .bracket-cell-third {
   background: var(--surface-soft);
   border-radius: 14px;
-  margin: 4px 10px;
-  min-height: 180px;
+  margin: 4px 8px;
+  min-height: 160px;
   width: 100%;
-  max-width: 200px;
+  max-width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
 }
 
 .bracket-cell-final {
@@ -1978,8 +1986,9 @@ tr.advancement-best-third td {
   cursor: pointer;
   z-index: 2;
   width: 100%;
-  max-width: 200px;
-  min-height: 180px;
+  max-width: 100%;
+  min-height: 160px;
+  box-sizing: border-box;
   animation: fadeSlideIn 0.5s ease-out backwards;
 }
 
