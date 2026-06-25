@@ -1305,83 +1305,6 @@ tr.advancement-best-third td {
   }
 }
 
-/* Subtle stage indicator bars at top of bracket */
-.bracket-grid-headers {
-  display: grid;
-  grid-template-columns: repeat(9, 240px);
-  gap: 0;
-  margin-bottom: 30px;
-  padding: 0 10px;
-  width: max-content;
-}
-
-.bracket-header-cell {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 8px 16px;
-  background: transparent;
-  color: var(--muted);
-  border: none;
-  border-radius: 0;
-  position: relative;
-  min-height: 120px;
-  box-sizing: border-box;
-}
-
-/* Subtle colored dots instead of text labels */
-.bracket-header-cell::before {
-  content: '';
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--border);
-}
-
-.bracket-header-cell::after {
-  content: attr(data-stage);
-  position: absolute;
-  bottom: -18px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-family: 'FWC2026Condensed', 'FWC2026', Inter, system-ui, sans-serif;
-  font-weight: 700;
-  font-size: 0.6rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--muted);
-  opacity: 0.6;
-  white-space: nowrap;
-}
-
-/* Colored dots for different stages */
-.bracket-col-r32-left::before,
-.bracket-col-r32-right::before {
-  background: #3B82F6;
-  box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
-}
-.bracket-col-r16-left::before,
-.bracket-col-r16-right::before {
-  background: #10B981;
-  box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
-}
-.bracket-col-qf-left::before,
-.bracket-col-qf-right::before {
-  background: #F59E0B;
-  box-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
-}
-.bracket-col-sf-left::before,
-.bracket-col-sf-right::before {
-  background: #8B5CF6;
-  box-shadow: 0 0 8px rgba(139, 92, 246, 0.5);
-}
-.bracket-col-final::before {
-  background: linear-gradient(135deg, #F59E0B, #FFD700);
-  box-shadow: 0 0 12px rgba(245, 158, 11, 0.6);
-  width: 10px;
-  height: 10px;
-}
-
 .bracket-grid-row {
   display: grid;
   grid-template-columns: repeat(9, 240px);
@@ -1921,6 +1844,27 @@ tr.advancement-best-third td {
     transform: translateY(0);
   }
 }
+
+/* Stage badge on match cards */
+.bracket-stage-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  z-index: 5;
+}
+
+.bracket-stage-r32 { background: rgba(100, 100, 100, 0.15); color: #888; }
+.bracket-stage-r16 { background: rgba(100, 150, 200, 0.2); color: #4a90b8; }
+.bracket-stage-qf { background: rgba(100, 180, 100, 0.2); color: #5a9a5a; }
+.bracket-stage-sf { background: rgba(180, 140, 200, 0.2); color: #8a6aaa; }
+.bracket-stage-final { background: rgba(255, 200, 50, 0.25); color: #c9a227; font-weight: 800; }
+.bracket-stage-third { background: rgba(200, 150, 100, 0.2); color: #9a7a5a; }
 
 /* Staggered animations for match cards */
 .bracket-grid-row:nth-child(1) .bracket-match-node { animation-delay: 0.05s; }
