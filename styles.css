@@ -1872,80 +1872,67 @@ tr.advancement-best-third td {
   animation: fadeSlideIn 0.5s ease-out backwards;
 }
 
-/* ── Final Match Card (Special Design) ────────────────────────────── */
-.bracket-match-final {
+/* ── Special Match Cards (Final & Third Place) - Today's Match Style ─ */
+.bracket-special-match {
   width: 260px;
-  box-shadow: 0 4px 24px rgba(239, 191, 4, 0.2);
-  animation: fadeSlideIn 0.5s ease-out backwards, pulseGoldFinal 3s ease-in-out infinite;
-}
-
-@keyframes pulseGoldFinal {
-  0%, 100% {
-    box-shadow: 0 4px 24px rgba(239, 191, 4, 0.2);
-  }
-  50% {
-    box-shadow: 0 4px 32px rgba(239, 191, 4, 0.35);
-  }
-}
-
-.bracket-match-final .bracket-match-header {
-  background: linear-gradient(135deg, #EFBF04, #D4A703);
-  padding: 16px 18px;
-}
-
-.bracket-match-final .bracket-match-number {
-  font-size: 1.8rem;
-  font-weight: 900;
-}
-
-.bracket-match-final .bracket-match-header .trophy-icon {
-  width: 28px;
-  height: 28px;
-}
-
-.bracket-match-final .bracket-match-body {
-  border-color: #EFBF04;
-}
-
-.bracket-match-final .bracket-team-name {
-  font-size: 0.95rem;
-}
-
-.bracket-match-final:hover {
-  transform: translateY(-4px) scale(1.04);
-  box-shadow: 0 12px 40px rgba(239, 191, 4, 0.4);
-}
-
-/* ── Third Place Match Card (Special Design) ──────────────────────── */
-.bracket-match-third {
-  width: 250px;
-  box-shadow: 0 4px 20px rgba(205, 127, 50, 0.15);
-}
-
-.bracket-match-third .bracket-match-header {
-  background: linear-gradient(135deg, #CD7F32, #B06A28);
+  border-radius: 14px;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
   padding: 14px 16px;
 }
 
-.bracket-match-third .bracket-match-number {
-  font-size: 1.6rem;
+.bracket-special-match:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
-.bracket-match-third .bracket-match-header .third-icon {
-  font-size: 1.4rem;
+.bracket-special-match .todays-match-header {
+  margin-bottom: 8px;
 }
 
-.bracket-match-third .bracket-match-body {
-  border-color: #CD7F32;
+.todays-group-badge.final {
+  background: linear-gradient(135deg, #EFBF04, #D4A703);
+  padding: 4px 12px;
+  animation: pulseGoldBadge 3s ease-in-out infinite;
 }
 
-.bracket-match-third .bracket-team-name {
+@keyframes pulseGoldBadge {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(239, 191, 4, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(239, 191, 4, 0);
+  }
+}
+
+.todays-group-badge.third-place {
+  background: linear-gradient(135deg, #CD7F32, #B06A28);
+  padding: 4px 12px;
+}
+
+.bracket-special-match .match-top {
+  margin-top: 8px;
+}
+
+.bracket-special-match .team-name {
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bracket-special-match .todays-score-display {
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.bracket-special-match .match-mid {
+  margin-top: 10px;
   font-size: 0.9rem;
 }
 
-.bracket-match-third:hover {
-  transform: translateY(-4px) scale(1.03);
-  box-shadow: 0 12px 36px rgba(205, 127, 50, 0.3);
+.bracket-special-match .match-bottom {
+  margin-top: 4px;
+  font-size: 0.85rem;
 }
 
 /* Match Header - Like group-card-header */
