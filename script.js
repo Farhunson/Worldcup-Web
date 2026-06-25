@@ -3152,8 +3152,7 @@ function buildVisualBracket(rankings, thirdPlaceTeams, knockoutMap, assignments,
   html += `<div class="bracket-grid-headers">`;
   for (let col = 0; col < 9; col++) {
     const stageInfo = STAGE_COLUMNS[col];
-    const stageColor = getStageColor(stageInfo.stage);
-    html += `<div class="bracket-grid-header bracket-header-${stageInfo.stage}" style="--stage-color: ${stageColor}">${stageInfo.title}</div>`;
+    html += `<div class="bracket-grid-header">${stageInfo.title}</div>`;
   }
   html += `</div>`;
   
