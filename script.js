@@ -3122,6 +3122,19 @@ const STAGE_COLUMNS = {
   8: { stage: 'r32', title: 'Round of 32', side: 'right' },
 };
 
+// Helper function to get stage color
+function getStageColor(stage) {
+  const colors = {
+    'r32': '#87B0F2',
+    'r16': '#87D8D1',
+    'qf': '#00A486',
+    'sf': '#A648BA',
+    'final': '#EFBF04',
+    'third': '#CD7F32'
+  };
+  return colors[stage] || '#888888';
+}
+
 function buildVisualBracket(rankings, thirdPlaceTeams, knockoutMap, assignments, allGroupsComplete) {
   const resultMap = computeKnockoutResults(rankings, thirdPlaceTeams, assignments, allGroupsComplete);
   
@@ -3134,6 +3147,15 @@ function buildVisualBracket(rankings, thirdPlaceTeams, knockoutMap, assignments,
   // Build the bracket grid based on Excel layout
   // 9 columns: 0=R32-L, 1=R16-L, 2=QF-L, 3=SF-L, 4=Finals, 5=SF-R, 6=QF-R, 7=R16-R, 8=R32-R
   let html = `<div class="bracket-grid-layout">`;
+  
+  // Add stage headers at the top
+  html += `<div class="bracket-grid-headers">`;
+  for (let col = 0; col < 9; col++) {
+    const stageInfo = STAGE_COLUMNS[col];
+    const stageColor = getStageColor(stageInfo.stage);
+    html += `<div class="bracket-grid-header bracket-header-${stageInfo.stage}" style="--stage-color: ${stageColor}">${stageInfo.title}</div>`;
+  }
+  html += `</div>`;
   
   // Build each row of the grid
   BRACKET_GRID_LAYOUT.forEach((rowConfig, rowIndex) => {
