@@ -1233,7 +1233,48 @@ tr.advancement-best-third td {
   border-radius: 4px;
 }
 
-/* ── Pathway Bracket Layout ──────────────────────────────────────── */
+/* ── Split Bracket Layout ─────────────────────────────────────────── */
+/* New main container for split bracket design */
+.bracket-split-layout {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  overflow-x: auto;
+  padding: 20px 0;
+  min-height: 600px;
+}
+
+/* Left section of bracket */
+.bracket-left-section {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0;
+  flex-shrink: 0;
+}
+
+/* Right section of bracket (mirrored) */
+.bracket-right-section {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0;
+  flex-shrink: 0;
+  flex-direction: row-reverse;
+}
+
+/* ── Rounds Section (Legacy - kept for compatibility) ─────────────── */
+.bracket-rounds-section {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 0;
+  flex-shrink: 0;
+}
+
+/* ── Pathway Bracket Layout (Legacy - kept for compatibility) ───── */
 .bracket-pathway-layout {
   display: flex;
   flex-direction: row;
@@ -1243,21 +1284,31 @@ tr.advancement-best-third td {
   padding: 20px 0;
 }
 
-/* ── Rounds Section (Left side of bracket) ───────────────────────── */
-.bracket-rounds-section {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: 0;
-  flex-shrink: 0;
-}
-
 /* ── Bracket Column ───────────────────────────────────────────────── */
 .bracket-column {
   display: flex;
   flex-direction: column;
   min-width: 280px;
   flex-shrink: 0;
+}
+
+/* Right-side columns - flip the content to mirror */
+.bracket-column-right {
+  flex-direction: column;
+}
+
+.bracket-column-right .bracket-column-content {
+  flex-direction: column;
+}
+
+/* Right side bracket rows - reverse vertical order */
+.bracket-column-right .bracket-bracket-row {
+  flex-direction: column-reverse;
+}
+
+/* Right side bracket cells */
+.bracket-column-right .bracket-bracket-cell {
+  flex-direction: column;
 }
 
 .bracket-column-header {
@@ -1323,14 +1374,15 @@ tr.advancement-best-third td {
   display: flex;
   flex-direction: column;
   flex: 1;
+  justify-content: space-around;
 }
 
 /* ── Bracket Row (each row containing matches) ─────────────────── */
 .bracket-bracket-row {
   display: flex;
   flex-direction: column;
-  flex: 1;
-  min-height: 100px;
+  min-height: 80px;
+  justify-content: center;
 }
 
 .bracket-bracket-cell {
@@ -1340,27 +1392,82 @@ tr.advancement-best-third td {
   justify-content: center;
 }
 
+/* For left side columns - ensure cells align to outside (centered outward) */
+.bracket-column-left .bracket-bracket-cell.bracket-cell-top {
+  justify-content: flex-start;
+}
+
+.bracket-column-left .bracket-bracket-cell.bracket-cell-bottom {
+  justify-content: flex-end;
+}
+
+/* For right side columns - ensure cells align to outside (centered outward) */
+.bracket-column-right .bracket-bracket-cell.bracket-cell-top {
+  justify-content: flex-start;
+}
+
+.bracket-column-right .bracket-bracket-cell.bracket-cell-bottom {
+  justify-content: flex-end;
+}
+
 /* ── Connector Line between columns ──────────────────────────────── */
 .bracket-connector-line {
   width: 30px;
   flex-shrink: 0;
   position: relative;
+  display: flex;
+  align-items: stretch;
+  background: var(--border);
 }
 
-/* ── Finals Section (Right side - Third Place & Final) ─────────── */
+/* Left connector has line on the right side */
+.bracket-connector-line.connector-left {
+  background: transparent;
+}
+
+.bracket-connector-line.connector-left::before {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--border);
+}
+
+/* Right connector has line on the left side */
+.bracket-connector-line.connector-right {
+  background: transparent;
+}
+
+.bracket-connector-line.connector-right::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--border);
+}
+
+/* ── Finals Section (Centered) ───────────────────────────────────── */
 .bracket-finals-divider {
   width: 1px;
   background: var(--border);
   align-self: stretch;
   margin: 0 30px;
+  flex-shrink: 0;
 }
 
 .bracket-finals-section {
   display: flex;
   flex-direction: column;
-  gap: 40px;
-  padding-top: 0;
+  justify-content: center;
+  gap: 60px;
+  padding: 0;
   min-width: 280px;
+  flex-shrink: 0;
+  height: 100%;
 }
 
 .bracket-third-place-row,
@@ -1378,6 +1485,7 @@ tr.advancement-best-third td {
   text-transform: uppercase;
   color: var(--text-muted);
   padding: 8px 0;
+  text-align: center;
 }
 
 .bracket-third-place-row .bracket-final-label {
