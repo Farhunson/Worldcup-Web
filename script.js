@@ -3056,87 +3056,70 @@ function buildMatchCardHtml(match, stage, rankings, thirdPlaceTeams, knockoutMap
   `;
 }
 
-// Bracket layout configuration - Redesigned with SVG connectors
-// Based on Excel layout with proper bracket structure
+// Bracket layout configuration - Grid-based design matching Excel layout
+// Excel layout reference (17 rows x 9 columns):
+// Row 3:  M74 | - | - | - | - | - | - | - | M76
+// Row 4:  - | M89 | - | - | - | - | - | M91 | -
+// Row 5:  M77 | - | - | - | - | - | - | - | M78
+// Row 6:  - | - | M97 | - | - | - | - | - | M99
+// Row 7:  M73 | - | - | - | M104 | - | - | - | M79
+// Row 8:  - | M90 | - | - | - | - | - | M92 | -
+// Row 9:  M75 | - | - | - | - | - | - | - | M80
+// Row 10: - | - | - | M101 | M102 | - | - | - | -
+// Row 11: M83 | - | - | - | - | - | - | - | M86
+// Row 12: - | M93 | - | - | - | - | - | - | M95
+// Row 13: M84 | - | - | - | M103 | - | - | - | M88
+// Row 14: - | - | M98 | - | - | - | - | - | M100
+// Row 15: M81 | - | - | - | - | - | - | - | M85
+// Row 16: - | M94 | - | - | - | - | - | - | M96
+// Row 17: M82 | - | - | - | - | - | - | - | M87
 
-// Left side bracket: R32 → R16 → QF → SF
-const LEFT_BRACKET = {
-  r32: [74, 77, 73, 75, 83, 84, 81, 82],  // 8 matches
-  r16: [89, 90, 93, 94],  // 4 matches
-  qf: [97, 98],  // 2 matches
-  sf: [101],  // 1 match
-};
+// Define bracket grid layout - each entry represents a row with match positions
+// Columns: 0=R32-L, 1=R16-L, 2=QF-L, 3=SF-L, 4=Finals, 5=SF-R, 6=QF-R, 7=R16-R, 8=R32-R
+const BRACKET_GRID_LAYOUT = [
+  // Row 0 (Excel Row 3): R32 M74 | R32 M76
+  { row: 0, matches: [{ col: 0, match: 74 }, { col: 8, match: 76 }] },
+  // Row 1 (Excel Row 4): R16 M89 | R16 M91
+  { row: 1, matches: [{ col: 1, match: 89 }, { col: 7, match: 91 }] },
+  // Row 2 (Excel Row 5): R32 M77 | R32 M78
+  { row: 2, matches: [{ col: 0, match: 77 }, { col: 8, match: 78 }] },
+  // Row 3 (Excel Row 6): QF M97 | QF M99
+  { row: 3, matches: [{ col: 2, match: 97 }, { col: 6, match: 99 }] },
+  // Row 4 (Excel Row 7): R32 M73 | Final M104 | R32 M79
+  { row: 4, matches: [{ col: 0, match: 73 }, { col: 4, match: 104, type: 'final' }, { col: 8, match: 79 }] },
+  // Row 5 (Excel Row 8): R16 M90 | R16 M92
+  { row: 5, matches: [{ col: 1, match: 90 }, { col: 7, match: 92 }] },
+  // Row 6 (Excel Row 9): R32 M75 | R32 M80
+  { row: 6, matches: [{ col: 0, match: 75 }, { col: 8, match: 80 }] },
+  // Row 7 (Excel Row 10): SF M101 | SF M102
+  { row: 7, matches: [{ col: 3, match: 101 }, { col: 5, match: 102 }] },
+  // Row 8 (Excel Row 11): R32 M83 | R32 M86
+  { row: 8, matches: [{ col: 0, match: 83 }, { col: 8, match: 86 }] },
+  // Row 9 (Excel Row 12): R16 M93 | R16 M95
+  { row: 9, matches: [{ col: 1, match: 93 }, { col: 7, match: 95 }] },
+  // Row 10 (Excel Row 13): R32 M84 | Third M103 | R32 M88
+  { row: 10, matches: [{ col: 0, match: 84 }, { col: 4, match: 103, type: 'third' }, { col: 8, match: 88 }] },
+  // Row 11 (Excel Row 14): QF M98 | QF M100
+  { row: 11, matches: [{ col: 2, match: 98 }, { col: 6, match: 100 }] },
+  // Row 12 (Excel Row 15): R32 M81 | R32 M85
+  { row: 12, matches: [{ col: 0, match: 81 }, { col: 8, match: 85 }] },
+  // Row 13 (Excel Row 16): R16 M94 | R16 M96
+  { row: 13, matches: [{ col: 1, match: 94 }, { col: 7, match: 96 }] },
+  // Row 14 (Excel Row 17): R32 M82 | R32 M87
+  { row: 14, matches: [{ col: 0, match: 82 }, { col: 8, match: 87 }] },
+];
 
-// Right side bracket: R32 → R16 → QF → SF (reversed for display)
-const RIGHT_BRACKET = {
-  r32: [76, 78, 79, 80, 86, 88, 85, 87],  // 8 matches
-  r16: [91, 92, 95, 96],  // 4 matches
-  qf: [99, 100],  // 2 matches
-  sf: [102],  // 1 match
-};
-
-// Connector mapping: which matches feed into which
-const CONNECTORS = {
-  // Left side connectors (from → to)
-  89: { from: [74, 77], stage: 'r32' },
-  90: { from: [73, 75], stage: 'r32' },
-  93: { from: [83, 84], stage: 'r32' },
-  94: { from: [81, 82], stage: 'r32' },
-  97: { from: [89, 90], stage: 'r16' },
-  98: { from: [93, 94], stage: 'r16' },
-  101: { from: [97, 98], stage: 'qf' },
-  
-  // Right side connectors (from → to)
-  91: { from: [76, 78], stage: 'r32' },
-  92: { from: [79, 80], stage: 'r32' },
-  95: { from: [86, 88], stage: 'r32' },
-  96: { from: [85, 87], stage: 'r32' },
-  99: { from: [91, 92], stage: 'r16' },
-  100: { from: [95, 96], stage: 'r16' },
-  102: { from: [99, 100], stage: 'qf' },
-  
-  // Finals
-  104: { from: [101, 102], stage: 'sf', type: 'final' },
-  103: { from: [101, 102], stage: 'sf', type: 'third' },
-};
-
-// Match position data for connector calculations
-const MATCH_POSITIONS = {
-  // Left R32 (top to bottom)
-  74: { col: 0, row: 0 }, 77: { col: 0, row: 1 },
-  73: { col: 0, row: 2 }, 75: { col: 0, row: 3 },
-  83: { col: 0, row: 4 }, 84: { col: 0, row: 5 },
-  81: { col: 0, row: 6 }, 82: { col: 0, row: 7 },
-  
-  // Left R16 (pairs feed into QF)
-  89: { col: 1, row: 0 }, 90: { col: 1, row: 1 },
-  93: { col: 1, row: 2 }, 94: { col: 1, row: 3 },
-  
-  // Left QF (pairs feed into SF)
-  97: { col: 2, row: 0 }, 98: { col: 2, row: 1 },
-  
-  // Left SF (feeds Final)
-  101: { col: 3, row: 0 },
-  
-  // Right R32 (top to bottom - matches left order for pairing)
-  76: { col: 4, row: 0 }, 78: { col: 4, row: 1 },
-  79: { col: 4, row: 2 }, 80: { col: 4, row: 3 },
-  86: { col: 4, row: 4 }, 88: { col: 4, row: 5 },
-  85: { col: 4, row: 6 }, 87: { col: 4, row: 7 },
-  
-  // Right R16
-  91: { col: 5, row: 0 }, 92: { col: 5, row: 1 },
-  95: { col: 5, row: 2 }, 96: { col: 5, row: 3 },
-  
-  // Right QF
-  99: { col: 6, row: 0 }, 100: { col: 6, row: 1 },
-  
-  // Right SF
-  102: { col: 7, row: 0 },
-  
-  // Finals
-  104: { col: 8, row: 0 },
-  103: { col: 8, row: 1 },
+// Stage column mapping
+const STAGE_COLUMNS = {
+  0: { stage: 'r32', title: 'Round of 32', side: 'left' },
+  1: { stage: 'r16', title: 'Round of 16', side: 'left' },
+  2: { stage: 'qf', title: 'Quarterfinal', side: 'left' },
+  3: { stage: 'sf', title: 'Semifinal', side: 'left' },
+  4: { stage: 'final', title: 'Finals', side: 'center' },
+  5: { stage: 'sf', title: 'Semifinal', side: 'right' },
+  6: { stage: 'qf', title: 'Quarterfinal', side: 'right' },
+  7: { stage: 'r16', title: 'Round of 16', side: 'right' },
+  8: { stage: 'r32', title: 'Round of 32', side: 'right' },
 };
 
 function buildVisualBracket(rankings, thirdPlaceTeams, knockoutMap, assignments, allGroupsComplete) {
@@ -3148,200 +3131,197 @@ function buildVisualBracket(rankings, thirdPlaceTeams, knockoutMap, assignments,
     allMatchCards[match.matchNo] = buildMatchCardHtml(match, match.stage, rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete);
   });
 
-  // Build redesigned bracket with proper bracket structure
-  // Layout: [R32 | R16 | QF | SF] | [Final/Third] | [SF | QF | R16 | R32]
+  // Build the bracket grid based on Excel layout
+  // 9 columns: 0=R32-L, 1=R16-L, 2=QF-L, 3=SF-L, 4=Finals, 5=SF-R, 6=QF-R, 7=R16-R, 8=R32-R
+  let html = `<div class="bracket-grid-layout">`;
   
-  let html = `<div class="bracket-container">`;
+  // Build column headers
+  html += `<div class="bracket-grid-headers">`;
+  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-r32-left">Round of 32</div>`;
+  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-r16-left">Round of 16</div>`;
+  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-qf-left">Quarterfinal</div>`;
+  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-sf-left">Semifinal</div>`;
+  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-final">Finals</div>`;
+  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-sf-right">Semifinal</div>`;
+  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-qf-right">Quarterfinal</div>`;
+  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-r16-right">Round of 16</div>`;
+  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-r32-right">Round of 32</div>`;
+  html += `</div>`;
   
-  // === LEFT BRACKET (R32 → R16 → QF → SF) ===
-  html += `<div class="bracket-side bracket-side-left">`;
-  
-  // Round of 32 - 8 matches, arranged in pairs
-  html += buildRoundColumn('Round of 32', 'r32', [
-    [74, 77],   // feeds R16:89
-    [73, 75],   // feeds R16:90
-    [83, 84],   // feeds R16:93
-    [81, 82],   // feeds R16:94
-  ], allMatchCards, 'left');
-  
-  // Round of 16 - 4 matches
-  html += buildRoundColumn('Round of 16', 'r16', [
-    [89, 90],   // feeds QF:97
-    [93, 94],   // feeds QF:98
-  ], allMatchCards, 'left');
-  
-  // Quarterfinal - 2 matches
-  html += buildRoundColumn('Quarterfinal', 'qf', [
-    [97, 98],   // feeds SF:101
-  ], allMatchCards, 'left');
-  
-  // Semifinal - 1 match
-  html += buildRoundColumn('Semifinal', 'sf', [
-    [101],      // feeds Final:104
-  ], allMatchCards, 'left');
+  // Build each row of the grid
+  BRACKET_GRID_LAYOUT.forEach((rowConfig, rowIndex) => {
+    html += `<div class="bracket-grid-row" data-row="${rowIndex}">`;
+    
+    // Create 9 cells for each column
+    for (let col = 0; col < 9; col++) {
+      // Find if there's a match in this cell
+      const cellMatch = rowConfig.matches.find(m => m.col === col);
+      
+      if (cellMatch) {
+        const matchCard = allMatchCards[cellMatch.match] || '';
+        const cellClass = cellMatch.type === 'final' ? 'bracket-cell-final' : 
+                          cellMatch.type === 'third' ? 'bracket-cell-third' : 
+                          getBracketCellClass(col);
+        html += `<div class="bracket-grid-cell ${cellClass}">${matchCard}</div>`;
+      } else {
+        html += `<div class="bracket-grid-cell bracket-cell-empty"></div>`;
+      }
+    }
+    
+    html += `</div>`;
+  });
   
   html += `</div>`;
   
-  // === CENTER: Finals ===
-  html += `<div class="bracket-center">`;
+  // Add SVG connector lines
+  html += buildBracketConnectors();
   
-  // SF matches + connectors to Final and Third
-  html += `
-    <div class="bracket-sf-section">
-      <div class="bracket-sf-matches">
-        <div class="bracket-sf-match" data-match="101">${allMatchCards[101] || ''}</div>
-        <div class="bracket-sf-connector">
-          <div class="connector-vertical">
-            <div class="connector-line-gold" data-to="final"></div>
-            <div class="connector-line-bronze" data-to="third"></div>
-          </div>
-        </div>
-        <div class="bracket-sf-match" data-match="102">${allMatchCards[102] || ''}</div>
-      </div>
-    </div>
-    <div class="bracket-finals-matches">
-      <div class="bracket-third-place">
-        <div class="bracket-label">Third Place</div>
-        <div class="bracket-cell bracket-cell-third">${allMatchCards[103] || ''}</div>
-      </div>
-      <div class="bracket-final">
-        <div class="bracket-label bracket-label-gold">Final</div>
-        <div class="bracket-cell bracket-cell-final">${allMatchCards[104] || ''}</div>
-      </div>
-    </div>
-  `;
-  
-  html += `</div>`;
-  
-  // === RIGHT BRACKET (SF ← QF ← R16 ← R32) ===
-  html += `<div class="bracket-side bracket-side-right">`;
-  
-  // Semifinal - 1 match
-  html += buildRoundColumn('Semifinal', 'sf', [
-    [102],      // feeds Final:104
-  ], allMatchCards, 'right');
-  
-  // Quarterfinal - 2 matches
-  html += buildRoundColumn('Quarterfinal', 'qf', [
-    [99, 100],  // feeds SF:102
-  ], allMatchCards, 'right');
-  
-  // Round of 16 - 4 matches
-  html += buildRoundColumn('Round of 16', 'r16', [
-    [91, 92],   // feeds QF:99
-    [95, 96],   // feeds QF:100
-  ], allMatchCards, 'right');
-  
-  // Round of 32 - 8 matches
-  html += buildRoundColumn('Round of 32', 'r32', [
-    [76, 78],   // feeds R16:91
-    [79, 80],   // feeds R16:92
-    [86, 88],   // feeds R16:95
-    [85, 87],   // feeds R16:96
-  ], allMatchCards, 'right');
-  
-  html += `</div>`;
-  
-  // SVG Connector Lines overlay
-  html += buildSVGConnectorsOverlay();
-  
-  html += `</div>`;
   return html;
 }
 
-// Build a round column with match pairs
-function buildRoundColumn(title, stage, matchPairs, allMatchCards, side) {
-  let pairsHtml = matchPairs.map(pair => {
-    return `<div class="bracket-match-pair">${pair.map(m => `<div class="bracket-match-cell" data-match="${m}">${allMatchCards[m] || ''}</div>`).join('')}</div>`;
-  }).join('');
+// Build SVG connector lines for the bracket
+function buildBracketConnectors() {
+  const CELL_WIDTH = 220;
+  const CELL_HEIGHT = 100;
+  const HEADER_HEIGHT = 50;
   
-  return `
-    <div class="bracket-round bracket-round-${stage} bracket-round-${side}">
-      <div class="bracket-round-header">${title}</div>
-      <div class="bracket-round-matches">${pairsHtml}</div>
-    </div>
-  `;
-}
-
-// Build SVG overlay for connector lines
-function buildSVGConnectorsOverlay() {
-  const CELL_WIDTH = 260;
-  const CELL_HEIGHT = 90;
-  const PAIR_HEIGHT = 180;
-  const MATCH_GAP = 20;
-  
-  // Calculate connector paths
-  // Left side connectors
-  const leftConnectors = [
-    // R32 → R16: [74,77]→89, [73,75]→90, [83,84]→93, [81,82]→94
-    { from: [[0, 0], [0, 1]], to: [1, 0] }, // 74,77 → 89
-    { from: [[0, 2], [0, 3]], to: [1, 1] }, // 73,75 → 90
-    { from: [[0, 4], [0, 5]], to: [1, 2] }, // 83,84 → 93
-    { from: [[0, 6], [0, 7]], to: [1, 3] }, // 81,82 → 94
-    // R16 → QF
-    { from: [[1, 0], [1, 1]], to: [2, 0] }, // 89,90 → 97
-    { from: [[1, 2], [1, 3]], to: [2, 1] }, // 93,94 → 98
-    // QF → SF
-    { from: [[2, 0], [2, 1]], to: [3, 0] }, // 97,98 → 101
-  ];
-  
-  // Right side connectors
-  const rightConnectors = [
-    // R32 → R16
-    { from: [[0, 0], [0, 1]], to: [1, 0] }, // 76,78 → 91
-    { from: [[0, 2], [0, 3]], to: [1, 1] }, // 79,80 → 92
-    { from: [[0, 4], [0, 5]], to: [1, 2] }, // 86,88 → 95
-    { from: [[0, 6], [0, 7]], to: [1, 3] }, // 85,87 → 96
-    // R16 → QF
-    { from: [[1, 0], [1, 1]], to: [2, 0] }, // 91,92 → 99
-    { from: [[1, 2], [1, 3]], to: [2, 1] }, // 95,96 → 100
-    // QF → SF
-    { from: [[2, 0], [2, 1]], to: [3, 0] }, // 99,100 → 102
-  ];
+  // Calculate cell center positions
+  const getCellCenter = (col, row) => ({
+    x: col * CELL_WIDTH + CELL_WIDTH / 2,
+    y: HEADER_HEIGHT + row * CELL_HEIGHT + CELL_HEIGHT / 2
+  });
   
   let paths = '';
   
-  // Build left connector paths
-  leftConnectors.forEach(conn => {
-    const x1 = conn.from[0][0] * CELL_WIDTH + CELL_WIDTH;
-    const y1 = conn.from[0][0] * PAIR_HEIGHT + (conn.from[0][1] === 0 ? CELL_HEIGHT / 2 : CELL_HEIGHT + MATCH_GAP + CELL_HEIGHT / 2);
-    const x2 = conn.from[1][0] * CELL_WIDTH + CELL_WIDTH;
-    const y2 = conn.from[1][0] * PAIR_HEIGHT + (conn.from[1][1] === 0 ? CELL_HEIGHT / 2 : CELL_HEIGHT + MATCH_GAP + CELL_HEIGHT / 2);
-    const x3 = conn.to[0] * CELL_WIDTH;
-    const y3 = conn.to[0] * PAIR_HEIGHT + (conn.to[1] === 0 ? CELL_HEIGHT / 2 : CELL_HEIGHT + MATCH_GAP + CELL_HEIGHT / 2);
+  // Connector definitions: [from match, to match, type]
+  // type: 'normal' | 'gold' (for Final) | 'bronze' (for Third Place)
+  const connectors = [
+    // R32 to R16 (Left side)
+    { from: [74, 77], to: 89 },
+    { from: [73, 75], to: 90 },
+    { from: [83, 84], to: 93 },
+    { from: [81, 82], to: 94 },
     
-    // Create path: from1 → right → down/up → to
-    const midX = (x1 + x3) / 2;
-    paths += `<path d="M${x1},${y1} L${midX},${y1} L${midX},${y3} L${x3},${y3}" class="bracket-path"/>`;
-    paths += `<path d="M${x2},${y2} L${midX},${y2} L${midX},${y3}" class="bracket-path"/>`;
+    // R16 to QF (Left side)
+    { from: [89, 90], to: 97 },
+    { from: [93, 94], to: 98 },
+    
+    // QF to SF (Left side)
+    { from: [97, 98], to: 101 },
+    
+    // R32 to R16 (Right side)
+    { from: [76, 78], to: 91 },
+    { from: [79, 80], to: 92 },
+    { from: [86, 88], to: 95 },
+    { from: [85, 87], to: 96 },
+    
+    // R16 to QF (Right side)
+    { from: [91, 92], to: 99 },
+    { from: [95, 96], to: 100 },
+    
+    // QF to SF (Right side)
+    { from: [99, 100], to: 102 },
+    
+    // SF to Final (Gold)
+    { from: [101, 102], to: 104, type: 'gold' },
+    
+    // SF to Third Place (Bronze)
+    { from: [101, 102], to: 103, type: 'bronze' },
+  ];
+  
+  connectors.forEach(conn => {
+    const toMatch = conn.to;
+    const fromMatches = conn.from;
+    const type = conn.type || 'normal';
+    
+    // Get target cell position
+    const toPos = MATCH_POSITIONS[toMatch];
+    if (!toPos) return;
+    
+    const toX = toPos.col * CELL_WIDTH + CELL_WIDTH;
+    const toY = HEADER_HEIGHT + toPos.row * CELL_HEIGHT + CELL_HEIGHT / 2;
+    
+    // Draw lines from each source match
+    fromMatches.forEach((fromMatch, idx) => {
+      const fromPos = MATCH_POSITIONS[fromMatch];
+      if (!fromPos) return;
+      
+      const fromX = fromPos.col * CELL_WIDTH;
+      const fromY = HEADER_HEIGHT + fromPos.row * CELL_HEIGHT + CELL_HEIGHT / 2;
+      
+      // Create curved path
+      const midX = (fromX + toX) / 2;
+      const pathClass = type === 'gold' ? 'bracket-connector-gold' : 
+                        type === 'bronze' ? 'bracket-connector-bronze' : 
+                        'bracket-connector-line';
+      
+      const path = `M ${fromX} ${fromY} C ${midX} ${fromY}, ${midX} ${toY}, ${toX} ${toY}`;
+      paths += `<path class="${pathClass}" d="${path}" />`;
+    });
   });
   
-  // Build right connector paths (mirrored)
-  const totalWidth = 8 * CELL_WIDTH;
-  rightConnectors.forEach(conn => {
-    const x1 = totalWidth - conn.from[0][0] * CELL_WIDTH;
-    const y1 = conn.from[0][0] * PAIR_HEIGHT + (conn.from[0][1] === 0 ? CELL_HEIGHT / 2 : CELL_HEIGHT + MATCH_GAP + CELL_HEIGHT / 2);
-    const x2 = totalWidth - conn.from[1][0] * CELL_WIDTH;
-    const y2 = conn.from[1][0] * PAIR_HEIGHT + (conn.from[1][1] === 0 ? CELL_HEIGHT / 2 : CELL_HEIGHT + MATCH_GAP + CELL_HEIGHT / 2);
-    const x3 = totalWidth - conn.to[0] * CELL_WIDTH;
-    const y3 = conn.to[0] * PAIR_HEIGHT + (conn.to[1] === 0 ? CELL_HEIGHT / 2 : CELL_HEIGHT + MATCH_GAP + CELL_HEIGHT / 2);
-    
-    const midX = (x1 + x3) / 2;
-    paths += `<path d="M${x1},${y1} L${midX},${y1} L${midX},${y3} L${x3},${y3}" class="bracket-path"/>`;
-    paths += `<path d="M${x2},${y2} L${midX},${y2} L${midX},${y3}" class="bracket-path"/>`;
-  });
+  const svgWidth = 9 * CELL_WIDTH;
+  const svgHeight = HEADER_HEIGHT + 15 * CELL_HEIGHT;
   
-  // Finals connectors (SF → Final, SF → Third)
-  const sfY = 3 * PAIR_HEIGHT + CELL_HEIGHT / 2;
-  const finalY = PAIR_HEIGHT + CELL_HEIGHT / 2;
-  const thirdY = PAIR_HEIGHT * 1.5 + CELL_HEIGHT / 2;
+  return `
+    <svg class="bracket-connectors-svg" viewBox="0 0 ${svgWidth} ${svgHeight}" preserveAspectRatio="none">
+      ${paths}
+    </svg>
+  `;
+}
+
+// Match positions for connector calculations (grid positions)
+const MATCH_POSITIONS = {
+  // Left R32 (rows 0, 2, 6, 12 in grid)
+  74: { col: 0, row: 0 }, 77: { col: 0, row: 2 },
+  73: { col: 0, row: 4 }, 75: { col: 0, row: 6 },
+  83: { col: 0, row: 8 }, 84: { col: 0, row: 10 },
+  81: { col: 0, row: 12 }, 82: { col: 0, row: 14 },
   
-  // Gold line to Final
-  paths += `<path d="M${totalWidth},${sfY} L${totalWidth + 100},${sfY} L${totalWidth + 100},${finalY} L${totalWidth + 200},${finalY}" class="bracket-path-gold"/>`;
-  // Bronze line to Third
-  paths += `<path d="M${totalWidth},${sfY} L${totalWidth + 50},${sfY} L${totalWidth + 50},${thirdY} L${totalWidth + 200},${thirdY}" class="bracket-path-bronze"/>`;
+  // Left R16 (rows 1, 5, 9, 13)
+  89: { col: 1, row: 1 }, 90: { col: 1, row: 5 },
+  93: { col: 1, row: 9 }, 94: { col: 1, row: 13 },
   
-  return `<svg class="bracket-connectors-svg" viewBox="0 0 ${totalWidth + 300} ${4 * PAIR_HEIGHT}">${paths}</svg>`;
+  // Left QF (rows 3, 11)
+  97: { col: 2, row: 3 }, 98: { col: 2, row: 11 },
+  
+  // Left SF (row 7)
+  101: { col: 3, row: 7 },
+  
+  // Right R32 (rows 0, 2, 6, 12)
+  76: { col: 8, row: 0 }, 78: { col: 8, row: 2 },
+  79: { col: 8, row: 4 }, 80: { col: 8, row: 6 },
+  86: { col: 8, row: 8 }, 88: { col: 8, row: 10 },
+  85: { col: 8, row: 12 }, 87: { col: 8, row: 14 },
+  
+  // Right R16 (rows 1, 5, 9, 13)
+  91: { col: 7, row: 1 }, 92: { col: 7, row: 5 },
+  95: { col: 7, row: 9 }, 96: { col: 7, row: 13 },
+  
+  // Right QF (rows 3, 11)
+  99: { col: 6, row: 3 }, 100: { col: 6, row: 11 },
+  
+  // Right SF (row 7)
+  102: { col: 5, row: 7 },
+  
+  // Finals (center column, rows 4 and 10)
+  104: { col: 4, row: 4 },
+  103: { col: 4, row: 10 },
+};
+
+// Helper function to get CSS class for bracket cell based on column
+function getBracketCellClass(col) {
+  switch(col) {
+    case 0: return 'bracket-cell-r32-left';
+    case 1: return 'bracket-cell-r16-left';
+    case 2: return 'bracket-cell-qf-left';
+    case 3: return 'bracket-cell-sf-left';
+    case 5: return 'bracket-cell-sf-right';
+    case 6: return 'bracket-cell-qf-right';
+    case 7: return 'bracket-cell-r16-right';
+    case 8: return 'bracket-cell-r32-right';
+    default: return '';
+  }
 }
 
 function buildStageHtml(stage, matches, rankings, thirdPlaceTeams, knockoutMap, assignments, allGroupsComplete) {
