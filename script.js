@@ -394,8 +394,8 @@ function formatApiTime(apiLocalDate, venue) {
   // Get the venue's timezone (default to US Eastern if unknown)
   const venueTimezone = venueTimezones[venue] || 'America/New_York';
 
-  // Get user's local machine timezone
-  const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  // Display timezone - always use GMT+7 (Asia/Bangkok) for consistency
+  const displayTimezone = 'Asia/Bangkok';
 
   // Create a formatter to check what time a UTC moment shows in the venue timezone
   const venueFormatter = new Intl.DateTimeFormat('en-US', {
@@ -432,42 +432,42 @@ function formatApiTime(apiLocalDate, venue) {
     correctUTC = new Date(Date.UTC(year, month - 1, day, hours, minutes));
   }
 
-  // Get short timezone abbreviation for user's timezone
+  // Get short timezone abbreviation for GMT+7
   const tzFormatter = new Intl.DateTimeFormat('en-US', {
-    timeZone: localTimezone,
+    timeZone: displayTimezone,
     timeZoneName: 'short'
   });
   const tzParts = tzFormatter.formatToParts(correctUTC);
-  const tzAbbr = tzParts.find(p => p.type === 'timeZoneName')?.value || '';
+  const tzAbbr = tzParts.find(p => p.type === 'timeZoneName')?.value || 'GMT+7';
 
-  // Create formatters for the user's local timezone
+  // Create formatters for GMT+7 display timezone
   const localDateFormatter = new Intl.DateTimeFormat(undefined, {
-    timeZone: localTimezone,
+    timeZone: displayTimezone,
     month: 'short',
     day: 'numeric'
   });
 
   const localTimeFormatter = new Intl.DateTimeFormat(undefined, {
-    timeZone: localTimezone,
+    timeZone: displayTimezone,
     hour: '2-digit',
     minute: '2-digit',
     hour12: false
   });
 
   const fullDateFormatter = new Intl.DateTimeFormat(undefined, {
-    timeZone: localTimezone,
+    timeZone: displayTimezone,
     weekday: 'short',
     month: 'short',
     day: 'numeric'
   });
 
   const fullTimeFormatter = new Intl.DateTimeFormat(undefined, {
-    timeZone: localTimezone,
+    timeZone: displayTimezone,
     hour: '2-digit',
     minute: '2-digit'
   });
 
-  // Format the corrected UTC timestamp in user's local timezone
+  // Format the corrected UTC timestamp in GMT+7 timezone
   return {
     dateLabel: localDateFormatter.format(correctUTC),
     timeLabel: localTimeFormatter.format(correctUTC),
@@ -476,7 +476,7 @@ function formatApiTime(apiLocalDate, venue) {
     fullTime: fullTimeFormatter.format(correctUTC),
     timestamp: correctUTC.getTime(),
     venueTimezone: venueTimezone,
-    localTimezone: localTimezone,
+    displayTimezone: displayTimezone,
     isLocal: true
   };
 }
@@ -494,6 +494,9 @@ function getMatchTime(matchNo, venue) {
 function getLocalTimezone() {
   return Intl.DateTimeFormat().resolvedOptions().timeZone;
 }
+
+// Display timezone - always use GMT+7 (Asia/Bangkok) for consistency
+const DISPLAY_TIMEZONE = 'Asia/Bangkok';
 
 // Generate date/time label for a match (uses API time if available)
 function getMatchDateTimeLabel(matchNo, venue, fallbackDate, fallbackTime) {
@@ -515,9 +518,6 @@ function getMatchDateTimeLabel(matchNo, venue, fallbackDate, fallbackTime) {
     
     // Get venue timezone for parsing the schedule data
     const venueTimezone = venueTimezones[venue] || 'America/New_York';
-    
-    // Get user's browser timezone for display
-    const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     
     // Parse the local venue date/time components
     // Handle both formats: "2026-06-14T05:00:00" and "2026-06-14"
@@ -575,36 +575,36 @@ function getMatchDateTimeLabel(matchNo, venue, fallbackDate, fallbackTime) {
       correctUTC = new Date(Date.UTC(year, parseInt(month) - 1, parseInt(day), hours, minutes));
     }
     
-    // Get user's timezone abbreviation
-    const userTzFormatter = new Intl.DateTimeFormat('en-US', {
-      timeZone: userTimezone,
+    // Get GMT+7 timezone abbreviation
+    const displayTzFormatter = new Intl.DateTimeFormat('en-US', {
+      timeZone: DISPLAY_TIMEZONE,
       timeZoneName: 'short'
     });
-    const userTzParts = userTzFormatter.formatToParts(correctUTC);
-    const userTzAbbr = userTzParts.find(p => p.type === 'timeZoneName')?.value || '';
+    const displayTzParts = displayTzFormatter.formatToParts(correctUTC);
+    const displayTzAbbr = displayTzParts.find(p => p.type === 'timeZoneName')?.value || 'GMT+7';
     
-    // Format for display - convert UTC to user's browser timezone
-    const userDateFormatter = new Intl.DateTimeFormat('en-US', {
-      timeZone: userTimezone,
+    // Format for display - convert UTC to GMT+7 (Asia/Bangkok)
+    const displayDateFormatter = new Intl.DateTimeFormat('en-US', {
+      timeZone: DISPLAY_TIMEZONE,
       month: 'short',
       day: 'numeric'
     });
-    const userTimeFormatter = new Intl.DateTimeFormat('en-US', {
-      timeZone: userTimezone,
+    const displayTimeFormatter = new Intl.DateTimeFormat('en-US', {
+      timeZone: DISPLAY_TIMEZONE,
       hour: '2-digit',
       minute: '2-digit',
       hour12: false
     });
     
-    const dateLabel = userDateFormatter.format(correctUTC);
-    const localTimeStr = userTimeFormatter.format(correctUTC);
+    const dateLabel = displayDateFormatter.format(correctUTC);
+    const localTimeStr = displayTimeFormatter.format(correctUTC);
     
     return {
       dateLabel: dateLabel,
       timeLabel: localTimeStr || '',
-      tzAbbr: userTzAbbr,
-      fullDate: correctUTC.toLocaleDateString(undefined, { timeZone: userTimezone, weekday: 'short', month: 'short', day: 'numeric' }),
-      fullTime: `${localTimeStr} ${userTzAbbr}`
+      tzAbbr: displayTzAbbr,
+      fullDate: correctUTC.toLocaleDateString(undefined, { timeZone: DISPLAY_TIMEZONE, weekday: 'short', month: 'short', day: 'numeric' }),
+      fullTime: `${localTimeStr} ${displayTzAbbr}`
     };
   }
   return {
