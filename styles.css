@@ -2182,17 +2182,6 @@ tr.advancement-best-third td {
 }
 
 /* ── Match Number Badge ────────────────────────────────────────────── */
-.bracket-match-number {
-  position: absolute;
-  top: 4px;
-  right: 6px;
-  font-size: 0.62rem;
-  font-weight: 700;
-  color: var(--muted);
-  opacity: 0.6;
-  letter-spacing: 0.05em;
-}
-
 .placeholder {
   opacity: 0.6;
 }
