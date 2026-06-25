@@ -1233,8 +1233,252 @@ tr.advancement-best-third td {
   border-radius: 4px;
 }
 
-/* ── Bracket Grid Layout (New - matching Excel layout) ─────────────── */
-/* 9 columns: R32-L | R16-L | QF-L | SF-L | Final | SF-R | QF-R | R16-R | R32-R */
+/* ── Redesigned Bracket Layout ─────────────────────────────────────── */
+.bracket-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 0;
+  padding: 40px 20px;
+  overflow-x: auto;
+  position: relative;
+  min-height: 800px;
+}
+
+/* Bracket Sides */
+.bracket-side {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  position: relative;
+}
+
+.bracket-side-right {
+  flex-direction: row-reverse;
+}
+
+/* Bracket Round Column */
+.bracket-round {
+  display: flex;
+  flex-direction: column;
+  min-width: 260px;
+  width: 260px;
+}
+
+.bracket-round-header {
+  padding: 14px 16px;
+  font-family: 'FWC2026Condensed', 'FWC2026', Inter, system-ui, sans-serif;
+  font-weight: 900;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: center;
+  background: var(--surface-soft);
+  color: var(--text);
+  border-radius: 10px 10px 0 0;
+  border-top: 4px solid transparent;
+}
+
+.bracket-round-r32 .bracket-round-header { border-top-color: #3B82F6; }
+.bracket-round-r16 .bracket-round-header { border-top-color: #10B981; }
+.bracket-round-qf .bracket-round-header { border-top-color: #F59E0B; }
+.bracket-round-sf .bracket-round-header { border-top-color: #8B5CF6; }
+
+.bracket-round-matches {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 10px 10px;
+  padding: 10px 0;
+  flex: 1;
+}
+
+/* Match Pair */
+.bracket-match-pair {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 0 10px;
+}
+
+.bracket-side-right .bracket-match-pair {
+  flex-direction: column-reverse;
+}
+
+/* Match Cell */
+.bracket-match-cell {
+  padding: 8px;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+}
+
+/* Center Section */
+.bracket-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 300px;
+  padding: 0 30px;
+  position: relative;
+}
+
+/* SF Section (Semifinals in center) */
+.bracket-sf-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.bracket-sf-matches {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  justify-content: center;
+  gap: 20px;
+}
+
+.bracket-sf-match {
+  width: 260px;
+  padding: 8px;
+}
+
+.bracket-sf-connector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 80px;
+  position: relative;
+}
+
+.connector-vertical {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  position: relative;
+}
+
+.connector-line-gold,
+.connector-line-bronze {
+  position: absolute;
+  width: 3px;
+  background: transparent;
+}
+
+.connector-line-gold {
+  background: #F59E0B;
+  height: 50%;
+  top: 0;
+}
+
+.connector-line-bronze {
+  background: #9CA3AF;
+  height: 50%;
+  bottom: 0;
+}
+
+/* Finals Matches */
+.bracket-finals-matches {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  margin-top: 40px;
+  width: 100%;
+  align-items: center;
+}
+
+.bracket-third-place,
+.bracket-final {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 280px;
+}
+
+.bracket-label {
+  font-family: 'FWC2026Condensed', 'FWC2026', Inter, system-ui, sans-serif;
+  font-weight: 900;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #9CA3AF;
+  padding: 6px 14px;
+  background: var(--surface-soft);
+  border-radius: 6px;
+  border-top: 3px solid #9CA3AF;
+  margin-bottom: 8px;
+}
+
+.bracket-label-gold {
+  color: #F59E0B;
+  border-top-color: #F59E0B;
+}
+
+.bracket-cell-third,
+.bracket-cell-final {
+  width: 100%;
+  padding: 10px;
+  background: var(--surface-soft);
+  border-radius: 10px;
+  min-height: 80px;
+}
+
+.bracket-cell-final {
+  border-left: 4px solid #F59E0B;
+}
+
+.bracket-cell-third {
+  border-left: 4px solid #9CA3AF;
+}
+
+/* SVG Connector Lines */
+.bracket-connectors-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.bracket-path {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 2;
+}
+
+.bracket-path-gold {
+  fill: none;
+  stroke: #F59E0B;
+  stroke-width: 3;
+}
+
+.bracket-path-bronze {
+  fill: none;
+  stroke: #9CA3AF;
+  stroke-width: 3;
+}
+
+/* Match Card Enhancements */
+.bracket-match-cell .bracket-match-node,
+.bracket-sf-match .bracket-match-node,
+.bracket-cell-third .bracket-match-node,
+.bracket-cell-final .bracket-match-node {
+  width: 100%;
+  background: var(--surface-soft);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+/* ── Grid Layout Styles (Legacy) ─────────────────────────────────── */
 .bracket-grid-layout {
   display: flex;
   flex-direction: column;
@@ -1245,27 +1489,26 @@ tr.advancement-best-third td {
 
 .bracket-grid-headers {
   display: grid;
-  grid-template-columns: repeat(9, minmax(180px, 1fr));
+  grid-template-columns: repeat(9, minmax(220px, 1fr));
   gap: 0;
   margin-bottom: 20px;
   padding: 0 10px;
 }
 
 .bracket-header-cell {
-  padding: 12px 16px;
+  padding: 14px 18px;
   font-family: 'FWC2026Condensed', 'FWC2026', Inter, system-ui, sans-serif;
   font-weight: 900;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   text-align: center;
   background: var(--surface-soft);
   color: var(--text);
-  border-top: 3px solid transparent;
-  border-radius: 8px 8px 0 0;
+  border-top: 4px solid transparent;
+  border-radius: 10px 10px 0 0;
 }
 
-/* Header colors for different stages */
 .bracket-col-r32-left,
 .bracket-col-r32-right {
   border-top-color: #3B82F6;
@@ -1284,23 +1527,23 @@ tr.advancement-best-third td {
 }
 .bracket-col-final {
   border-top-color: #F59E0B;
-  background: linear-gradient(135deg, var(--surface-soft) 0%, rgba(245, 158, 11, 0.1) 100%);
+  background: linear-gradient(135deg, var(--surface-soft) 0%, rgba(245, 158, 11, 0.15) 100%);
 }
 
 .bracket-grid-row {
   display: grid;
-  grid-template-columns: repeat(9, minmax(180px, 1fr));
+  grid-template-columns: repeat(9, minmax(220px, 1fr));
   gap: 0;
-  min-height: 85px;
+  min-height: 100px;
 }
 
 .bracket-grid-cell {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 8px;
+  padding: 10px;
   border-right: 1px solid var(--border);
-  min-height: 85px;
+  min-height: 100px;
 }
 
 .bracket-grid-cell:last-child {
@@ -1309,56 +1552,6 @@ tr.advancement-best-third td {
 
 .bracket-cell-empty {
   background: transparent;
-}
-
-/* Left side cells - align content to the left edge (toward bracket center) */
-.bracket-cell-r32-left,
-.bracket-cell-r16-left,
-.bracket-cell-qf-left,
-.bracket-cell-sf-left {
-  justify-content: flex-start;
-}
-
-/* Right side cells - align content to the right edge (toward bracket center) */
-.bracket-cell-r32-right,
-.bracket-cell-r16-right,
-.bracket-cell-qf-right,
-.bracket-cell-sf-right {
-  justify-content: flex-end;
-}
-
-/* Finals column cells */
-.bracket-cell-final,
-.bracket-cell-third {
-  background: var(--surface-soft);
-  border-left: 3px solid #F59E0B;
-  border-radius: 12px;
-  margin: 4px 8px;
-  min-height: 75px;
-}
-
-.bracket-cell-third {
-  border-left-color: #9CA3AF;
-}
-
-/* Final column - spans rows but we use individual cells */
-.bracket-col-final {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-around;
-}
-
-/* ── Finals Section Labels ─────────────────────────────────────────── */
-.bracket-final-label {
-  font-family: 'FWC2026Condensed', 'FWC2026', Inter, system-ui, sans-serif;
-  font-weight: 900;
-  font-size: 0.7rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-  padding: 4px 0;
-  text-align: center;
 }
 
 /* ── Split Bracket Layout (Legacy - kept for compatibility) ──────── */
