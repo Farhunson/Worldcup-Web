@@ -1305,6 +1305,52 @@ tr.advancement-best-third td {
   }
 }
 
+/* ── Bracket Grid Headers ──────────────────────────────────────────── */
+.bracket-grid-headers {
+  display: grid;
+  grid-template-columns: repeat(9, 240px);
+  gap: 0;
+  padding: 0 10px;
+  margin-bottom: 20px;
+}
+
+.bracket-grid-header {
+  padding: 12px 16px;
+  font-family: 'FWC2026Condensed', 'FWC2026', Inter, system-ui, sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--text);
+  background: var(--surface-soft);
+  border: 3px solid var(--stage-color);
+  border-bottom: none;
+  border-radius: 12px 12px 0 0;
+  position: relative;
+}
+
+.bracket-grid-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--stage-color);
+}
+
+.bracket-header-r32 { --stage-color: #87B0F2; }
+.bracket-header-r16 { --stage-color: #87D8D1; }
+.bracket-header-qf { --stage-color: #00A486; }
+.bracket-header-sf { --stage-color: #A648BA; }
+.bracket-header-final { --stage-color: #EFBF04; }
+
+/* Dark theme support */
+:root[data-theme="dark"] .bracket-grid-header {
+  background: var(--surface-2);
+}
+
 .bracket-grid-row {
   display: grid;
   grid-template-columns: repeat(9, 240px);
