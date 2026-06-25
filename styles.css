@@ -1349,6 +1349,60 @@ tr.advancement-best-third td {
   justify-content: space-around;
 }
 
+/\* ── Feed Indicators ─────────────────────────────────────────── */
+/\* Small labels showing which match the current match feeds into */
+.feed-indicators {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.feed-indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  opacity: 0.85;
+}
+
+.feed-r16 {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10B981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.feed-qf {
+  background: rgba(245, 158, 11, 0.2);
+  color: #F59E0B;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.feed-sf {
+  background: rgba(139, 92, 246, 0.2);
+  color: #8B5CF6;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+.feed-final,
+.feed-gold {
+  background: rgba(245, 158, 11, 0.3);
+  color: #F59E0B;
+  border: 1px solid rgba(245, 158, 11, 0.5);
+  font-weight: 700;
+}
+
+.feed-bronze {
+  background: rgba(156, 163, 175, 0.3);
+  color: #9CA3AF;
+  border: 1px solid rgba(156, 163, 175, 0.5);
+  font-weight: 700;
+}
+
+
 /* ── Finals Section Labels ─────────────────────────────────────────── */
 .bracket-final-label {
   font-family: 'FWC2026Condensed', 'FWC2026', Inter, system-ui, sans-serif;
