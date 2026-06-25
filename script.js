@@ -3023,6 +3023,7 @@ function buildMatchCardHtml(match, stage, rankings, thirdPlaceTeams, knockoutMap
   
   return `
     <div class="bracket-match-node" data-matchno="${match.matchNo}" data-stage="${stage}">
+      ${stage === 'final' ? '<div class="bracket-trophy-overlay"><svg class="trophy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 9H4a2 2 0 01-2-2V5a2 2 0 012-2h2M18 9h2a2 2 0 002-2V5a2 2 0 00-2-2h-2M12 17v4M8 21h8M9 17h6M12 13v4"/></svg></div>' : ''}
       <div class="bracket-match-inner">
         <div class="bracket-team ${isTBDA ? 'placeholder' : ''}">
           <div class="bracket-team-info">
@@ -3135,17 +3136,17 @@ function buildVisualBracket(rankings, thirdPlaceTeams, knockoutMap, assignments,
   // 9 columns: 0=R32-L, 1=R16-L, 2=QF-L, 3=SF-L, 4=Finals, 5=SF-R, 6=QF-R, 7=R16-R, 8=R32-R
   let html = `<div class="bracket-grid-layout">`;
   
-  // Build column headers
+  // Build column headers with stage indicators
   html += `<div class="bracket-grid-headers">`;
-  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-r32-left">Round of 32</div>`;
-  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-r16-left">Round of 16</div>`;
-  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-qf-left">Quarterfinal</div>`;
-  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-sf-left">Semifinal</div>`;
-  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-final">Finals</div>`;
-  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-sf-right">Semifinal</div>`;
-  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-qf-right">Quarterfinal</div>`;
-  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-r16-right">Round of 16</div>`;
-  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-r32-right">Round of 32</div>`;
+  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-r32-left" data-stage="R32"></div>`;
+  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-r16-left" data-stage="R16"></div>`;
+  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-qf-left" data-stage="QF"></div>`;
+  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-sf-left" data-stage="SF"></div>`;
+  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-final" data-stage="Final"></div>`;
+  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-sf-right" data-stage="SF"></div>`;
+  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-qf-right" data-stage="QF"></div>`;
+  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-r16-right" data-stage="R16"></div>`;
+  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-r32-right" data-stage="R32"></div>`;
   html += `</div>`;
   
   // Build each row of the grid
