@@ -3078,36 +3078,36 @@ function buildMatchCardHtml(match, stage, rankings, thirdPlaceTeams, knockoutMap
 // Define bracket grid layout - each entry represents a row with match positions
 // Columns: 0=R32-L, 1=R16-L, 2=QF-L, 3=SF-L, 4=Finals, 5=SF-R, 6=QF-R, 7=R16-R, 8=R32-R
 const BRACKET_GRID_LAYOUT = [
-  // Row 0 (Excel Row 3): R32 M74 | R32 M76
-  { row: 0, matches: [{ col: 0, match: 74 }, { col: 8, match: 76 }] },
-  // Row 1 (Excel Row 4): R16 M89 | R16 M91
-  { row: 1, matches: [{ col: 1, match: 89 }, { col: 7, match: 91 }] },
-  // Row 2 (Excel Row 5): R32 M77 | R32 M78
-  { row: 2, matches: [{ col: 0, match: 77 }, { col: 8, match: 78 }] },
-  // Row 3 (Excel Row 6): QF M97 | QF M99
-  { row: 3, matches: [{ col: 2, match: 97 }, { col: 6, match: 99 }] },
-  // Row 4 (Excel Row 7): R32 M73 | Final M104 | R32 M79
-  { row: 4, matches: [{ col: 0, match: 73 }, { col: 4, match: 104, type: 'final' }, { col: 8, match: 79 }] },
-  // Row 5 (Excel Row 8): R16 M90 | R16 M92
-  { row: 5, matches: [{ col: 1, match: 90 }, { col: 7, match: 92 }] },
-  // Row 6 (Excel Row 9): R32 M75 | R32 M80
-  { row: 6, matches: [{ col: 0, match: 75 }, { col: 8, match: 80 }] },
-  // Row 7 (Excel Row 10): SF M101 | SF M102
-  { row: 7, matches: [{ col: 3, match: 101 }, { col: 5, match: 102 }] },
-  // Row 8 (Excel Row 11): R32 M83 | R32 M86
-  { row: 8, matches: [{ col: 0, match: 83 }, { col: 8, match: 86 }] },
-  // Row 9 (Excel Row 12): R16 M93 | R16 M95
-  { row: 9, matches: [{ col: 1, match: 93 }, { col: 7, match: 95 }] },
-  // Row 10 (Excel Row 13): R32 M84 | Third M103 | R32 M88
-  { row: 10, matches: [{ col: 0, match: 84 }, { col: 4, match: 103, type: 'third' }, { col: 8, match: 88 }] },
-  // Row 11 (Excel Row 14): QF M98 | QF M100
-  { row: 11, matches: [{ col: 2, match: 98 }, { col: 6, match: 100 }] },
-  // Row 12 (Excel Row 15): R32 M81 | R32 M85
-  { row: 12, matches: [{ col: 0, match: 81 }, { col: 8, match: 85 }] },
-  // Row 13 (Excel Row 16): R16 M94 | R16 M96
-  { row: 13, matches: [{ col: 1, match: 94 }, { col: 7, match: 96 }] },
-  // Row 14 (Excel Row 17): R32 M82 | R32 M87
-  { row: 14, matches: [{ col: 0, match: 82 }, { col: 8, match: 87 }] },
+  // Row 1 (Excel Row 3): R32 M74 | R32 M76
+  { row: 1, matches: [{ col: 0, match: 74 }, { col: 8, match: 76 }] },
+  // Row 2 (Excel Row 4): R16 M89 | R16 M91
+  { row: 2, matches: [{ col: 1, match: 89 }, { col: 7, match: 91 }] },
+  // Row 3 (Excel Row 5): R32 M77 | R32 M78
+  { row: 3, matches: [{ col: 0, match: 77 }, { col: 8, match: 78 }] },
+  // Row 4 (Excel Row 6): QF M97 | QF M99
+  { row: 4, matches: [{ col: 2, match: 97 }, { col: 6, match: 99 }] },
+  // Row 5 (Excel Row 7): R32 M73 | Final M104 | R32 M79
+  { row: 5, matches: [{ col: 0, match: 73 }, { col: 4, match: 104, type: 'final' }, { col: 8, match: 79 }] },
+  // Row 6 (Excel Row 8): R16 M90 | R16 M92
+  { row: 6, matches: [{ col: 1, match: 90 }, { col: 7, match: 92 }] },
+  // Row 7 (Excel Row 9): R32 M75 | R32 M80
+  { row: 7, matches: [{ col: 0, match: 75 }, { col: 8, match: 80 }] },
+  // Row 8 (Excel Row 10): SF M101 | SF M102
+  { row: 8, matches: [{ col: 3, match: 101 }, { col: 5, match: 102 }] },
+  // Row 9 (Excel Row 11): R32 M83 | R32 M86
+  { row: 9, matches: [{ col: 0, match: 83 }, { col: 8, match: 86 }] },
+  // Row 10 (Excel Row 12): R16 M93 | R16 M95
+  { row: 10, matches: [{ col: 1, match: 93 }, { col: 7, match: 95 }] },
+  // Row 11 (Excel Row 13): R32 M84 | Third M103 | R32 M88
+  { row: 11, matches: [{ col: 0, match: 84 }, { col: 4, match: 103, type: 'third' }, { col: 8, match: 88 }] },
+  // Row 12 (Excel Row 14): QF M98 | QF M100
+  { row: 12, matches: [{ col: 2, match: 98 }, { col: 6, match: 100 }] },
+  // Row 13 (Excel Row 15): R32 M81 | R32 M85
+  { row: 13, matches: [{ col: 0, match: 81 }, { col: 8, match: 85 }] },
+  // Row 14 (Excel Row 16): R16 M94 | R16 M96
+  { row: 14, matches: [{ col: 1, match: 94 }, { col: 7, match: 96 }] },
+  // Row 15 (Excel Row 17): R32 M82 | R32 M87
+  { row: 15, matches: [{ col: 0, match: 82 }, { col: 8, match: 87 }] },
 ];
 
 // Stage column mapping
