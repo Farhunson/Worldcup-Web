@@ -3092,16 +3092,16 @@ const BRACKET_GRID_LAYOUT = [
   { row: 6, matches: [{ col: 1, match: 90 }, { col: 7, match: 92 }] },
   // Row 7 (Excel Row 9): R32 M75 | R32 M80
   { row: 7, matches: [{ col: 0, match: 75 }, { col: 8, match: 80 }] },
-  // Row 8 (Excel Row 10): SF M101 | SF M102
-  { row: 8, matches: [{ col: 3, match: 101 }, { col: 5, match: 102 }] },
+  // Row 8 (Excel Row 10): SF M101 | Final M104 | SF M102
+  { row: 8, matches: [{ col: 3, match: 101 }, { col: 4, match: 104, type: 'final' }, { col: 5, match: 102 }] },
   // Row 9 (Excel Row 11): R32 M83 | R32 M86
   { row: 9, matches: [{ col: 0, match: 83 }, { col: 8, match: 86 }] },
-  // Row 10 (Excel Row 12): R16 M93 | Final M104 | R16 M95
-  { row: 10, matches: [{ col: 1, match: 93 }, { col: 4, match: 104, type: 'final' }, { col: 7, match: 95 }] },
+  // Row 10 (Excel Row 12): R16 M93 | Third M103 | R16 M95
+  { row: 10, matches: [{ col: 1, match: 93 }, { col: 4, match: 103, type: 'third' }, { col: 7, match: 95 }] },
   // Row 11 (Excel Row 13): R32 M84 | R32 M88
   { row: 11, matches: [{ col: 0, match: 84 }, { col: 8, match: 88 }] },
-  // Row 12 (Excel Row 14): QF M98 | Third M103 | QF M100
-  { row: 12, matches: [{ col: 2, match: 98 }, { col: 4, match: 103, type: 'third' }, { col: 6, match: 100 }] },
+  // Row 12 (Excel Row 14): QF M98 | QF M100
+  { row: 12, matches: [{ col: 2, match: 98 }, { col: 6, match: 100 }] },
   // Row 13 (Excel Row 15): R32 M81 | R32 M85
   { row: 13, matches: [{ col: 0, match: 81 }, { col: 8, match: 85 }] },
   // Row 14 (Excel Row 16): R16 M94 | R16 M96
