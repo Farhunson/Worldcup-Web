@@ -1240,51 +1240,143 @@ tr.advancement-best-third td {
   flex-direction: column;
   gap: 0;
   overflow-x: auto;
-  padding: 20px 0;
+  padding: 30px 0;
+  position: relative;
 }
 
+/* Shimmer effect behind bracket */
+.bracket-grid-layout::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -50%;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.02) 25%,
+    rgba(255, 255, 255, 0.04) 50%,
+    rgba(255, 255, 255, 0.02) 75%,
+    transparent 100%
+  );
+  animation: shimmer 8s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-25%);
+  }
+  100% {
+    transform: translateX(25%);
+  }
+}
+
+/* Glowing accent line at top */
+.bracket-grid-layout::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 3px;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(245, 158, 11, 0.3),
+    rgba(139, 92, 246, 0.3),
+    rgba(59, 130, 246, 0.3),
+    transparent
+  );
+  border-radius: 0 0 4px 4px;
+  animation: glowPulse 4s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    opacity: 0.5;
+    width: 60%;
+  }
+  50% {
+    opacity: 0.8;
+    width: 70%;
+  }
+}
+
+/* Subtle stage indicator bars at top of bracket */
 .bracket-grid-headers {
   display: grid;
   grid-template-columns: repeat(9, 240px);
   gap: 0;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
   padding: 0 10px;
 }
 
 .bracket-header-cell {
-  padding: 14px 16px;
-  font-family: 'FWC2026Condensed', 'FWC2026', Inter, system-ui, sans-serif;
-  font-weight: 900;
-  font-size: 0.78rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  text-align: center;
-  background: var(--surface-soft);
-  color: var(--text);
-  border-top: 4px solid transparent;
-  border-radius: 10px 10px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  background: transparent;
+  color: var(--muted);
+  border: none;
+  border-radius: 0;
+  position: relative;
 }
 
-/* Header colors for different stages */
-.bracket-col-r32-left,
-.bracket-col-r32-right {
-  border-top-color: #3B82F6;
+/* Subtle colored dots instead of text labels */
+.bracket-header-cell::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border);
 }
-.bracket-col-r16-left,
-.bracket-col-r16-right {
-  border-top-color: #10B981;
+
+.bracket-header-cell::after {
+  content: attr(data-stage);
+  position: absolute;
+  bottom: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'FWC2026Condensed', 'FWC2026', Inter, system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 0.6rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+  opacity: 0.6;
+  white-space: nowrap;
 }
-.bracket-col-qf-left,
-.bracket-col-qf-right {
-  border-top-color: #F59E0B;
+
+/* Colored dots for different stages */
+.bracket-col-r32-left::before,
+.bracket-col-r32-right::before {
+  background: #3B82F6;
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
 }
-.bracket-col-sf-left,
-.bracket-col-sf-right {
-  border-top-color: #8B5CF6;
+.bracket-col-r16-left::before,
+.bracket-col-r16-right::before {
+  background: #10B981;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
 }
-.bracket-col-final {
-  border-top-color: #F59E0B;
-  background: linear-gradient(135deg, var(--surface-soft) 0%, rgba(245, 158, 11, 0.15) 100%);
+.bracket-col-qf-left::before,
+.bracket-col-qf-right::before {
+  background: #F59E0B;
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+}
+.bracket-col-sf-left::before,
+.bracket-col-sf-right::before {
+  background: #8B5CF6;
+  box-shadow: 0 0 8px rgba(139, 92, 246, 0.5);
+}
+.bracket-col-final::before {
+  background: linear-gradient(135deg, #F59E0B, #FFD700);
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.6);
+  width: 10px;
+  height: 10px;
 }
 
 .bracket-grid-row {
@@ -1292,7 +1384,38 @@ tr.advancement-best-third td {
   grid-template-columns: repeat(9, 240px);
   gap: 0;
   min-height: 120px;
+  position: relative;
+  z-index: 1;
+  animation: rowSlideIn 0.6s ease-out backwards;
 }
+
+@keyframes rowSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Staggered row animations */
+.bracket-grid-row:nth-child(1) { animation-delay: 0.1s; }
+.bracket-grid-row:nth-child(2) { animation-delay: 0.15s; }
+.bracket-grid-row:nth-child(3) { animation-delay: 0.2s; }
+.bracket-grid-row:nth-child(4) { animation-delay: 0.25s; }
+.bracket-grid-row:nth-child(5) { animation-delay: 0.3s; }
+.bracket-grid-row:nth-child(6) { animation-delay: 0.35s; }
+.bracket-grid-row:nth-child(7) { animation-delay: 0.4s; }
+.bracket-grid-row:nth-child(8) { animation-delay: 0.45s; }
+.bracket-grid-row:nth-child(9) { animation-delay: 0.5s; }
+.bracket-grid-row:nth-child(10) { animation-delay: 0.55s; }
+.bracket-grid-row:nth-child(11) { animation-delay: 0.6s; }
+.bracket-grid-row:nth-child(12) { animation-delay: 0.65s; }
+.bracket-grid-row:nth-child(13) { animation-delay: 0.7s; }
+.bracket-grid-row:nth-child(14) { animation-delay: 0.75s; }
+.bracket-grid-row:nth-child(15) { animation-delay: 0.8s; }
 
 .bracket-grid-cell {
   display: flex;
@@ -1331,15 +1454,35 @@ tr.advancement-best-third td {
 .bracket-cell-final,
 .bracket-cell-third {
   background: var(--surface-soft);
-  border-left: 4px solid #F59E0B;
   border-radius: 14px;
   margin: 4px 10px;
   min-height: 180px;
   width: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bracket-cell-final {
+  border: 2px solid #F59E0B;
+  box-shadow: 0 4px 24px rgba(245, 158, 11, 0.2);
+  background: linear-gradient(135deg, var(--surface-soft) 0%, rgba(245, 158, 11, 0.08) 100%);
+  animation: cellPulseGold 3s ease-in-out infinite;
+}
+
+@keyframes cellPulseGold {
+  0%, 100% {
+    box-shadow: 0 4px 24px rgba(245, 158, 11, 0.2);
+  }
+  50% {
+    box-shadow: 0 4px 32px rgba(245, 158, 11, 0.35);
+  }
 }
 
 .bracket-cell-third {
-  border-left-color: #9CA3AF;
+  border: 2px solid #9CA3AF;
+  box-shadow: 0 4px 16px rgba(156, 163, 175, 0.15);
+  background: linear-gradient(135deg, var(--surface-soft) 0%, rgba(156, 163, 175, 0.08) 100%);
 }
 
 /* Final column - spans rows but we use individual cells */
@@ -1755,49 +1898,174 @@ tr.advancement-best-third td {
   border-radius: 14px;
   padding-top: 14px;
   overflow: hidden;
-  transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1),
-    box-shadow 0.22s cubic-bezier(0.4, 0, 0.2, 1),
-    border-color 0.22s ease;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.3s ease;
   cursor: pointer;
   z-index: 2;
   width: 220px;
   min-height: 180px;
+  animation: fadeSlideIn 0.5s ease-out backwards;
 }
 
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Staggered animations for match cards */
+.bracket-grid-row:nth-child(1) .bracket-match-node { animation-delay: 0.05s; }
+.bracket-grid-row:nth-child(2) .bracket-match-node { animation-delay: 0.1s; }
+.bracket-grid-row:nth-child(3) .bracket-match-node { animation-delay: 0.15s; }
+.bracket-grid-row:nth-child(4) .bracket-match-node { animation-delay: 0.2s; }
+.bracket-grid-row:nth-child(5) .bracket-match-node { animation-delay: 0.25s; }
+.bracket-grid-row:nth-child(6) .bracket-match-node { animation-delay: 0.3s; }
+.bracket-grid-row:nth-child(7) .bracket-match-node { animation-delay: 0.35s; }
+.bracket-grid-row:nth-child(8) .bracket-match-node { animation-delay: 0.4s; }
+.bracket-grid-row:nth-child(9) .bracket-match-node { animation-delay: 0.45s; }
+.bracket-grid-row:nth-child(10) .bracket-match-node { animation-delay: 0.5s; }
+.bracket-grid-row:nth-child(11) .bracket-match-node { animation-delay: 0.55s; }
+.bracket-grid-row:nth-child(12) .bracket-match-node { animation-delay: 0.6s; }
+.bracket-grid-row:nth-child(13) .bracket-match-node { animation-delay: 0.65s; }
+.bracket-grid-row:nth-child(14) .bracket-match-node { animation-delay: 0.7s; }
+.bracket-grid-row:nth-child(15) .bracket-match-node { animation-delay: 0.75s; }
+
 .bracket-match-node:hover {
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
   border-color: var(--primary);
 }
 
-/* Left accent border per stage */
+/* Top accent bar per stage - more subtle than left border */
 .bracket-stage-r32 .bracket-match-node {
-  border-left: 4px solid #3B82F6;
+  border-top: 3px solid #3B82F6;
 }
 
 .bracket-stage-r16 .bracket-match-node {
-  border-left: 4px solid #10B981;
+  border-top: 3px solid #10B981;
 }
 
 .bracket-stage-qf .bracket-match-node {
-  border-left: 4px solid #F59E0B;
+  border-top: 3px solid #F59E0B;
 }
 
 .bracket-stage-sf .bracket-match-node {
-  border-left: 4px solid #8B5CF6;
+  border-top: 3px solid #8B5CF6;
 }
 
 .bracket-stage-third .bracket-match-node {
-  border-left: 4px solid #9CA3AF;
+  border-top: 3px solid #9CA3AF;
 }
 
+/* Final Match Card - Special Design */
 .bracket-stage-final .bracket-match-node {
+  border-top: 4px solid #F59E0B;
   border-left: 4px solid #F59E0B;
-  box-shadow: 0 4px 20px rgba(245, 158, 11, 0.15);
+  background: linear-gradient(135deg, var(--surface-soft) 0%, rgba(245, 158, 11, 0.08) 100%);
+  box-shadow: 0 4px 24px rgba(245, 158, 11, 0.2);
+  animation: fadeSlideIn 0.5s ease-out backwards, pulseGold 3s ease-in-out infinite;
+}
+
+@keyframes pulseGold {
+  0%, 100% {
+    box-shadow: 0 4px 24px rgba(245, 158, 11, 0.2);
+  }
+  50% {
+    box-shadow: 0 4px 32px rgba(245, 158, 11, 0.35);
+  }
 }
 
 .bracket-stage-final .bracket-match-node:hover {
-  box-shadow: 0 8px 30px rgba(245, 158, 11, 0.3);
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 12px 40px rgba(245, 158, 11, 0.4);
+}
+
+/* World Cup Trophy Icon in Final Card */
+.bracket-stage-final .bracket-match-node::before {
+  content: '🏆';
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  font-size: 1.2rem;
+  opacity: 0.6;
+  animation: trophyBounce 2s ease-in-out infinite;
+}
+
+@keyframes trophyBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+/* Third Place Match Card - Special Design */
+.bracket-stage-third .bracket-match-node {
+  border-top: 3px solid #9CA3AF;
+  border-left: 3px solid #9CA3AF;
+  background: linear-gradient(135deg, var(--surface-soft) 0%, rgba(156, 163, 175, 0.08) 100%);
+  box-shadow: 0 4px 16px rgba(156, 163, 175, 0.15);
+}
+
+.bracket-stage-third .bracket-match-node::before {
+  content: '🥉';
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  font-size: 1rem;
+  opacity: 0.5;
+}
+
+/* Subtle corner accents for each stage */
+.bracket-stage-r32 .bracket-match-node::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 30px;
+  height: 30px;
+  background: linear-gradient(135deg, transparent 50%, rgba(59, 130, 246, 0.1) 50%);
+  border-radius: 0 0 0 14px;
+}
+
+.bracket-stage-r16 .bracket-match-node::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 30px;
+  height: 30px;
+  background: linear-gradient(135deg, transparent 50%, rgba(16, 185, 129, 0.1) 50%);
+  border-radius: 0 0 0 14px;
+}
+
+.bracket-stage-qf .bracket-match-node::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 30px;
+  height: 30px;
+  background: linear-gradient(135deg, transparent 50%, rgba(245, 158, 11, 0.1) 50%);
+  border-radius: 0 0 0 14px;
+}
+
+.bracket-stage-sf .bracket-match-node::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 30px;
+  height: 30px;
+  background: linear-gradient(135deg, transparent 50%, rgba(139, 92, 246, 0.1) 50%);
+  border-radius: 0 0 0 14px;
 }
 
 /* ── Match Inner (Team Rows) ───────────────────────────────────────── */
@@ -1805,6 +2073,33 @@ tr.advancement-best-third td {
   display: flex;
   flex-direction: column;
   height: calc(100% - 40px);
+}
+
+/* Trophy Overlay for Final Match */
+.bracket-trophy-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.05;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.bracket-trophy-overlay .trophy-icon {
+  width: 120px;
+  height: 120px;
+  color: #F59E0B;
+  animation: trophyFloat 4s ease-in-out infinite;
+}
+
+@keyframes trophyFloat {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -55%) scale(1.05);
+  }
 }
 
 .bracket-team {
