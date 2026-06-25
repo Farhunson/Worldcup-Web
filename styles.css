@@ -1233,7 +1233,131 @@ tr.advancement-best-third td {
   border-radius: 4px;
 }
 
-/* ── Bracket Stage Column ──────────────────────────────────────────── */
+/* ── Visual Bracket Layout ─────────────────────────────────────────── */
+.bracket-visual-layout {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 0;
+  min-height: 100%;
+  overflow-x: auto;
+  padding: 20px 0;
+}
+
+/* ── Bracket Column ───────────────────────────────────────────────── */
+.bracket-column {
+  display: flex;
+  flex-direction: column;
+  min-width: 260px;
+  flex-shrink: 0;
+}
+
+.bracket-column-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  font-weight: 800;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  background: var(--surface-soft);
+  color: var(--text);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.bracket-column-header .bracket-stage-label {
+  font-family: 'FWC2026Condensed', 'FWC2026', Inter, system-ui, sans-serif;
+  font-weight: 900;
+  flex: 1;
+}
+
+.bracket-column-header .bracket-stage-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.2);
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: 0.02em;
+  text-transform: lowercase;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Column-specific header colors */
+.bracket-column-r32 .bracket-column-header {
+  border-top: 3px solid #3B82F6;
+}
+
+.bracket-column-r16 .bracket-column-header {
+  border-top: 3px solid #10B981;
+}
+
+.bracket-column-qf .bracket-column-header {
+  border-top: 3px solid #F59E0B;
+}
+
+.bracket-column-sf .bracket-column-header {
+  border-top: 3px solid #8B5CF6;
+}
+
+.bracket-column-knockout-end .bracket-column-header {
+  border-top: 3px solid #F59E0B;
+}
+
+/* ── Column Content ───────────────────────────────────────────────── */
+.bracket-column-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  justify-content: space-around;
+}
+
+/* Final column has different layout */
+.bracket-column-finals {
+  justify-content: flex-start;
+  gap: 20px;
+}
+
+/* ── Row Pair (two matches side by side) ─────────────────────────── */
+.bracket-row-pair {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+}
+
+.bracket-match-wrapper {
+  position: relative;
+}
+
+/* ── Connectors between stages ────────────────────────────────────── */
+.bracket-connector {
+  width: 40px;
+  flex-shrink: 0;
+  position: relative;
+  display: flex;
+  align-items: stretch;
+}
+
+.bracket-connector::before,
+.bracket-connector::after {
+  content: '';
+  position: absolute;
+  background: var(--border);
+}
+
+/* ── Bracket Stage Column (old - kept for compatibility) ─────────── */
 .bracket-stage {
   display: flex;
   flex-direction: column;
