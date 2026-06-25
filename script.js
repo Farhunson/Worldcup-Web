@@ -3018,7 +3018,7 @@ function buildMatchCardHtml(match, stage, rankings, thirdPlaceTeams, knockoutMap
   return `
     <div class="bracket-match-node" data-matchno="${match.matchNo}" data-stage="${stage}">
       <div class="bracket-match-header">
-        <span class="bracket-match-number">M${match.matchNo}</span>
+        <span class="bracket-match-number">MATCH ${match.matchNo}</span>
         ${stage === 'final' ? '<svg class="trophy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 9H4a2 2 0 01-2-2V5a2 2 0 012-2h2M18 9h2a2 2 0 002-2V5a2 2 0 00-2-2h-2M12 17v4M8 21h8M9 17h6M12 13v4"/></svg>' : ''}
         ${stage === 'third' ? '<span class="third-icon">🥉</span>' : ''}
       </div>

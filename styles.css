@@ -1832,12 +1832,22 @@ tr.advancement-best-third td {
 
 /* Match Header - Like group-card-header */
 .bracket-match-header {
-  padding: 14px 18px;
+  padding: 12px 14px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 10px;
   background: var(--match-header-bg, linear-gradient(135deg, #3B82F6, #2563EB));
   border-radius: 28px 28px 0 0;
+}
+
+.bracket-match-number {
+  font-family: 'FWC2026Condensed', 'FWC2026', Inter, system-ui, sans-serif;
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #FFFFFF;
+  letter-spacing: 0.02em;
+  text-align: center;
 }
 
 /* Match Body - Like group-panel */
@@ -1862,15 +1872,6 @@ tr.advancement-best-third td {
 /* Dark theme support */
 :root[data-theme="dark"] .bracket-match-body {
   background: var(--surface-2);
-}
-
-/* Match Number - styling for header text */
-.bracket-match-number {
-  font-family: 'FWC2026Condensed', 'FWC2026', Inter, system-ui, sans-serif;
-  font-size: 1.4rem;
-  font-weight: 900;
-  color: #FFFFFF;
-  letter-spacing: 0.02em;
 }
 
 .bracket-match-header .trophy-icon {
