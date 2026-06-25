@@ -1210,9 +1210,11 @@ tr.advancement-best-third td {
 
 /* ── Bracket Container ─────────────────────────────────────────────── */
 .bracket-container {
+  display: flex;
+  flex-direction: row;
   overflow-x: auto;
-  overflow-y: visible;
-  padding: 20px 10px 40px;
+  gap: 28px;
+  padding: 20px 6px 40px;
   min-height: 400px;
   scrollbar-width: thin;
   scrollbar-color: var(--surface-strong) transparent;
@@ -1231,96 +1233,63 @@ tr.advancement-best-third td {
   border-radius: 4px;
 }
 
-/* ── Bracket Main Layout ──────────────────────────────────────────── */
-.bracket-main {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: stretch;  /* Stretch sides to same height */
-  gap: 0;
-  min-width: max-content;
-  height: 100%;
-}
-
-/* ── Bracket Sides (Home & Away) ──────────────────────────────────── */
-.bracket-side {
-  display: flex;
-  flex-direction: row;
-  gap: 0;
-  align-items: stretch;  /* Stretch to fill height */
-  height: 100%;
-}
-
-.bracket-stage-home {
-  flex-direction: row;
-}
-
-.bracket-stage-away {
-  flex-direction: row-reverse;  /* Mirror: SF closer to center, R32 far right */
-}
-
-/* ── Bracket Center (Third Place & Final) ────────────────────────── */
-.bracket-center {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 120px;
-  padding: 0 40px;
-  min-width: 280px;
-  height: 100%;
-}
-
-.bracket-stage-matches-center {
-  justify-content: center;
-}
-
 /* ── Bracket Stage Column ──────────────────────────────────────────── */
 .bracket-stage {
   display: flex;
   flex-direction: column;
+  min-width: 260px;
+  max-width: 300px;
+  flex-shrink: 0;
   gap: 0;
   background: none;
   border: none;
   border-radius: 0;
   box-shadow: none;
-  width: 260px;
-  height: 100%;
-}
-
-/* Adjust width for home/away sides */
-.bracket-side .bracket-stage {
-  width: 240px;
 }
 
 /* ── Stage Header Badge ────────────────────────────────────────────── */
 .bracket-stage-header {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   gap: 12px;
-  padding: 10px 16px;
-  border-radius: 10px;
-  margin-bottom: 16px;
+  padding: 12px 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
   font-weight: 800;
-  font-size: 0.78rem;
-  letter-spacing: 0.06em;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   white-space: nowrap;
   background: var(--surface-soft);
   color: var(--text);
   border: 1px solid var(--border);
   backdrop-filter: blur(8px);
+  position: sticky;
+  top: 0;
+  z-index: 10;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .bracket-stage-label {
   font-family: 'FWC2026Condensed', 'FWC2026', Inter, system-ui, sans-serif;
   font-weight: 900;
+  flex: 1;
 }
 
 .bracket-stage-count {
-  display: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.2);
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: 0.02em;
+  text-transform: lowercase;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* Stage-specific header colors */
@@ -1342,227 +1311,70 @@ tr.advancement-best-third td {
 
 .bracket-stage-third .bracket-stage-header {
   border-top: 3px solid #6B7280;
-  background: linear-gradient(135deg, var(--surface-soft) 0%, rgba(107, 114, 128, 0.15) 100%);
 }
 
 .bracket-stage-final .bracket-stage-header {
   border-top: 3px solid #F59E0B;
-  background: linear-gradient(135deg, var(--surface-soft) 0%, rgba(245, 158, 11, 0.15) 100%);
-  box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.25);
 }
 
 /* ── Stage Matches Container ───────────────────────────────────────── */
 .bracket-stage-matches {
   display: flex;
   flex-direction: column;
-  gap: 0;
-  position: relative;
+  justify-content: space-around;
+  gap: 8px;
+  flex: 1;
 }
 
-/* Each round has progressively larger top margin to align with feed sources */
-.bracket-stage-r32 .bracket-stage-matches {
-  padding-top: 0;
-}
-
-.bracket-stage-r16 .bracket-stage-matches {
-  padding-top: 44px;
-}
-
-.bracket-stage-qf .bracket-stage-matches {
-  padding-top: 110px;
-}
-
-.bracket-stage-sf .bracket-stage-matches {
-  padding-top: 240px;
-}
-
-/* Bracket-pair wrapper */
+/* ── Bracket Pair (groups 2 matches for connectors) ────────────────── */
 .bracket-pair {
   display: flex;
   flex-direction: column;
   gap: 8px;
   position: relative;
-  margin-bottom: 8px;
 }
 
-/* ── Individual Match Card Positioning ────────────────────────────── */
-/* R32 matches flow linearly - no special positioning needed */
-.bracket-stage-r32 .bracket-pair {
-  margin-bottom: 8px;
-}
-
-/* R16 matches: use margin-top to position pairs between R32 matches */
-.bracket-stage-r16 .bracket-pair {
-  margin-bottom: 8px;
-}
-
-.bracket-stage-r16.bracket-stage-home .bracket-pair:nth-child(1) { margin-top: 0; }
-.bracket-stage-r16.bracket-stage-home .bracket-pair:nth-child(2) { margin-top: 88px; }
-.bracket-stage-r16.bracket-stage-home .bracket-pair:nth-child(3) { margin-top: 176px; }
-.bracket-stage-r16.bracket-stage-home .bracket-pair:nth-child(4) { margin-top: 264px; }
-
-.bracket-stage-r16.bracket-stage-away .bracket-pair:nth-child(1) { margin-top: 0; }
-.bracket-stage-r16.bracket-stage-away .bracket-pair:nth-child(2) { margin-top: 88px; }
-.bracket-stage-r16.bracket-stage-away .bracket-pair:nth-child(3) { margin-top: 176px; }
-.bracket-stage-r16.bracket-stage-away .bracket-pair:nth-child(4) { margin-top: 264px; }
-
-/* QF matches: use margin-top to position pairs between R16 matches */
-.bracket-stage-qf .bracket-pair {
-  margin-bottom: 8px;
-}
-
-.bracket-stage-qf.bracket-stage-home .bracket-pair:nth-child(1) { margin-top: 0; }
-.bracket-stage-qf.bracket-stage-home .bracket-pair:nth-child(2) { margin-top: 176px; }
-
-.bracket-stage-qf.bracket-stage-away .bracket-pair:nth-child(1) { margin-top: 0; }
-.bracket-stage-qf.bracket-stage-away .bracket-pair:nth-child(2) { margin-top: 176px; }
-
-/* SF matches: center between QF pairs */
-.bracket-stage-sf.bracket-stage-home .bracket-match-node { margin-top: 44px; }
-.bracket-stage-sf.bracket-stage-away .bracket-match-node { margin-top: 44px; }
-
-/* ── Bracket Connector Lines with Arrows ───────────────────────────── */
-.bracket-connector {
+/* Right-side connector arm: horizontal line from each match node */
+.bracket-stage-r32 .bracket-match-node::after,
+.bracket-stage-r16 .bracket-match-node::after,
+.bracket-stage-qf .bracket-match-node::after {
+  content: '';
   position: absolute;
+  top: 50%;
+  right: -14px;
+  width: 14px;
+  height: 2px;
+  background: var(--border);
   z-index: 1;
-  pointer-events: none;
 }
 
-/* R32 connectors: horizontal lines from each match, vertical lines from pairs */
-.bracket-stage-r32 .bracket-pair {
-  position: relative;
-}
-
-.bracket-stage-r32.bracket-stage-home .bracket-match-node::after {
+/* Left-side connector arm: horizontal line into each match node */
+.bracket-stage-r16 .bracket-match-node::before,
+.bracket-stage-qf .bracket-match-node::before,
+.bracket-stage-sf .bracket-match-node::before {
   content: '';
   position: absolute;
   top: 50%;
-  right: -28px;
-  width: 28px;
+  left: -14px;
+  width: 14px;
   height: 2px;
-  background: linear-gradient(90deg, var(--border) 0%, var(--primary) 100%);
+  background: var(--border);
+  z-index: 1;
 }
 
-.bracket-stage-r32.bracket-stage-home .bracket-pair::after {
+/* Vertical bracket line connecting paired matches */
+.bracket-stage-r32 .bracket-pair::after,
+.bracket-stage-r16 .bracket-pair::after,
+.bracket-stage-qf .bracket-pair::after {
   content: '';
   position: absolute;
-  right: -28px;
-  top: 50%;
-  bottom: -50%;
+  right: -14px;
+  top: 25%;
+  bottom: 25%;
   width: 2px;
   background: var(--border);
-  transform: translateY(-50%);
-}
-
-.bracket-stage-r32.bracket-stage-away .bracket-match-node::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: -28px;
-  width: 28px;
-  height: 2px;
-  background: linear-gradient(270deg, var(--border) 0%, var(--primary) 100%);
-}
-
-.bracket-stage-r32.bracket-stage-away .bracket-pair::before {
-  content: '';
-  position: absolute;
-  left: -28px;
-  top: 50%;
-  bottom: -50%;
-  width: 2px;
-  background: var(--border);
-  transform: translateY(-50%);
-}
-
-/* R16 connectors to QF */
-.bracket-stage-r16.bracket-stage-home .bracket-match-node::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  right: -28px;
-  width: 28px;
-  height: 2px;
-  background: linear-gradient(90deg, var(--border) 0%, var(--primary) 100%);
-}
-
-.bracket-stage-r16.bracket-stage-away .bracket-match-node::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: -28px;
-  width: 28px;
-  height: 2px;
-  background: linear-gradient(270deg, var(--border) 0%, var(--primary) 100%);
-}
-
-/* QF connectors to SF */
-.bracket-stage-qf.bracket-stage-home .bracket-match-node::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  right: -28px;
-  width: 28px;
-  height: 2px;
-  background: linear-gradient(90deg, var(--border) 0%, var(--primary) 100%);
-}
-
-.bracket-stage-qf.bracket-stage-away .bracket-match-node::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: -28px;
-  width: 28px;
-  height: 2px;
-  background: linear-gradient(270deg, var(--border) 0%, var(--primary) 100%);
-}
-
-/* SF connectors to Final */
-.bracket-stage-sf.bracket-stage-home .bracket-match-node::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  right: -28px;
-  width: 28px;
-  height: 2px;
-  background: linear-gradient(90deg, var(--border) 0%, var(--primary) 100%);
-}
-
-.bracket-stage-sf.bracket-stage-away .bracket-match-node::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: -28px;
-  width: 28px;
-  height: 2px;
-  background: linear-gradient(270deg, var(--border) 0%, var(--primary) 100%);
-}
-
-/* Arrow indicators */
-.bracket-stage-home .bracket-match-node::after {
-  position: absolute;
-  right: -6px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 0;
-  height: 0;
-  border-left: 6px solid var(--primary);
-  border-top: 4px solid transparent;
-  border-bottom: 4px solid transparent;
-  z-index: 2;
-}
-
-.bracket-stage-away .bracket-match-node::before {
-  position: absolute;
-  left: -6px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 0;
-  height: 0;
-  border-right: 6px solid var(--primary);
-  border-top: 4px solid transparent;
-  border-bottom: 4px solid transparent;
-  z-index: 2;
+  z-index: 1;
 }
 
 /* ── Match Node Card ───────────────────────────────────────────────── */
@@ -1614,92 +1426,6 @@ tr.advancement-best-third td {
 
 .bracket-stage-final .bracket-match-node:hover {
   box-shadow: 0 8px 30px rgba(245, 158, 11, 0.3);
-}
-
-/* Third place and final in center */
-.bracket-stage-center .bracket-match-node {
-  margin: 0 auto;
-}
-
-/* ── Responsive Adjustments ──────────────────────────────────────── */
-@media (max-width: 1200px) {
-  .bracket-main {
-    min-width: 1000px;
-  }
-  
-  .bracket-side .bracket-stage {
-    width: 200px;
-  }
-  
-  /* Adjust padding for responsive */
-  .bracket-stage-r16 .bracket-stage-matches {
-    padding-top: 36px;
-  }
-  
-  .bracket-stage-qf .bracket-stage-matches {
-    padding-top: 90px;
-  }
-  
-  .bracket-stage-sf .bracket-stage-matches {
-    padding-top: 200px;
-  }
-  
-  /* Adjust pair margins for responsive */
-  .bracket-stage-r16.bracket-stage-home .bracket-pair:nth-child(2) { margin-top: 70px; }
-  .bracket-stage-r16.bracket-stage-home .bracket-pair:nth-child(3) { margin-top: 140px; }
-  .bracket-stage-r16.bracket-stage-home .bracket-pair:nth-child(4) { margin-top: 210px; }
-  .bracket-stage-r16.bracket-stage-away .bracket-pair:nth-child(2) { margin-top: 70px; }
-  .bracket-stage-r16.bracket-stage-away .bracket-pair:nth-child(3) { margin-top: 140px; }
-  .bracket-stage-r16.bracket-stage-away .bracket-pair:nth-child(4) { margin-top: 210px; }
-  
-  .bracket-stage-qf.bracket-stage-home .bracket-pair:nth-child(2) { margin-top: 140px; }
-  .bracket-stage-qf.bracket-stage-away .bracket-pair:nth-child(2) { margin-top: 140px; }
-  
-  .bracket-stage-sf.bracket-stage-home .bracket-match-node { margin-top: 36px; }
-  .bracket-stage-sf.bracket-stage-away .bracket-match-node { margin-top: 36px; }
-  
-  .bracket-center {
-    padding: 0 20px;
-    gap: 80px;
-  }
-}
-
-@media (max-width: 768px) {
-  .bracket-side .bracket-stage {
-    width: 180px;
-  }
-  
-  /* Further adjust padding for smaller screens */
-  .bracket-stage-r16 .bracket-stage-matches {
-    padding-top: 30px;
-  }
-  
-  .bracket-stage-qf .bracket-stage-matches {
-    padding-top: 75px;
-  }
-  
-  .bracket-stage-sf .bracket-stage-matches {
-    padding-top: 165px;
-  }
-  
-  /* Further adjust pair margins */
-  .bracket-stage-r16.bracket-stage-home .bracket-pair:nth-child(2) { margin-top: 58px; }
-  .bracket-stage-r16.bracket-stage-home .bracket-pair:nth-child(3) { margin-top: 116px; }
-  .bracket-stage-r16.bracket-stage-home .bracket-pair:nth-child(4) { margin-top: 174px; }
-  .bracket-stage-r16.bracket-stage-away .bracket-pair:nth-child(2) { margin-top: 58px; }
-  .bracket-stage-r16.bracket-stage-away .bracket-pair:nth-child(3) { margin-top: 116px; }
-  .bracket-stage-r16.bracket-stage-away .bracket-pair:nth-child(4) { margin-top: 174px; }
-  
-  .bracket-stage-qf.bracket-stage-home .bracket-pair:nth-child(2) { margin-top: 116px; }
-  .bracket-stage-qf.bracket-stage-away .bracket-pair:nth-child(2) { margin-top: 116px; }
-  
-  .bracket-stage-sf.bracket-stage-home .bracket-match-node { margin-top: 30px; }
-  .bracket-stage-sf.bracket-stage-away .bracket-match-node { margin-top: 30px; }
-  
-  .bracket-center {
-    min-width: 220px;
-    gap: 60px;
-  }
 }
 
 /* ── Match Inner (Team Rows) ───────────────────────────────────────── */
