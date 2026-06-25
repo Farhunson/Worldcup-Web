@@ -1349,47 +1349,6 @@ tr.advancement-best-third td {
   justify-content: space-around;
 }
 
-/* ── SVG Connector Lines ─────────────────────────────────────────── */
-.bracket-connectors-svg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 0;
-  overflow: visible;
-}
-
-.bracket-connector-line {
-  fill: none;
-  stroke: var(--border);
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.bracket-connector-gold {
-  fill: none;
-  stroke: #F59E0B;
-  stroke-width: 3;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.bracket-connector-bronze {
-  fill: none;
-  stroke: #9CA3AF;
-  stroke-width: 3;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-/* Position the grid layout relative for SVG overlay */
-.bracket-grid-layout {
-  position: relative;
-}
-
 /* ── Finals Section Labels ─────────────────────────────────────────── */
 .bracket-final-label {
   font-family: 'FWC2026Condensed', 'FWC2026', Inter, system-ui, sans-serif;
