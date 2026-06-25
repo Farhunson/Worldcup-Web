@@ -266,14 +266,6 @@ function formatFlag(team) {
   `;
 }
 
-const stageLabels = {
-  r32: 'Round of 32',
-  r16: 'Round of 16',
-  qf: 'Quarterfinal',
-  sf: 'Semifinal',
-  third: 'Third Place',
-  final: 'Final',
-};
 
 // Venue to IANA timezone mapping for World Cup 2026 host cities
 const venueTimezones = {
@@ -2998,3 +2990,482 @@ function buildMatchCardHtml(match, stage, rankings, thirdPlaceTeams, knockoutMap
   const { dateLabel, timeLabel, tzAbbr } = getMatchDateTimeLabel(match.matchNo, match.venue, match.date, match.time);
   const timeDisplay = tzAbbr ? `${timeLabel} ${tzAbbr}` : timeLabel;
   
+  // Stage indicator badge
+  
+  // Get scorer data for this match
+  const showScorers = hasScorerData(match.matchNo);
+  let scorersHtml = '';
+  if (showScorers) {
+    const scorers = getMatchScorers(match.matchNo);
+    const homeScorersHtml = buildScorersHtml(scorers.home);
+    const awayScorersHtml = buildScorersHtml(scorers.away);
+    const totalScorers = scorers.home.length + scorers.away.length;
+    scorersHtml = `
+      <div class="scorers-row bracket-scorers collapsed" data-match="${match.matchNo}">
+        <div class="scorers-toggle">
+          <span class="material-symbols-outlined scorers-icon">expand_more</span>
+          <span class="scorers-indicator">${totalScorers} goal${totalScorers !== 1 ? 's' : ''}</span>
+        </div>
+        <div class="scorers-content">
+          <div class="scorers-home">${homeScorersHtml}</div>
+          <div class="scorers-divider"></div>
+          <div class="scorers-away">${awayScorersHtml}</div>
+        </div>
+      </div>
+    `;
+  }
+  
+  return `
+    <div class="bracket-match-node" data-matchno="${match.matchNo}" data-stage="${stage}">
+      ${stage === 'final' ? '<div class="bracket-trophy-overlay"><svg class="trophy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 9H4a2 2 0 01-2-2V5a2 2 0 012-2h2M18 9h2a2 2 0 002-2V5a2 2 0 00-2-2h-2M12 17v4M8 21h8M9 17h6M12 13v4"/></svg></div>' : ''}
+      <div class="bracket-match-inner">
+        <div class="bracket-team ${isTBDA ? 'placeholder' : ''}">
+          <div class="bracket-team-info">
+            ${isTBDA ? '<span class="team-flag">🏳️</span>' : formatFlag(teamA.name)}
+            <span class="bracket-team-name">
+              ${isTBDA ? (teamA.name === 'TBD' ? (teamA.note || match.pos1) : teamA.name) : getTeamInitials(teamA.name)}
+            </span>
+          </div>
+          <input class="score-input bracket-score" type="number" min="0" value="${scoreA}" data-match="${match.matchNo}" data-side="score1" ${disabledAttr} />
+        </div>
+        <div class="bracket-team ${isTBDB ? 'placeholder' : ''}">
+          <div class="bracket-team-info">
+            ${isTBDB ? '<span class="team-flag">🏳️</span>' : formatFlag(teamB.name)}
+            <span class="bracket-team-name">
+              ${isTBDB ? (teamB.name === 'TBD' ? (teamB.note || match.pos2) : teamB.name) : getTeamInitials(teamB.name)}
+            </span>
+          </div>
+          <input class="score-input bracket-score" type="number" min="0" value="${scoreB}" data-match="${match.matchNo}" data-side="score2" ${disabledAttr} />
+        </div>
+      </div>
+      ${scorersHtml}
+      <div class="bracket-match-meta">
+        <span class="bracket-datetime">${dateLabel} · ${timeDisplay} ${apiBadge}</span>
+        <div class="bracket-venue">
+          <div class="bracket-stadium-name">${getStadiumName(match.venue) || ''}</div>
+          <div class="bracket-city-name">${getCityName(match.venue) || ''}</div>
+        </div>
+      </div>
+      <div class="bracket-match-number">M${match.matchNo}</div>
+    </div>
+  `;
+}
+
+// Bracket layout configuration - Grid-based design matching Excel layout
+// Excel layout reference (17 rows x 9 columns):
+// Row 3:  M74 | - | - | - | - | - | - | - | M76
+// Row 4:  - | M89 | - | - | - | - | - | M91 | -
+// Row 5:  M77 | - | - | - | - | - | - | - | M78
+// Row 6:  - | - | M97 | - | - | - | - | - | M99
+// Row 7:  M73 | - | - | - | M104 | - | - | - | M79
+// Row 8:  - | M90 | - | - | - | - | - | M92 | -
+// Row 9:  M75 | - | - | - | - | - | - | - | M80
+// Row 10: - | - | - | M101 | M102 | - | - | - | -
+// Row 11: M83 | - | - | - | - | - | - | - | M86
+// Row 12: - | M93 | - | - | - | - | - | - | M95
+// Row 13: M84 | - | - | - | M103 | - | - | - | M88
+// Row 14: - | - | M98 | - | - | - | - | - | M100
+// Row 15: M81 | - | - | - | - | - | - | - | M85
+// Row 16: - | M94 | - | - | - | - | - | - | M96
+// Row 17: M82 | - | - | - | - | - | - | - | M87
+
+// Define bracket grid layout - each entry represents a row with match positions
+// Columns: 0=R32-L, 1=R16-L, 2=QF-L, 3=SF-L, 4=Finals, 5=SF-R, 6=QF-R, 7=R16-R, 8=R32-R
+const BRACKET_GRID_LAYOUT = [
+  // Row 1 (Excel Row 3): R32 M74 | R32 M76
+  { row: 1, matches: [{ col: 0, match: 74 }, { col: 8, match: 76 }] },
+  // Row 2 (Excel Row 4): R16 M89 | R16 M91
+  { row: 2, matches: [{ col: 1, match: 89 }, { col: 7, match: 91 }] },
+  // Row 3 (Excel Row 5): R32 M77 | R32 M78
+  { row: 3, matches: [{ col: 0, match: 77 }, { col: 8, match: 78 }] },
+  // Row 4 (Excel Row 6): QF M97 | QF M99
+  { row: 4, matches: [{ col: 2, match: 97 }, { col: 6, match: 99 }] },
+  // Row 5 (Excel Row 7): R32 M73 | R32 M79
+  { row: 5, matches: [{ col: 0, match: 73 }, { col: 8, match: 79 }] },
+  // Row 6 (Excel Row 8): R16 M90 | R16 M92
+  { row: 6, matches: [{ col: 1, match: 90 }, { col: 7, match: 92 }] },
+  // Row 7 (Excel Row 9): R32 M75 | R32 M80
+  { row: 7, matches: [{ col: 0, match: 75 }, { col: 8, match: 80 }] },
+  // Row 8 (Excel Row 10): SF M101 | Final M104 | SF M102
+  { row: 8, matches: [{ col: 3, match: 101 }, { col: 4, match: 104, type: 'final' }, { col: 5, match: 102 }] },
+  // Row 9 (Excel Row 11): R32 M83 | R32 M86
+  { row: 9, matches: [{ col: 0, match: 83 }, { col: 8, match: 86 }] },
+  // Row 10 (Excel Row 12): R16 M93 | Third M103 | R16 M95
+  { row: 10, matches: [{ col: 1, match: 93 }, { col: 4, match: 103, type: 'third' }, { col: 7, match: 95 }] },
+  // Row 11 (Excel Row 13): R32 M84 | R32 M88
+  { row: 11, matches: [{ col: 0, match: 84 }, { col: 8, match: 88 }] },
+  // Row 12 (Excel Row 14): QF M98 | QF M100
+  { row: 12, matches: [{ col: 2, match: 98 }, { col: 6, match: 100 }] },
+  // Row 13 (Excel Row 15): R32 M81 | R32 M85
+  { row: 13, matches: [{ col: 0, match: 81 }, { col: 8, match: 85 }] },
+  // Row 14 (Excel Row 16): R16 M94 | R16 M96
+  { row: 14, matches: [{ col: 1, match: 94 }, { col: 7, match: 96 }] },
+  // Row 15 (Excel Row 17): R32 M82 | R32 M87
+  { row: 15, matches: [{ col: 0, match: 82 }, { col: 8, match: 87 }] },
+];
+
+// Stage column mapping
+const STAGE_COLUMNS = {
+  0: { stage: 'r32', title: 'Round of 32', side: 'left' },
+  1: { stage: 'r16', title: 'Round of 16', side: 'left' },
+  2: { stage: 'qf', title: 'Quarterfinal', side: 'left' },
+  3: { stage: 'sf', title: 'Semifinal', side: 'left' },
+  4: { stage: 'final', title: 'Finals', side: 'center' },
+  5: { stage: 'sf', title: 'Semifinal', side: 'right' },
+  6: { stage: 'qf', title: 'Quarterfinal', side: 'right' },
+  7: { stage: 'r16', title: 'Round of 16', side: 'right' },
+  8: { stage: 'r32', title: 'Round of 32', side: 'right' },
+};
+
+function buildVisualBracket(rankings, thirdPlaceTeams, knockoutMap, assignments, allGroupsComplete) {
+  const resultMap = computeKnockoutResults(rankings, thirdPlaceTeams, assignments, allGroupsComplete);
+  
+  // Build all match cards first
+  const allMatchCards = {};
+  scheduleData.knockoutMatches.forEach(match => {
+    allMatchCards[match.matchNo] = buildMatchCardHtml(match, match.stage, rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete);
+  });
+
+  // Build the bracket grid based on Excel layout
+  // 9 columns: 0=R32-L, 1=R16-L, 2=QF-L, 3=SF-L, 4=Finals, 5=SF-R, 6=QF-R, 7=R16-R, 8=R32-R
+  let html = `<div class="bracket-grid-layout">`;
+  
+  // Build each row of the grid
+  BRACKET_GRID_LAYOUT.forEach((rowConfig, rowIndex) => {
+    html += `<div class="bracket-grid-row" data-row="${rowIndex}">`;
+    
+    // Create 9 cells for each column
+    for (let col = 0; col < 9; col++) {
+      // Find if there's a match in this cell
+      const cellMatch = rowConfig.matches.find(m => m.col === col);
+      
+      if (cellMatch) {
+        const matchCard = allMatchCards[cellMatch.match] || '';
+        const cellClass = cellMatch.type === 'final' ? 'bracket-cell-final' : 
+                          cellMatch.type === 'third' ? 'bracket-cell-third' : 
+                          getBracketCellClass(col);
+        html += `<div class="bracket-grid-cell ${cellClass}">${matchCard}</div>`;
+      } else {
+        html += `<div class="bracket-grid-cell bracket-cell-empty"></div>`;
+      }
+    }
+    
+    html += `</div>`;
+  });
+  
+  html += `</div>`;
+  return html;
+}
+
+// Helper function to get CSS class for bracket cell based on column
+function getBracketCellClass(col) {
+  switch(col) {
+    case 0: return 'bracket-cell-r32-left';
+    case 1: return 'bracket-cell-r16-left';
+    case 2: return 'bracket-cell-qf-left';
+    case 3: return 'bracket-cell-sf-left';
+    case 5: return 'bracket-cell-sf-right';
+    case 6: return 'bracket-cell-qf-right';
+    case 7: return 'bracket-cell-r16-right';
+    case 8: return 'bracket-cell-r32-right';
+    default: return '';
+  }
+}
+
+function buildStageHtml(stage, matches, rankings, thirdPlaceTeams, knockoutMap, assignments, allGroupsComplete) {
+  const matchCards = matches.map(m => buildMatchCardHtml(m, stage, rankings, thirdPlaceTeams, knockoutMap, assignments, allGroupsComplete));
+
+  // Group matches into pairs for bracket connectors (skip for third/final)
+  let matchesHtml;
+  if (stage === 'third' || stage === 'final') {
+    matchesHtml = matchCards.join('');
+  } else {
+    matchesHtml = '';
+    for (let i = 0; i < matchCards.length; i += 2) {
+      if (i + 1 < matchCards.length) {
+        matchesHtml += `<div class="bracket-pair">${matchCards[i]}${matchCards[i + 1]}</div>`;
+      } else {
+        matchesHtml += matchCards[i];
+      }
+    }
+  }
+
+  return `
+    <div class="bracket-stage bracket-stage-${stage}">
+      <div class="bracket-stage-header">
+        <span class="bracket-stage-label">${stageLabels[stage]}</span>
+        <span class="bracket-stage-count">${matches.length} matches</span>
+      </div>
+      <div class="bracket-stage-matches">
+        ${matchesHtml}
+      </div>
+    </div>
+  `;
+}
+
+function renderBracket(rankings, thirdPlaceTeams, assignments, allGroupsComplete) {
+  // Use the new visual layout
+  const html = buildVisualBracket(rankings, thirdPlaceTeams, null, assignments, allGroupsComplete);
+  bracketContainer.innerHTML = html;
+
+  bracketContainer.querySelectorAll('.score-input').forEach((input) => {
+    input.addEventListener('input', (event) => {
+      const matchNo = event.target.dataset.match;
+      const side = event.target.dataset.side;
+      updateScore(Number(matchNo), side, event.target.value);
+    });
+  });
+}
+
+function buildExportCsv() {
+  const header = ['Stage', 'Match No', 'Team 1', 'Team 2', 'Score 1', 'Score 2', 'Venue', 'Date', 'Time'];
+  const rows = [];
+  scheduleData.groupMatches.forEach((match) => {
+    const score1 = state.scores[match.matchNo]?.score1 ?? '';
+    const score2 = state.scores[match.matchNo]?.score2 ?? '';
+    const dateLabel = new Date(match.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    rows.push([
+      'Group',
+      match.matchNo,
+      match.team1 || 'TBD',
+      match.team2 || 'TBD',
+      score1,
+      score2,
+      match.venue || '',
+      dateLabel,
+      match.time || '',
+    ]);
+  });
+
+  scheduleData.knockoutMatches.forEach((match) => {
+    const score1 = state.scores[match.matchNo]?.score1 ?? '';
+    const score2 = state.scores[match.matchNo]?.score2 ?? '';
+    const dateLabel = match.date ? new Date(match.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : '';
+    rows.push([
+      stageLabels[match.stage] || match.stage,
+      match.matchNo,
+      match.team1 || '',
+      match.team2 || '',
+      score1,
+      score2,
+      match.venue || '',
+      dateLabel,
+      match.time || '',
+    ]);
+  });
+
+  const csvRows = [header, ...rows].map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(','));
+  return csvRows.join('\n');
+}
+
+function downloadCsv(csv, filename) {
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  const url = URL.createObjectURL(blob);
+  link.setAttribute('href', url);
+  link.setAttribute('download', filename);
+  link.style.visibility = 'hidden';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
+let currentRankings = null;
+let currentThirdPlacers = null;
+let currentAssignments = {};
+let currentAllGroupsComplete = false;
+
+// Get matches for today
+function getTodaysMatches() {
+  const today = new Date();
+  const todayStr = today.toISOString().split('T')[0];
+  
+  const allMatches = [...scheduleData.groupMatches, ...scheduleData.knockoutMatches];
+  
+  return allMatches.filter(match => {
+    const matchDate = new Date(match.date);
+    const matchDateStr = matchDate.toISOString().split('T')[0];
+    return matchDateStr === todayStr;
+  }).sort((a, b) => new Date(a.date) - new Date(b.date));
+}
+
+// Check if a match has been played (has scores entered)
+function isMatchPlayed(matchNo) {
+  const score = state.scores[matchNo];
+  return score && (score.score1 !== '' && score.score2 !== '');
+}
+
+// Get group letter from position (e.g., "A1" -> "A")
+function getGroupFromPos(pos) {
+  if (!pos) return '';
+  return pos.charAt(0);
+}
+
+// Build today's match card HTML
+function buildTodaysMatchCard(match) {
+  const score1Val = state.scores[match.matchNo]?.score1 ?? '';
+  const score2Val = state.scores[match.matchNo]?.score2 ?? '';
+  const isPlayed = isMatchPlayed(match.matchNo);
+  const isApiSourced = isApiSourcedMatch(match.matchNo);
+  const isLive = isLiveMatch(match.matchNo);
+  const isFinished = isFinishedMatch(match.matchNo);
+  
+  // Get group info if it's a group match
+  const group = getGroupFromPos(match.pos1) || getGroupFromPos(match.pos2);
+  const groupBadge = group ? `<span class="todays-group-badge group-${group}">Group ${group}</span>` : '';
+  
+  // Get date/time
+  const { dateLabel, timeLabel, tzAbbr } = getMatchDateTimeLabel(match.matchNo, match.venue, match.date, match.time);
+  const timeDisplay = tzAbbr ? `${timeLabel} ${tzAbbr}` : timeLabel;
+  
+  // Status badge: Live badge (red with dot) takes priority over Full-time badge
+  let statusBadge = '';
+  if (isLive) {
+    statusBadge = '<span class="todays-status-badge live"><span class="live-dot"></span>LIVE</span>';
+  } else if (isFinished) {
+    statusBadge = '<span class="todays-status-badge full-time">Full-time</span>';
+  }
+  
+  // Stadium info
+  const venueDisplay = getVenueDisplayName(match.venue) || '';
+  
+  // Show scores if match is played, live, or finished
+  const showScores = isPlayed || isLive || isFinished;
+  
+  // Highlight class based on match status
+  let statusClass = '';
+  if (isLive) {
+    statusClass = 'todays-match-live';
+  } else if (isFinished) {
+    statusClass = 'todays-match-finished';
+  } else if (!showScores) {
+    statusClass = 'todays-match-upcoming';
+  }
+  
+  // Get scorer data for this match
+  const showScorers = hasScorerData(match.matchNo);
+  let scorersHtml = '';
+  if (showScorers) {
+    const scorers = getMatchScorers(match.matchNo);
+    const homeScorersHtml = buildScorersHtml(scorers.home);
+    const awayScorersHtml = buildScorersHtml(scorers.away);
+    const totalScorers = scorers.home.length + scorers.away.length;
+    scorersHtml = `
+      <div class="scorers-row todays-scorers collapsed" data-match="${match.matchNo}">
+        <div class="scorers-toggle">
+          <span class="material-symbols-outlined scorers-icon">expand_more</span>
+          <span class="scorers-indicator">${totalScorers} goal${totalScorers !== 1 ? 's' : ''}</span>
+        </div>
+        <div class="scorers-content">
+          <div class="scorers-home">${homeScorersHtml}</div>
+          <div class="scorers-divider"></div>
+          <div class="scorers-away">${awayScorersHtml}</div>
+        </div>
+      </div>
+    `;
+  }
+  
+  // Build today's match card content
+  const matchContent = `
+    <div class="todays-match-header">
+      ${groupBadge}
+    </div>
+    <div class="match-top">
+      <div class="team-left">
+        <div class="team-flag-name">${formatFlag(match.team1)}<div class="team-name">${getTeamInitials(match.team1)}</div></div>
+      </div>
+      <div class="score-left">
+        ${showScores ? `<span class="todays-score-display">${score1Val}</span>` : ''}
+      </div>
+      <div class="vs">${showScores ? '-' : 'vs'}</div>
+      <div class="score-right">
+        ${showScores ? `<span class="todays-score-display">${score2Val}</span>` : ''}
+      </div>
+      <div class="team-right">
+        <div class="team-flag-name">${formatFlag(match.team2)}<div class="team-name">${getTeamInitials(match.team2)}</div></div>
+      </div>
+    </div>
+    ${scorersHtml}
+    <div class="match-mid">
+      ${dateLabel} · ${timeDisplay} ${statusBadge}
+    </div>
+    <div class="match-bottom">
+      <div class="stadium-name">${venueDisplay}</div>
+    </div>
+  `;
+  
+  return `<div class="match-card match-compact ${statusClass}" data-matchno="${match.matchNo}">${matchContent}</div>`;
+}
+
+// Render today's matches section
+function renderTodaysMatches() {
+  if (!todaysMatchesElement) return;
+  
+  const todaysMatches = getTodaysMatches();
+  
+  if (todaysMatches.length === 0) {
+    todaysMatchesElement.innerHTML = '';
+    todaysMatchesElement.style.display = 'none';
+    return;
+  }
+  
+  todaysMatchesElement.style.display = 'block';
+  
+  const matchCardsHtml = todaysMatches.map(match => buildTodaysMatchCard(match)).join('');
+  
+  todaysMatchesElement.innerHTML = `
+    <div class="todays-matches-grid">
+      ${matchCardsHtml}
+    </div>
+  `;
+  
+  // Add click handlers to match cards
+  todaysMatchesElement.querySelectorAll('.todays-match-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const matchNo = card.dataset.matchno;
+      scrollToMatch(matchNo);
+    });
+  });
+}
+
+// Scroll to a specific match
+function scrollToMatch(matchNo) {
+  const matchElement = document.querySelector(`[data-matchno="${matchNo}"]`);
+  if (matchElement) {
+    matchElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    matchElement.classList.add('match-highlight');
+    setTimeout(() => matchElement.classList.remove('match-highlight'), 2000);
+  }
+}
+
+function render() {
+  const { rankings, thirdPlaceTeams, thirdPlaceAssignments, allGroupsComplete } = computeGroupStandings();
+  currentRankings = rankings;
+  currentThirdPlacers = thirdPlaceTeams;
+  currentAssignments = thirdPlaceAssignments;
+  currentAllGroupsComplete = allGroupsComplete;
+  renderTodaysMatches();
+  renderGroups(rankings, thirdPlaceTeams);
+  renderBracket(rankings, thirdPlaceTeams, thirdPlaceAssignments, allGroupsComplete);
+  renderTopScorers();
+}
+
+// Initialize Live API features
+document.addEventListener('DOMContentLoaded', () => {
+  initLiveApi();
+  startAutoRefresh();
+  // Initial fetch on page load
+  fetchLiveScores();
+  
+  // Event delegation for scorers toggle
+  document.addEventListener('click', (e) => {
+    const toggle = e.target.closest('.scorers-toggle');
+    if (toggle) {
+      const scorersRow = toggle.closest('.scorers-row');
+      scorersRow.classList.toggle('collapsed');
+    }
+  });
+});
+
+render();
