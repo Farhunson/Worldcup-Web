@@ -882,7 +882,7 @@ const scheduleData =
       "matchNo": 74,
       "date": "2026-06-29T17:00:00",
       "time": "17:00",
-      "venue": "Houston",
+      "venue": "Boston",
       "stage": "r32",
       "pos1": "1E",
       "pos2": "3-ABCDF"
@@ -891,7 +891,7 @@ const scheduleData =
       "matchNo": 75,
       "date": "2026-06-29T20:30:00",
       "time": "20:30",
-      "venue": "Boston",
+      "venue": "Monterrey",
       "stage": "r32",
       "pos1": "1F",
       "pos2": "2C"
@@ -900,7 +900,7 @@ const scheduleData =
       "matchNo": 76,
       "date": "2026-06-30T00:00:00",
       "time": "00:00",
-      "venue": "Monterrey",
+      "venue": "Houston",
       "stage": "r32",
       "pos1": "1C",
       "pos2": "2F"
@@ -909,7 +909,7 @@ const scheduleData =
       "matchNo": 77,
       "date": "2026-06-30T17:00:00",
       "time": "17:00",
-      "venue": "Dallas",
+      "venue": "New York/New Jersey",
       "stage": "r32",
       "pos1": "1I",
       "pos2": "3-CDFGH"
@@ -918,7 +918,7 @@ const scheduleData =
       "matchNo": 78,
       "date": "2026-06-30T21:00:00",
       "time": "21:00",
-      "venue": "New York/New Jersey",
+      "venue": "Dallas",
       "stage": "r32",
       "pos1": "2E",
       "pos2": "2I"
@@ -936,7 +936,7 @@ const scheduleData =
       "matchNo": 80,
       "date": "2026-07-01T17:00:00",
       "time": "17:00",
-      "venue": "Mexico City",
+      "venue": "Atlanta",
       "stage": "r32",
       "pos1": "1L",
       "pos2": "3-EHIJK"
@@ -945,7 +945,7 @@ const scheduleData =
       "matchNo": 81,
       "date": "2026-07-01T20:00:00",
       "time": "20:00",
-      "venue": "Seattle",
+      "venue": "San Francisco Bay Area",
       "stage": "r32",
       "pos1": "1D",
       "pos2": "3-BEFIJ"
@@ -954,7 +954,7 @@ const scheduleData =
       "matchNo": 82,
       "date": "2026-07-02T00:00:00",
       "time": "00:00",
-      "venue": "San Francisco Bay Area",
+      "venue": "Seattle",
       "stage": "r32",
       "pos1": "1G",
       "pos2": "3-AEHIJ"
@@ -972,7 +972,7 @@ const scheduleData =
       "matchNo": 84,
       "date": "2026-07-02T23:00:00",
       "time": "23:00",
-      "venue": "Toronto",
+      "venue": "Los Angeles",
       "stage": "r32",
       "pos1": "1H",
       "pos2": "2J"
@@ -990,7 +990,7 @@ const scheduleData =
       "matchNo": 86,
       "date": "2026-07-03T18:00:00",
       "time": "18:00",
-      "venue": "Dallas",
+      "venue": "Miami",
       "stage": "r32",
       "pos1": "1J",
       "pos2": "2H"
@@ -999,7 +999,7 @@ const scheduleData =
       "matchNo": 87,
       "date": "2026-07-03T22:00:00",
       "time": "22:00",
-      "venue": "Miami",
+      "venue": "Kansas City",
       "stage": "r32",
       "pos1": "1K",
       "pos2": "3-DEIJL"
@@ -1008,7 +1008,7 @@ const scheduleData =
       "matchNo": 88,
       "date": "2026-07-04T00:30:00",
       "time": "00:30",
-      "venue": "Miami",
+      "venue": "Dallas",
       "stage": "r32",
       "pos1": "2D",
       "pos2": "2G"
@@ -1017,7 +1017,7 @@ const scheduleData =
       "matchNo": 89,
       "date": "2026-07-04T17:00:00",
       "time": "17:00",
-      "venue": "Houston",
+      "venue": "Philadelphia",
       "stage": "r16",
       "pos1": "W74",
       "pos2": "W77"
@@ -1026,7 +1026,7 @@ const scheduleData =
       "matchNo": 90,
       "date": "2026-07-04T21:00:00",
       "time": "21:00",
-      "venue": "Philadelphia",
+      "venue": "Houston",
       "stage": "r16",
       "pos1": "W73",
       "pos2": "W75"
@@ -1053,7 +1053,7 @@ const scheduleData =
       "matchNo": 93,
       "date": "2026-07-06T19:00:00",
       "time": "19:00",
-      "venue": "Dallas",
+      "venue": "Los Angeles",
       "stage": "r16",
       "pos1": "W83",
       "pos2": "W84"
@@ -1062,7 +1062,7 @@ const scheduleData =
       "matchNo": 94,
       "date": "2026-07-07T00:00:00",
       "time": "00:00",
-      "venue": "Seattle",
+      "venue": "Los Angeles",
       "stage": "r16",
       "pos1": "W81",
       "pos2": "W82"
@@ -1071,7 +1071,7 @@ const scheduleData =
       "matchNo": 95,
       "date": "2026-07-07T17:00:00",
       "time": "17:00",
-      "venue": "Mexico City",
+      "venue": "Atlanta",
       "stage": "r16",
       "pos1": "W86",
       "pos2": "W88"
@@ -1080,7 +1080,7 @@ const scheduleData =
       "matchNo": 96,
       "date": "2026-07-07T20:00:00",
       "time": "20:00",
-      "venue": "Vancouver",
+      "venue": "Seattle",
       "stage": "r16",
       "pos1": "W85",
       "pos2": "W87"
@@ -1116,7 +1116,7 @@ const scheduleData =
       "matchNo": 100,
       "date": "2026-07-12T00:00:00",
       "time": "00:00",
-      "venue": "Miami",
+      "venue": "Kansas City",
       "stage": "qf",
       "pos1": "W95",
       "pos2": "W96"
@@ -1134,7 +1134,7 @@ const scheduleData =
       "matchNo": 102,
       "date": "2026-07-15T20:00:00",
       "time": "20:00",
-      "venue": "Mexico City",
+      "venue": "Atlanta",
       "stage": "sf",
       "pos1": "W99",
       "pos2": "W100"
