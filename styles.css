@@ -1852,7 +1852,7 @@ tr.advancement-best-third td {
 
 /* Match Body - Like group-panel */
 .bracket-match-body {
-  border: 5px solid var(--border);
+  border: 5px solid var(--match-header-color, var(--border));
   border-top: none;
   border-radius: 0 0 28px 28px;
   padding: 12px 14px;
@@ -1863,10 +1863,6 @@ tr.advancement-best-third td {
 .bracket-match-node:hover {
   transform: translateY(-3px) scale(1.03);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
-}
-
-.bracket-match-node:hover .bracket-match-body {
-  border-color: var(--primary);
 }
 
 /* Dark theme support */
@@ -1929,6 +1925,7 @@ tr.advancement-best-third td {
 .bracket-match-node[data-matchno="90"],
 .bracket-match-node[data-matchno="97"] {
   --match-header-bg: linear-gradient(135deg, #87B0F2, #6B93D6);
+  --match-header-color: #87B0F2;
 }
 
 .bracket-match-node[data-matchno="83"],
@@ -1939,6 +1936,7 @@ tr.advancement-best-third td {
 .bracket-match-node[data-matchno="94"],
 .bracket-match-node[data-matchno="98"] {
   --match-header-bg: linear-gradient(135deg, #87D8D1, #6BC4BC);
+  --match-header-color: #87D8D1;
 }
 
 /* Match-specific header colors (Right side - Teals/Pinks) */
@@ -1950,6 +1948,7 @@ tr.advancement-best-third td {
 .bracket-match-node[data-matchno="92"],
 .bracket-match-node[data-matchno="99"] {
   --match-header-bg: linear-gradient(135deg, #00A486, #008F70);
+  --match-header-color: #00A486;
 }
 
 .bracket-match-node[data-matchno="86"],
@@ -1960,21 +1959,24 @@ tr.advancement-best-third td {
 .bracket-match-node[data-matchno="95"],
 .bracket-match-node[data-matchno="100"] {
   --match-header-bg: linear-gradient(135deg, #CA0D5F, #A80B4E);
+  --match-header-color: #CA0D5F;
 }
 
 /* SF, Final, and Third Place Special Design */
 .bracket-match-node[data-matchno="101"],
 .bracket-match-node[data-matchno="102"] {
   --match-header-bg: linear-gradient(135deg, #A648BA, #8B3CA0);
+  --match-header-color: #A648BA;
 }
 
 .bracket-match-node[data-matchno="103"] {
   --match-header-bg: linear-gradient(135deg, #CD7F32, #B06A28);
+  --match-header-color: #CD7F32;
 }
 
 .bracket-match-node[data-matchno="104"] {
   --match-header-bg: linear-gradient(135deg, #EFBF04, #D4A703);
-  --match-header-border: 5px solid #EFBF04;
+  --match-header-color: #EFBF04;
   animation: fadeSlideIn 0.5s ease-out backwards, pulseGold 3s ease-in-out infinite;
 }
 
