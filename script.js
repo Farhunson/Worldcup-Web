@@ -3114,38 +3114,38 @@ function buildMatchCardHtml(match, stage, rankings, thirdPlaceTeams, knockoutMap
 // Row 17: M82 | - | - | - | - | - | - | - | M87
 
 // Define bracket grid layout - each entry represents a row with match positions
-// Columns: 0=R32-L, 1=R16-L, 2=QF-L, 3=SF-L, 4=Final, 5=Third, 6=SF-R, 7=QF-R, 8=R16-R, 9=R32-R
+// Columns: 0=R32-L, 1=R16-L, 2=QF-L, 3=SF-L, 4=Final/Third, 5=SF-R, 6=QF-R, 7=R16-R, 8=R32-R
 const BRACKET_GRID_LAYOUT = [
   // Row 1: R32 M74 | R32 M76
-  { row: 1, matches: [{ col: 0, match: 74 }, { col: 9, match: 76 }] },
+  { row: 1, matches: [{ col: 0, match: 74 }, { col: 8, match: 76 }] },
   // Row 2: R16 M89 | R16 M91
-  { row: 2, matches: [{ col: 1, match: 89 }, { col: 8, match: 91 }] },
+  { row: 2, matches: [{ col: 1, match: 89 }, { col: 7, match: 91 }] },
   // Row 3: R32 M77 | R32 M78
-  { row: 3, matches: [{ col: 0, match: 77 }, { col: 9, match: 78 }] },
+  { row: 3, matches: [{ col: 0, match: 77 }, { col: 8, match: 78 }] },
   // Row 4: QF M97 | QF M99
-  { row: 4, matches: [{ col: 2, match: 97 }, { col: 7, match: 99 }] },
+  { row: 4, matches: [{ col: 2, match: 97 }, { col: 6, match: 99 }] },
   // Row 5: R32 M73 | R32 M79
-  { row: 5, matches: [{ col: 0, match: 73 }, { col: 9, match: 79 }] },
+  { row: 5, matches: [{ col: 0, match: 73 }, { col: 8, match: 79 }] },
   // Row 6: R16 M90 | R16 M92
-  { row: 6, matches: [{ col: 1, match: 90 }, { col: 8, match: 92 }] },
+  { row: 6, matches: [{ col: 1, match: 90 }, { col: 7, match: 92 }] },
   // Row 7: R32 M75 | R32 M80
-  { row: 7, matches: [{ col: 0, match: 75 }, { col: 9, match: 80 }] },
+  { row: 7, matches: [{ col: 0, match: 75 }, { col: 8, match: 80 }] },
   // Row 8: SF M101 | Final M104 | Third M103 | SF M102
-  { row: 8, matches: [{ col: 3, match: 101 }, { col: 4, match: 104, type: 'final' }, { col: 5, match: 103, type: 'third' }, { col: 6, match: 102 }] },
+  { row: 8, matches: [{ col: 3, match: 101 }, { col: 4, match: 104, type: 'final' }, { col: 5, match: 102 }] },
   // Row 9: R32 M83 | R32 M86
-  { row: 9, matches: [{ col: 0, match: 83 }, { col: 9, match: 86 }] },
-  // Row 10: R16 M93 | R16 M95
-  { row: 10, matches: [{ col: 1, match: 93 }, { col: 8, match: 95 }] },
+  { row: 9, matches: [{ col: 0, match: 83 }, { col: 8, match: 86 }] },
+  // Row 10: R16 M93 | Third M103 | R16 M95
+  { row: 10, matches: [{ col: 1, match: 93 }, { col: 4, match: 103, type: 'third' }, { col: 7, match: 95 }] },
   // Row 11: R32 M84 | R32 M88
-  { row: 11, matches: [{ col: 0, match: 84 }, { col: 9, match: 88 }] },
+  { row: 11, matches: [{ col: 0, match: 84 }, { col: 8, match: 88 }] },
   // Row 12: QF M98 | QF M100
-  { row: 12, matches: [{ col: 2, match: 98 }, { col: 7, match: 100 }] },
+  { row: 12, matches: [{ col: 2, match: 98 }, { col: 6, match: 100 }] },
   // Row 13: R32 M81 | R32 M85
-  { row: 13, matches: [{ col: 0, match: 81 }, { col: 9, match: 85 }] },
+  { row: 13, matches: [{ col: 0, match: 81 }, { col: 8, match: 85 }] },
   // Row 14: R16 M94 | R16 M96
-  { row: 14, matches: [{ col: 1, match: 94 }, { col: 8, match: 96 }] },
+  { row: 14, matches: [{ col: 1, match: 94 }, { col: 7, match: 96 }] },
   // Row 15: R32 M82 | R32 M87
-  { row: 15, matches: [{ col: 0, match: 82 }, { col: 9, match: 87 }] },
+  { row: 15, matches: [{ col: 0, match: 82 }, { col: 8, match: 87 }] },
 ];
 
 // Stage column mapping
@@ -3184,32 +3184,23 @@ function buildVisualBracket(rankings, thirdPlaceTeams, knockoutMap, assignments,
   });
 
   // Build the bracket grid based on Excel layout
-  // 10 columns: 0=R32-L, 1=R16-L, 2=QF-L, 3=SF-L, 4=Finals, 5=Third, 6=SF-R, 7=QF-R, 8=R16-R, 9=R32-R
+  // 9 columns: 0=R32-L, 1=R16-L, 2=QF-L, 3=SF-L, 4=Finals/Third, 5=SF-R, 6=QF-R, 7=R16-R, 8=R32-R
   let html = `<div class="bracket-grid-layout">`;
   
   // Add stage headers at the top
   html += `<div class="bracket-grid-headers">`;
-  // Left side headers
-  html += `<div class="bracket-grid-header">Round of 32</div>`;
-  html += `<div class="bracket-grid-header">Round of 16</div>`;
-  html += `<div class="bracket-grid-header">Quarterfinal</div>`;
-  html += `<div class="bracket-grid-header">Semifinal</div>`;
-  // Center headers (Final and Third Place)
-  html += `<div class="bracket-grid-header">Final</div>`;
-  html += `<div class="bracket-grid-header bracket-header-third">Bronze Final</div>`;
-  // Right side headers
-  html += `<div class="bracket-grid-header">Semifinal</div>`;
-  html += `<div class="bracket-grid-header">Quarterfinal</div>`;
-  html += `<div class="bracket-grid-header">Round of 16</div>`;
-  html += `<div class="bracket-grid-header">Round of 32</div>`;
+  for (let col = 0; col < 9; col++) {
+    const stageInfo = STAGE_COLUMNS[col];
+    html += `<div class="bracket-grid-header">${stageInfo.title}</div>`;
+  }
   html += `</div>`;
   
   // Build each row of the grid
   BRACKET_GRID_LAYOUT.forEach((rowConfig, rowIndex) => {
     html += `<div class="bracket-grid-row" data-row="${rowIndex}">`;
     
-    // Create 10 cells for each column
-    for (let col = 0; col < 10; col++) {
+    // Create 9 cells for each column
+    for (let col = 0; col < 9; col++) {
       // Find if there's a match in this cell
       const cellMatch = rowConfig.matches.find(m => m.col === col);
       
@@ -3238,12 +3229,10 @@ function getBracketCellClass(col) {
     case 1: return 'bracket-cell-r16-left';
     case 2: return 'bracket-cell-qf-left';
     case 3: return 'bracket-cell-sf-left';
-    case 4: return 'bracket-cell-final';
-    case 5: return 'bracket-cell-third';
-    case 6: return 'bracket-cell-sf-right';
-    case 7: return 'bracket-cell-qf-right';
-    case 8: return 'bracket-cell-r16-right';
-    case 9: return 'bracket-cell-r32-right';
+    case 5: return 'bracket-cell-sf-right';
+    case 6: return 'bracket-cell-qf-right';
+    case 7: return 'bracket-cell-r16-right';
+    case 8: return 'bracket-cell-r32-right';
     default: return '';
   }
 }
