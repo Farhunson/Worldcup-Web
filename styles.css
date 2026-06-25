@@ -1349,46 +1349,59 @@ tr.advancement-best-third td {
   justify-content: space-around;
 }
 
-/* ── SVG Connector Lines ─────────────────────────────────────────── */
-.bracket-connectors-svg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 0;
-  overflow: visible;
+/\* ── Feed Indicators ─────────────────────────────────────────── */
+/\* Small labels showing which match the current match feeds into */
+.feed-indicators {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 6px;
 }
 
-.bracket-connector-line {
-  fill: none;
-  stroke: var(--border);
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+.feed-indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  opacity: 0.85;
 }
 
-.bracket-connector-gold {
-  fill: none;
-  stroke: #F59E0B;
-  stroke-width: 3;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+.feed-r16 {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10B981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
-.bracket-connector-bronze {
-  fill: none;
-  stroke: #9CA3AF;
-  stroke-width: 3;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+.feed-qf {
+  background: rgba(245, 158, 11, 0.2);
+  color: #F59E0B;
+  border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
-/* Position the grid layout relative for SVG overlay */
-.bracket-grid-layout {
-  position: relative;
+.feed-sf {
+  background: rgba(139, 92, 246, 0.2);
+  color: #8B5CF6;
+  border: 1px solid rgba(139, 92, 246, 0.3);
 }
+
+.feed-final,
+.feed-gold {
+  background: rgba(245, 158, 11, 0.3);
+  color: #F59E0B;
+  border: 1px solid rgba(245, 158, 11, 0.5);
+  font-weight: 700;
+}
+
+.feed-bronze {
+  background: rgba(156, 163, 175, 0.3);
+  color: #9CA3AF;
+  border: 1px solid rgba(156, 163, 175, 0.5);
+  font-weight: 700;
+}
+
 
 /* ── Finals Section Labels ─────────────────────────────────────────── */
 .bracket-final-label {
