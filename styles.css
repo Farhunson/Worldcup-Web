@@ -1312,6 +1312,7 @@ tr.advancement-best-third td {
   gap: 0;
   margin-bottom: 30px;
   padding: 0 10px;
+  width: max-content;
 }
 
 .bracket-header-cell {
@@ -1324,6 +1325,8 @@ tr.advancement-best-third td {
   border: none;
   border-radius: 0;
   position: relative;
+  min-height: 120px;
+  box-sizing: border-box;
 }
 
 /* Subtle colored dots instead of text labels */
