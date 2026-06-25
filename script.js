@@ -3056,57 +3056,60 @@ function buildMatchCardHtml(match, stage, rankings, thirdPlaceTeams, knockoutMap
   `;
 }
 
-// Bracket layout configuration - organized by pathway connections
-// R32 matches are ordered so winners flow correctly to R16
-// R32 row pairs are arranged based on which R16 match they feed into
+// Bracket layout configuration - Split bracket design
+// Left side: Top half of bracket (M73, M74, M75, M77, M89, M90, M97, M98, M101)
+// Right side: Bottom half of bracket (M76, M78, M79, M80, M86, M88, M85, M87, M91, M92, M95, M96, M99, M100, M102)
+// Finals (M103, M104) are centered in the middle
 
-// R32 matches ordered by pathway (M73+M74 feed R16 M90, M75+M76 feed R16 M91, etc.)
-const R32_BRACKET_ORDER = [
-  // Row 1: feeds R16 M89 (W74 vs W77)
-  { top: 74, bottom: 77 },
-  // Row 2: feeds R16 M90 (W73 vs W75)
-  { top: 73, bottom: 75 },
-  // Row 3: feeds R16 M91 (W76 vs W78)
-  { top: 76, bottom: 78 },
-  // Row 4: feeds R16 M92 (W79 vs W80)
-  { top: 79, bottom: 80 },
-  // Row 5: feeds R16 M93 (W83 vs W84)
-  { top: 83, bottom: 84 },
-  // Row 6: feeds R16 M94 (W81 vs W82)
-  { top: 81, bottom: 82 },
-  // Row 7: feeds R16 M95 (W86 vs W88)
-  { top: 86, bottom: 88 },
-  // Row 8: feeds R16 M96 (W85 vs W87)
-  { top: 85, bottom: 87 }
+// R32 LEFT SIDE - 4 rows (feeds R16 Left: M89, M90)
+const R32_LEFT_ORDER = [
+  { top: 74, bottom: 77 },  // feeds R16 M89
+  { top: 73, bottom: 75 }, // feeds R16 M90
 ];
 
-// R16 matches ordered by pathway to QF
-const R16_BRACKET_ORDER = [
-  // Row 1: feeds QF M97 (W89 vs W90)
-  { top: 89, bottom: 90 },
-  // Row 2: feeds QF M99 (W91 vs W92)
-  { top: 91, bottom: 92 },
-  // Row 3: feeds QF M98 (W93 vs W94)
-  { top: 93, bottom: 94 },
-  // Row 4: feeds QF M100 (W95 vs W96)
-  { top: 95, bottom: 96 }
+// R32 RIGHT SIDE - 4 rows (feeds R16 Right: M91, M92, M95, M96)
+const R32_RIGHT_ORDER = [
+  { top: 76, bottom: 78 },  // feeds R16 M91
+  { top: 79, bottom: 80 },  // feeds R16 M92
+  { top: 86, bottom: 88 },  // feeds R16 M95
+  { top: 85, bottom: 87 },  // feeds R16 M96
 ];
 
-// QF matches ordered by pathway to SF
-const QF_BRACKET_ORDER = [
-  // Row 1: feeds SF M101 (W97 vs W98)
-  { top: 97, bottom: 98 },
-  // Row 2: feeds SF M102 (W99 vs W100)
-  { top: 99, bottom: 100 }
+// R16 LEFT SIDE - 2 rows (feeds QF Left: M97, M98)
+const R16_LEFT_ORDER = [
+  { top: 89, bottom: 90 },  // feeds QF M97
 ];
 
-// SF matches ordered by pathway to Final
-const SF_BRACKET_ORDER = [
-  // Top SF feeds Final M104 (W101)
-  { single: 101 },
-  // Bottom SF feeds Final M104 (W102)
-  { single: 102 }
+// R16 RIGHT SIDE - 2 rows (feeds QF Right: M99, M100)
+const R16_RIGHT_ORDER = [
+  { top: 91, bottom: 92 },  // feeds QF M99
+  { top: 95, bottom: 96 },  // feeds QF M100
 ];
+
+// QF LEFT SIDE - 1 row (feeds SF Left: M101)
+const QF_LEFT_ORDER = [
+  { top: 97, bottom: 98 },  // feeds SF M101
+];
+
+// QF RIGHT SIDE - 1 row (feeds SF Right: M102)
+const QF_RIGHT_ORDER = [
+  { top: 99, bottom: 100 },  // feeds SF M102
+];
+
+// SF matches - Left feeds Final M104 (W101), Right feeds Final M104 (W102)
+const SF_LEFT_ORDER = [
+  { single: 101 },  // Top SF feeds Final
+];
+
+const SF_RIGHT_ORDER = [
+  { single: 102 },  // Bottom SF feeds Final
+];
+
+// Legacy order arrays for backward compatibility
+const R32_BRACKET_ORDER = [...R32_LEFT_ORDER, ...R32_RIGHT_ORDER];
+const R16_BRACKET_ORDER = [...R16_LEFT_ORDER, ...R16_RIGHT_ORDER];
+const QF_BRACKET_ORDER = [...QF_LEFT_ORDER, ...QF_RIGHT_ORDER];
+const SF_BRACKET_ORDER = [...SF_LEFT_ORDER, ...SF_RIGHT_ORDER];
 
 function buildVisualBracket(rankings, thirdPlaceTeams, knockoutMap, assignments, allGroupsComplete) {
   const resultMap = computeKnockoutResults(rankings, thirdPlaceTeams, assignments, allGroupsComplete);
@@ -3117,10 +3120,10 @@ function buildVisualBracket(rankings, thirdPlaceTeams, knockoutMap, assignments,
     allMatchCards[match.matchNo] = buildMatchCardHtml(match, match.stage, rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete);
   });
 
-  // Build each round column
-  const buildColumn = (title, count, rows, cssClass) => {
+  // Build a round column (can be left or right side)
+  const buildColumn = (title, count, rows, cssClass, isLeft = true) => {
     let html = `
-      <div class="bracket-column ${cssClass}">
+      <div class="bracket-column ${cssClass} ${isLeft ? 'bracket-column-left' : 'bracket-column-right'}">
         <div class="bracket-column-header">
           <span class="bracket-stage-label">${title}</span>
           <span class="bracket-stage-count">${count} match${count > 1 ? 'es' : ''}</span>
@@ -3134,9 +3137,14 @@ function buildVisualBracket(rankings, thirdPlaceTeams, knockoutMap, assignments,
         // Single match (SF)
         html += `<div class="bracket-bracket-cell bracket-cell-top">${allMatchCards[row.single]}</div>`;
       } else {
-        // Match pair
-        html += `<div class="bracket-bracket-cell bracket-cell-top">${allMatchCards[row.top]}</div>`;
-        html += `<div class="bracket-bracket-cell bracket-cell-bottom">${allMatchCards[row.bottom]}</div>`;
+        // Match pair - order depends on side
+        if (isLeft) {
+          html += `<div class="bracket-bracket-cell bracket-cell-top">${allMatchCards[row.top]}</div>`;
+          html += `<div class="bracket-bracket-cell bracket-cell-bottom">${allMatchCards[row.bottom]}</div>`;
+        } else {
+          html += `<div class="bracket-bracket-cell bracket-cell-top">${allMatchCards[row.top]}</div>`;
+          html += `<div class="bracket-bracket-cell bracket-cell-bottom">${allMatchCards[row.bottom]}</div>`;
+        }
       }
       html += `</div>`;
     });
@@ -3145,7 +3153,7 @@ function buildVisualBracket(rankings, thirdPlaceTeams, knockoutMap, assignments,
     return html;
   };
 
-  // Build Third Place and Final as special section
+  // Build Finals Section (centered)
   const buildFinalSection = () => {
     return `
       <div class="bracket-finals-section">
@@ -3161,20 +3169,35 @@ function buildVisualBracket(rankings, thirdPlaceTeams, knockoutMap, assignments,
     `;
   };
 
-  // Combine all sections
+  // Build connector line between columns
+  const buildConnector = (isLeft = true) => {
+    return `<div class="bracket-connector-line ${isLeft ? 'connector-left' : 'connector-right'}"></div>`;
+  };
+
+  // Split bracket layout: Left side → Finals → Right side (mirrored)
   return `
-    <div class="bracket-pathway-layout">
-      <div class="bracket-rounds-section">
-        ${buildColumn('Round of 32', 16, R32_BRACKET_ORDER, 'bracket-column-r32')}
-        <div class="bracket-connector-line"></div>
-        ${buildColumn('Round of 16', 8, R16_BRACKET_ORDER, 'bracket-column-r16')}
-        <div class="bracket-connector-line"></div>
-        ${buildColumn('Quarterfinal', 4, QF_BRACKET_ORDER, 'bracket-column-qf')}
-        <div class="bracket-connector-line"></div>
-        ${buildColumn('Semifinal', 2, SF_BRACKET_ORDER, 'bracket-column-sf')}
+    <div class="bracket-split-layout">
+      <div class="bracket-left-section">
+        ${buildColumn('Round of 32', 8, R32_LEFT_ORDER, 'bracket-column-r32', true)}
+        ${buildConnector(true)}
+        ${buildColumn('Round of 16', 4, R16_LEFT_ORDER, 'bracket-column-r16', true)}
+        ${buildConnector(true)}
+        ${buildColumn('Quarterfinal', 2, QF_LEFT_ORDER, 'bracket-column-qf', true)}
+        ${buildConnector(true)}
+        ${buildColumn('Semifinal', 1, SF_LEFT_ORDER, 'bracket-column-sf', true)}
       </div>
       <div class="bracket-finals-divider"></div>
       ${buildFinalSection()}
+      <div class="bracket-finals-divider"></div>
+      <div class="bracket-right-section">
+        ${buildColumn('Semifinal', 1, SF_RIGHT_ORDER, 'bracket-column-sf bracket-column-right-sf', false)}
+        ${buildConnector(false)}
+        ${buildColumn('Quarterfinal', 2, QF_RIGHT_ORDER, 'bracket-column-qf bracket-column-right-qf', false)}
+        ${buildConnector(false)}
+        ${buildColumn('Round of 16', 4, R16_RIGHT_ORDER, 'bracket-column-r16 bracket-column-right-r16', false)}
+        ${buildConnector(false)}
+        ${buildColumn('Round of 32', 8, R32_RIGHT_ORDER, 'bracket-column-r32 bracket-column-right-r32', false)}
+      </div>
     </div>
   `;
 }
