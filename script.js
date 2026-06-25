@@ -3056,60 +3056,71 @@ function buildMatchCardHtml(match, stage, rankings, thirdPlaceTeams, knockoutMap
   `;
 }
 
-// Bracket layout configuration - Split bracket design
-// Left side: Top half of bracket (M73, M74, M75, M77, M89, M90, M97, M98, M101)
-// Right side: Bottom half of bracket (M76, M78, M79, M80, M86, M88, M85, M87, M91, M92, M95, M96, M99, M100, M102)
-// Finals (M103, M104) are centered in the middle
+// Bracket layout configuration - Grid-based design matching Excel layout
+// Excel layout reference (17 rows x 9 columns):
+// Row 3:  M74 | - | - | - | - | - | - | - | M76
+// Row 4:  - | M89 | - | - | - | - | - | M91 | -
+// Row 5:  M77 | - | - | - | - | - | - | - | M78
+// Row 6:  - | - | M97 | - | - | - | - | - | M99
+// Row 7:  M73 | - | - | - | M104 | - | - | - | M79
+// Row 8:  - | M90 | - | - | - | - | - | M92 | -
+// Row 9:  M75 | - | - | - | - | - | - | - | M80
+// Row 10: - | - | - | M101 | M102 | - | - | - | -
+// Row 11: M83 | - | - | - | - | - | - | - | M86
+// Row 12: - | M93 | - | - | - | - | - | - | M95
+// Row 13: M84 | - | - | - | M103 | - | - | - | M88
+// Row 14: - | - | M98 | - | - | - | - | - | M100
+// Row 15: M81 | - | - | - | - | - | - | - | M85
+// Row 16: - | M94 | - | - | - | - | - | - | M96
+// Row 17: M82 | - | - | - | - | - | - | - | M87
 
-// R32 LEFT SIDE - 4 rows (feeds R16 Left: M89, M90)
-const R32_LEFT_ORDER = [
-  { top: 74, bottom: 77 },  // feeds R16 M89
-  { top: 73, bottom: 75 }, // feeds R16 M90
+// Define bracket grid layout - each entry represents a row with match positions
+// Columns: 0=R32-L, 1=R16-L, 2=QF-L, 3=SF-L, 4=Finals, 5=SF-R, 6=QF-R, 7=R16-R, 8=R32-R
+const BRACKET_GRID_LAYOUT = [
+  // Row 0 (Excel Row 3): R32 M74 | R32 M76
+  { row: 0, matches: [{ col: 0, match: 74 }, { col: 8, match: 76 }] },
+  // Row 1 (Excel Row 4): R16 M89 | R16 M91
+  { row: 1, matches: [{ col: 1, match: 89 }, { col: 7, match: 91 }] },
+  // Row 2 (Excel Row 5): R32 M77 | R32 M78
+  { row: 2, matches: [{ col: 0, match: 77 }, { col: 8, match: 78 }] },
+  // Row 3 (Excel Row 6): QF M97 | QF M99
+  { row: 3, matches: [{ col: 2, match: 97 }, { col: 6, match: 99 }] },
+  // Row 4 (Excel Row 7): R32 M73 | Final M104 | R32 M79
+  { row: 4, matches: [{ col: 0, match: 73 }, { col: 4, match: 104, type: 'final' }, { col: 8, match: 79 }] },
+  // Row 5 (Excel Row 8): R16 M90 | R16 M92
+  { row: 5, matches: [{ col: 1, match: 90 }, { col: 7, match: 92 }] },
+  // Row 6 (Excel Row 9): R32 M75 | R32 M80
+  { row: 6, matches: [{ col: 0, match: 75 }, { col: 8, match: 80 }] },
+  // Row 7 (Excel Row 10): SF M101 | SF M102
+  { row: 7, matches: [{ col: 3, match: 101 }, { col: 5, match: 102 }] },
+  // Row 8 (Excel Row 11): R32 M83 | R32 M86
+  { row: 8, matches: [{ col: 0, match: 83 }, { col: 8, match: 86 }] },
+  // Row 9 (Excel Row 12): R16 M93 | R16 M95
+  { row: 9, matches: [{ col: 1, match: 93 }, { col: 7, match: 95 }] },
+  // Row 10 (Excel Row 13): R32 M84 | Third M103 | R32 M88
+  { row: 10, matches: [{ col: 0, match: 84 }, { col: 4, match: 103, type: 'third' }, { col: 8, match: 88 }] },
+  // Row 11 (Excel Row 14): QF M98 | QF M100
+  { row: 11, matches: [{ col: 2, match: 98 }, { col: 6, match: 100 }] },
+  // Row 12 (Excel Row 15): R32 M81 | R32 M85
+  { row: 12, matches: [{ col: 0, match: 81 }, { col: 8, match: 85 }] },
+  // Row 13 (Excel Row 16): R16 M94 | R16 M96
+  { row: 13, matches: [{ col: 1, match: 94 }, { col: 7, match: 96 }] },
+  // Row 14 (Excel Row 17): R32 M82 | R32 M87
+  { row: 14, matches: [{ col: 0, match: 82 }, { col: 8, match: 87 }] },
 ];
 
-// R32 RIGHT SIDE - 4 rows (feeds R16 Right: M91, M92, M95, M96)
-const R32_RIGHT_ORDER = [
-  { top: 76, bottom: 78 },  // feeds R16 M91
-  { top: 79, bottom: 80 },  // feeds R16 M92
-  { top: 86, bottom: 88 },  // feeds R16 M95
-  { top: 85, bottom: 87 },  // feeds R16 M96
-];
-
-// R16 LEFT SIDE - 2 rows (feeds QF Left: M97, M98)
-const R16_LEFT_ORDER = [
-  { top: 89, bottom: 90 },  // feeds QF M97
-];
-
-// R16 RIGHT SIDE - 2 rows (feeds QF Right: M99, M100)
-const R16_RIGHT_ORDER = [
-  { top: 91, bottom: 92 },  // feeds QF M99
-  { top: 95, bottom: 96 },  // feeds QF M100
-];
-
-// QF LEFT SIDE - 1 row (feeds SF Left: M101)
-const QF_LEFT_ORDER = [
-  { top: 97, bottom: 98 },  // feeds SF M101
-];
-
-// QF RIGHT SIDE - 1 row (feeds SF Right: M102)
-const QF_RIGHT_ORDER = [
-  { top: 99, bottom: 100 },  // feeds SF M102
-];
-
-// SF matches - Left feeds Final M104 (W101), Right feeds Final M104 (W102)
-const SF_LEFT_ORDER = [
-  { single: 101 },  // Top SF feeds Final
-];
-
-const SF_RIGHT_ORDER = [
-  { single: 102 },  // Bottom SF feeds Final
-];
-
-// Legacy order arrays for backward compatibility
-const R32_BRACKET_ORDER = [...R32_LEFT_ORDER, ...R32_RIGHT_ORDER];
-const R16_BRACKET_ORDER = [...R16_LEFT_ORDER, ...R16_RIGHT_ORDER];
-const QF_BRACKET_ORDER = [...QF_LEFT_ORDER, ...QF_RIGHT_ORDER];
-const SF_BRACKET_ORDER = [...SF_LEFT_ORDER, ...SF_RIGHT_ORDER];
+// Stage column mapping
+const STAGE_COLUMNS = {
+  0: { stage: 'r32', title: 'Round of 32', side: 'left' },
+  1: { stage: 'r16', title: 'Round of 16', side: 'left' },
+  2: { stage: 'qf', title: 'Quarterfinal', side: 'left' },
+  3: { stage: 'sf', title: 'Semifinal', side: 'left' },
+  4: { stage: 'final', title: 'Finals', side: 'center' },
+  5: { stage: 'sf', title: 'Semifinal', side: 'right' },
+  6: { stage: 'qf', title: 'Quarterfinal', side: 'right' },
+  7: { stage: 'r16', title: 'Round of 16', side: 'right' },
+  8: { stage: 'r32', title: 'Round of 32', side: 'right' },
+};
 
 function buildVisualBracket(rankings, thirdPlaceTeams, knockoutMap, assignments, allGroupsComplete) {
   const resultMap = computeKnockoutResults(rankings, thirdPlaceTeams, assignments, allGroupsComplete);
@@ -3120,86 +3131,63 @@ function buildVisualBracket(rankings, thirdPlaceTeams, knockoutMap, assignments,
     allMatchCards[match.matchNo] = buildMatchCardHtml(match, match.stage, rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete);
   });
 
-  // Build a round column (can be left or right side)
-  const buildColumn = (title, count, rows, cssClass, isLeft = true) => {
-    let html = `
-      <div class="bracket-column ${cssClass} ${isLeft ? 'bracket-column-left' : 'bracket-column-right'}">
-        <div class="bracket-column-header">
-          <span class="bracket-stage-label">${title}</span>
-          <span class="bracket-stage-count">${count} match${count > 1 ? 'es' : ''}</span>
-        </div>
-        <div class="bracket-column-content">
-    `;
+  // Build the bracket grid based on Excel layout
+  // 9 columns: 0=R32-L, 1=R16-L, 2=QF-L, 3=SF-L, 4=Finals, 5=SF-R, 6=QF-R, 7=R16-R, 8=R32-R
+  let html = `<div class="bracket-grid-layout">`;
+  
+  // Build column headers
+  html += `<div class="bracket-grid-headers">`;
+  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-r32-left">Round of 32</div>`;
+  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-r16-left">Round of 16</div>`;
+  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-qf-left">Quarterfinal</div>`;
+  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-sf-left">Semifinal</div>`;
+  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-final">Finals</div>`;
+  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-sf-right">Semifinal</div>`;
+  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-qf-right">Quarterfinal</div>`;
+  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-r16-right">Round of 16</div>`;
+  html += `<div class="bracket-grid-cell bracket-header-cell bracket-col-r32-right">Round of 32</div>`;
+  html += `</div>`;
+  
+  // Build each row of the grid
+  BRACKET_GRID_LAYOUT.forEach((rowConfig, rowIndex) => {
+    html += `<div class="bracket-grid-row" data-row="${rowIndex}">`;
     
-    rows.forEach((row, idx) => {
-      html += `<div class="bracket-bracket-row" data-row="${idx}">`;
-      if (row.single) {
-        // Single match (SF)
-        html += `<div class="bracket-bracket-cell bracket-cell-top">${allMatchCards[row.single]}</div>`;
+    // Create 9 cells for each column
+    for (let col = 0; col < 9; col++) {
+      // Find if there's a match in this cell
+      const cellMatch = rowConfig.matches.find(m => m.col === col);
+      
+      if (cellMatch) {
+        const matchCard = allMatchCards[cellMatch.match] || '';
+        const cellClass = cellMatch.type === 'final' ? 'bracket-cell-final' : 
+                          cellMatch.type === 'third' ? 'bracket-cell-third' : 
+                          getBracketCellClass(col);
+        html += `<div class="bracket-grid-cell ${cellClass}">${matchCard}</div>`;
       } else {
-        // Match pair - order depends on side
-        if (isLeft) {
-          html += `<div class="bracket-bracket-cell bracket-cell-top">${allMatchCards[row.top]}</div>`;
-          html += `<div class="bracket-bracket-cell bracket-cell-bottom">${allMatchCards[row.bottom]}</div>`;
-        } else {
-          html += `<div class="bracket-bracket-cell bracket-cell-top">${allMatchCards[row.top]}</div>`;
-          html += `<div class="bracket-bracket-cell bracket-cell-bottom">${allMatchCards[row.bottom]}</div>`;
-        }
+        html += `<div class="bracket-grid-cell bracket-cell-empty"></div>`;
       }
-      html += `</div>`;
-    });
+    }
     
-    html += `</div></div>`;
-    return html;
-  };
+    html += `</div>`;
+  });
+  
+  html += `</div>`;
+  return html;
+}
 
-  // Build Finals Section (centered)
-  const buildFinalSection = () => {
-    return `
-      <div class="bracket-finals-section">
-        <div class="bracket-third-place-row">
-          <div class="bracket-final-label">Third Place</div>
-          <div class="bracket-bracket-cell bracket-cell-final">${allMatchCards[103]}</div>
-        </div>
-        <div class="bracket-final-row">
-          <div class="bracket-final-label">Final</div>
-          <div class="bracket-bracket-cell bracket-cell-final">${allMatchCards[104]}</div>
-        </div>
-      </div>
-    `;
-  };
-
-  // Build connector line between columns
-  const buildConnector = (isLeft = true) => {
-    return `<div class="bracket-connector-line ${isLeft ? 'connector-left' : 'connector-right'}"></div>`;
-  };
-
-  // Split bracket layout: Left side → Finals → Right side (mirrored)
-  return `
-    <div class="bracket-split-layout">
-      <div class="bracket-left-section">
-        ${buildColumn('Round of 32', 8, R32_LEFT_ORDER, 'bracket-column-r32', true)}
-        ${buildConnector(true)}
-        ${buildColumn('Round of 16', 4, R16_LEFT_ORDER, 'bracket-column-r16', true)}
-        ${buildConnector(true)}
-        ${buildColumn('Quarterfinal', 2, QF_LEFT_ORDER, 'bracket-column-qf', true)}
-        ${buildConnector(true)}
-        ${buildColumn('Semifinal', 1, SF_LEFT_ORDER, 'bracket-column-sf', true)}
-      </div>
-      <div class="bracket-finals-divider"></div>
-      ${buildFinalSection()}
-      <div class="bracket-finals-divider"></div>
-      <div class="bracket-right-section">
-        ${buildColumn('Semifinal', 1, SF_RIGHT_ORDER, 'bracket-column-sf bracket-column-right-sf', false)}
-        ${buildConnector(false)}
-        ${buildColumn('Quarterfinal', 2, QF_RIGHT_ORDER, 'bracket-column-qf bracket-column-right-qf', false)}
-        ${buildConnector(false)}
-        ${buildColumn('Round of 16', 4, R16_RIGHT_ORDER, 'bracket-column-r16 bracket-column-right-r16', false)}
-        ${buildConnector(false)}
-        ${buildColumn('Round of 32', 8, R32_RIGHT_ORDER, 'bracket-column-r32 bracket-column-right-r32', false)}
-      </div>
-    </div>
-  `;
+// Helper function to get CSS class for bracket cell based on column
+function getBracketCellClass(col) {
+  switch(col) {
+    case 0: return 'bracket-cell-r32-left';
+    case 1: return 'bracket-cell-r16-left';
+    case 2: return 'bracket-cell-qf-left';
+    case 3: return 'bracket-cell-sf-left';
+    case 5: return 'bracket-cell-sf-right';
+    case 6: return 'bracket-cell-qf-right';
+    case 7: return 'bracket-cell-r16-right';
+    case 8: return 'bracket-cell-r32-right';
+    default: return '';
+  }
 }
 
 function buildStageHtml(stage, matches, rankings, thirdPlaceTeams, knockoutMap, assignments, allGroupsComplete) {
