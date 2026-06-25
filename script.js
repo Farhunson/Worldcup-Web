@@ -3131,49 +3131,6 @@ function buildVisualBracket(rankings, thirdPlaceTeams, knockoutMap, assignments,
     allMatchCards[match.matchNo] = buildMatchCardHtml(match, match.stage, rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete);
   });
 
-  // Match feed mapping: which match feeds into which
-  // Left side brackets
-  const LEFT_FEEDS = {
-    74: { to: 89, label: 'M89', stage: 'r16' },
-    77: { to: 89, label: 'M89', stage: 'r16' },
-    73: { to: 90, label: 'M90', stage: 'r16' },
-    75: { to: 90, label: 'M90', stage: 'r16' },
-    83: { to: 93, label: 'M93', stage: 'r16' },
-    84: { to: 93, label: 'M93', stage: 'r16' },
-    81: { to: 94, label: 'M94', stage: 'r16' },
-    82: { to: 94, label: 'M94', stage: 'r16' },
-    89: { to: 97, label: 'M97', stage: 'qf' },
-    90: { to: 97, label: 'M97', stage: 'qf' },
-    93: { to: 98, label: 'M98', stage: 'qf' },
-    94: { to: 98, label: 'M98', stage: 'qf' },
-    97: { to: 101, label: 'M101', stage: 'sf' },
-    98: { to: 101, label: 'M101', stage: 'sf' },
-    101: { to: 104, label: 'Final', stage: 'final', color: 'gold' },
-    // Third place (separate entry)
-    '101-third': { to: 103, label: '3rd', stage: 'third', color: 'bronze' },
-  };
-
-  // Right side brackets
-  const RIGHT_FEEDS = {
-    76: { to: 91, label: 'M91', stage: 'r16' },
-    78: { to: 91, label: 'M91', stage: 'r16' },
-    79: { to: 92, label: 'M92', stage: 'r16' },
-    80: { to: 92, label: 'M92', stage: 'r16' },
-    86: { to: 95, label: 'M95', stage: 'r16' },
-    88: { to: 95, label: 'M95', stage: 'r16' },
-    85: { to: 96, label: 'M96', stage: 'r16' },
-    87: { to: 96, label: 'M96', stage: 'r16' },
-    91: { to: 99, label: 'M99', stage: 'qf' },
-    92: { to: 99, label: 'M99', stage: 'qf' },
-    95: { to: 100, label: 'M100', stage: 'qf' },
-    96: { to: 100, label: 'M100', stage: 'qf' },
-    99: { to: 102, label: 'M102', stage: 'sf' },
-    100: { to: 102, label: 'M102', stage: 'sf' },
-    102: { to: 104, label: 'Final', stage: 'final', color: 'gold' },
-    // Third place (separate entry)
-    '102-third': { to: 103, label: '3rd', stage: 'third', color: 'bronze' },
-  };
-
   // Build the bracket grid based on Excel layout
   // 9 columns: 0=R32-L, 1=R16-L, 2=QF-L, 3=SF-L, 4=Finals, 5=SF-R, 6=QF-R, 7=R16-R, 8=R32-R
   let html = `<div class="bracket-grid-layout">`;
@@ -3195,11 +3152,6 @@ function buildVisualBracket(rankings, thirdPlaceTeams, knockoutMap, assignments,
   BRACKET_GRID_LAYOUT.forEach((rowConfig, rowIndex) => {
     html += `<div class="bracket-grid-row" data-row="${rowIndex}">`;
     
-    // Determine if this row is on left or right side for feed lookup
-    const isLeftSide = rowConfig.matches.some(m => m.col < 4);
-    const isRightSide = rowConfig.matches.some(m => m.col > 4);
-    const feedsMap = isRightSide ? RIGHT_FEEDS : LEFT_FEEDS;
-    
     // Create 9 cells for each column
     for (let col = 0; col < 9; col++) {
       // Find if there's a match in this cell
@@ -3210,26 +3162,7 @@ function buildVisualBracket(rankings, thirdPlaceTeams, knockoutMap, assignments,
         const cellClass = cellMatch.type === 'final' ? 'bracket-cell-final' : 
                           cellMatch.type === 'third' ? 'bracket-cell-third' : 
                           getBracketCellClass(col);
-        
-        // Add feed indicator if this match feeds into another
-        let feedIndicator = '';
-        let feed = feedsMap[cellMatch.match];
-        
-        // Special handling for third place indicator (SF matches feed into both final and third)
-        if (cellMatch.match === 101 || cellMatch.match === 102) {
-          // SF matches show both Final and Third place feeds
-          feedIndicator = `
-            <div class="feed-indicators">
-              <div class="feed-indicator feed-gold">→ Final</div>
-              <div class="feed-indicator feed-bronze">→ 3rd</div>
-            </div>
-          `;
-        } else if (feed) {
-          const colorClass = feed.color ? `feed-${feed.color}` : `feed-${feed.stage}`;
-          feedIndicator = `<div class="feed-indicator ${colorClass}">${feed.label}</div>`;
-        }
-        
-        html += `<div class="bracket-grid-cell ${cellClass}">${matchCard}${feedIndicator}</div>`;
+        html += `<div class="bracket-grid-cell ${cellClass}">${matchCard}</div>`;
       } else {
         html += `<div class="bracket-grid-cell bracket-cell-empty"></div>`;
       }
