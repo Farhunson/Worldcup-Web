@@ -1233,22 +1233,30 @@ tr.advancement-best-third td {
   border-radius: 4px;
 }
 
-/* ── Visual Bracket Layout ─────────────────────────────────────────── */
-.bracket-visual-layout {
+/* ── Pathway Bracket Layout ──────────────────────────────────────── */
+.bracket-pathway-layout {
   display: flex;
   flex-direction: row;
-  align-items: stretch;
+  align-items: flex-start;
   gap: 0;
-  min-height: 100%;
   overflow-x: auto;
   padding: 20px 0;
+}
+
+/* ── Rounds Section (Left side of bracket) ───────────────────────── */
+.bracket-rounds-section {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 0;
+  flex-shrink: 0;
 }
 
 /* ── Bracket Column ───────────────────────────────────────────────── */
 .bracket-column {
   display: flex;
   flex-direction: column;
-  min-width: 260px;
+  min-width: 280px;
   flex-shrink: 0;
 }
 
@@ -1310,51 +1318,81 @@ tr.advancement-best-third td {
   border-top: 3px solid #8B5CF6;
 }
 
-.bracket-column-knockout-end .bracket-column-header {
-  border-top: 3px solid #F59E0B;
-}
-
 /* ── Column Content ───────────────────────────────────────────────── */
 .bracket-column-content {
   display: flex;
   flex-direction: column;
-  gap: 8px;
   flex: 1;
-  justify-content: space-around;
 }
 
-/* Final column has different layout */
-.bracket-column-finals {
-  justify-content: flex-start;
-  gap: 20px;
+/* ── Bracket Row (each row containing matches) ─────────────────── */
+.bracket-bracket-row {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 100px;
 }
 
-/* ── Row Pair (two matches side by side) ─────────────────────────── */
-.bracket-row-pair {
+.bracket-bracket-cell {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* ── Connector Line between columns ──────────────────────────────── */
+.bracket-connector-line {
+  width: 30px;
+  flex-shrink: 0;
+  position: relative;
+}
+
+/* ── Finals Section (Right side - Third Place & Final) ─────────── */
+.bracket-finals-divider {
+  width: 1px;
+  background: var(--border);
+  align-self: stretch;
+  margin: 0 30px;
+}
+
+.bracket-finals-section {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  padding-top: 0;
+  min-width: 280px;
+}
+
+.bracket-third-place-row,
+.bracket-final-row {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  position: relative;
 }
 
-.bracket-match-wrapper {
-  position: relative;
+.bracket-final-label {
+  font-family: 'FWC2026Condensed', 'FWC2026', Inter, system-ui, sans-serif;
+  font-weight: 900;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 8px 0;
 }
 
-/* ── Connectors between stages ────────────────────────────────────── */
-.bracket-connector {
-  width: 40px;
-  flex-shrink: 0;
-  position: relative;
-  display: flex;
-  align-items: stretch;
+.bracket-third-place-row .bracket-final-label {
+  color: #9CA3AF;
 }
 
-.bracket-connector::before,
-.bracket-connector::after {
-  content: '';
-  position: absolute;
-  background: var(--border);
+.bracket-final-row .bracket-final-label {
+  color: #F59E0B;
+}
+
+.bracket-cell-final {
+  border-left: 3px solid #F59E0B;
+  border-radius: 12px;
+  background: var(--surface-soft);
+  padding: 12px;
 }
 
 /* ── Bracket Stage Column (old - kept for compatibility) ─────────── */

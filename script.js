@@ -3056,47 +3056,57 @@ function buildMatchCardHtml(match, stage, rankings, thirdPlaceTeams, knockoutMap
   `;
 }
 
-// Bracket layout configuration - match order for visual positioning
-// Each array represents a row position in the bracket
-const R32_POSITIONS = [
-  73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88
+// Bracket layout configuration - organized by pathway connections
+// R32 matches are ordered so winners flow correctly to R16
+// R32 row pairs are arranged based on which R16 match they feed into
+
+// R32 matches ordered by pathway (M73+M74 feed R16 M90, M75+M76 feed R16 M91, etc.)
+const R32_BRACKET_ORDER = [
+  // Row 1: feeds R16 M89 (W74 vs W77)
+  { top: 74, bottom: 77 },
+  // Row 2: feeds R16 M90 (W73 vs W75)
+  { top: 73, bottom: 75 },
+  // Row 3: feeds R16 M91 (W76 vs W78)
+  { top: 76, bottom: 78 },
+  // Row 4: feeds R16 M92 (W79 vs W80)
+  { top: 79, bottom: 80 },
+  // Row 5: feeds R16 M93 (W83 vs W84)
+  { top: 83, bottom: 84 },
+  // Row 6: feeds R16 M94 (W81 vs W82)
+  { top: 81, bottom: 82 },
+  // Row 7: feeds R16 M95 (W86 vs W88)
+  { top: 86, bottom: 88 },
+  // Row 8: feeds R16 M96 (W85 vs W87)
+  { top: 85, bottom: 87 }
 ];
 
-const R16_POSITIONS = [
-  89, 90, 91, 92, 93, 94, 95, 96
+// R16 matches ordered by pathway to QF
+const R16_BRACKET_ORDER = [
+  // Row 1: feeds QF M97 (W89 vs W90)
+  { top: 89, bottom: 90 },
+  // Row 2: feeds QF M99 (W91 vs W92)
+  { top: 91, bottom: 92 },
+  // Row 3: feeds QF M98 (W93 vs W94)
+  { top: 93, bottom: 94 },
+  // Row 4: feeds QF M100 (W95 vs W96)
+  { top: 95, bottom: 96 }
 ];
 
-const QF_POSITIONS = [
-  97, 98, 99, 100
+// QF matches ordered by pathway to SF
+const QF_BRACKET_ORDER = [
+  // Row 1: feeds SF M101 (W97 vs W98)
+  { top: 97, bottom: 98 },
+  // Row 2: feeds SF M102 (W99 vs W100)
+  { top: 99, bottom: 100 }
 ];
 
-const SF_POSITIONS = [
-  101, 102
+// SF matches ordered by pathway to Final
+const SF_BRACKET_ORDER = [
+  // Top SF feeds Final M104 (W101)
+  { single: 101 },
+  // Bottom SF feeds Final M104 (W102)
+  { single: 102 }
 ];
-
-const THIRD_FINAL_POSITIONS = [
-  103, 104
-];
-
-// R32 match pairs for bracket connectors
-const R32_PAIRS = [
-  [73, 74], [75, 76], [77, 78], [79, 80], [81, 82], [83, 84], [85, 86], [87, 88]
-];
-
-// R16 match pairs
-const R16_PAIRS = [
-  [89, 90], [91, 92], [93, 94], [95, 96]
-];
-
-// QF match pairs
-const QF_PAIRS = [
-  [97, 98], [99, 100]
-];
-
-// Create a map of matchNo to match data
-function getMatchByNo(matchNo) {
-  return scheduleData.knockoutMatches.find(m => m.matchNo === matchNo);
-}
 
 function buildVisualBracket(rankings, thirdPlaceTeams, knockoutMap, assignments, allGroupsComplete) {
   const resultMap = computeKnockoutResults(rankings, thirdPlaceTeams, assignments, allGroupsComplete);
@@ -3107,117 +3117,64 @@ function buildVisualBracket(rankings, thirdPlaceTeams, knockoutMap, assignments,
     allMatchCards[match.matchNo] = buildMatchCardHtml(match, match.stage, rankings, thirdPlaceTeams, resultMap, assignments, allGroupsComplete);
   });
 
-  // Create R32 column
-  let r32Html = `
-    <div class="bracket-column bracket-column-r32">
-      <div class="bracket-column-header">
-        <span class="bracket-stage-label">Round of 32</span>
-        <span class="bracket-stage-count">16 matches</span>
-      </div>
-      <div class="bracket-column-content">
-  `;
-  
-  // Add R32 matches in pairs (two per row for connecting lines)
-  for (let i = 0; i < R32_PAIRS.length; i++) {
-    const pair = R32_PAIRS[i];
-    r32Html += `<div class="bracket-row-pair" data-pair="${i}">`;
-    r32Html += `<div class="bracket-match-wrapper">${allMatchCards[pair[0]]}</div>`;
-    r32Html += `<div class="bracket-match-wrapper">${allMatchCards[pair[1]]}</div>`;
-    r32Html += `</div>`;
-  }
-  
-  r32Html += `</div></div>`;
+  // Build each round column
+  const buildColumn = (title, count, rows, cssClass) => {
+    let html = `
+      <div class="bracket-column ${cssClass}">
+        <div class="bracket-column-header">
+          <span class="bracket-stage-label">${title}</span>
+          <span class="bracket-stage-count">${count} match${count > 1 ? 'es' : ''}</span>
+        </div>
+        <div class="bracket-column-content">
+    `;
+    
+    rows.forEach((row, idx) => {
+      html += `<div class="bracket-bracket-row" data-row="${idx}">`;
+      if (row.single) {
+        // Single match (SF)
+        html += `<div class="bracket-bracket-cell bracket-cell-top">${allMatchCards[row.single]}</div>`;
+      } else {
+        // Match pair
+        html += `<div class="bracket-bracket-cell bracket-cell-top">${allMatchCards[row.top]}</div>`;
+        html += `<div class="bracket-bracket-cell bracket-cell-bottom">${allMatchCards[row.bottom]}</div>`;
+      }
+      html += `</div>`;
+    });
+    
+    html += `</div></div>`;
+    return html;
+  };
 
-  // Create R16 column
-  let r16Html = `
-    <div class="bracket-column bracket-column-r16">
-      <div class="bracket-column-header">
-        <span class="bracket-stage-label">Round of 16</span>
-        <span class="bracket-stage-count">8 matches</span>
+  // Build Third Place and Final as special section
+  const buildFinalSection = () => {
+    return `
+      <div class="bracket-finals-section">
+        <div class="bracket-third-place-row">
+          <div class="bracket-final-label">Third Place</div>
+          <div class="bracket-bracket-cell bracket-cell-final">${allMatchCards[103]}</div>
+        </div>
+        <div class="bracket-final-row">
+          <div class="bracket-final-label">Final</div>
+          <div class="bracket-bracket-cell bracket-cell-final">${allMatchCards[104]}</div>
+        </div>
       </div>
-      <div class="bracket-column-content">
-  `;
-  
-  for (let i = 0; i < R16_PAIRS.length; i++) {
-    const pair = R16_PAIRS[i];
-    r16Html += `<div class="bracket-row-pair" data-pair="${i}">`;
-    r16Html += `<div class="bracket-match-wrapper">${allMatchCards[pair[0]]}</div>`;
-    r16Html += `<div class="bracket-match-wrapper">${allMatchCards[pair[1]]}</div>`;
-    r16Html += `</div>`;
-  }
-  
-  r16Html += `</div></div>`;
+    `;
+  };
 
-  // Create QF column
-  let qfHtml = `
-    <div class="bracket-column bracket-column-qf">
-      <div class="bracket-column-header">
-        <span class="bracket-stage-label">Quarterfinal</span>
-        <span class="bracket-stage-count">4 matches</span>
-      </div>
-      <div class="bracket-column-content">
-  `;
-  
-  for (let i = 0; i < QF_PAIRS.length; i++) {
-    const pair = QF_PAIRS[i];
-    qfHtml += `<div class="bracket-row-pair" data-pair="${i}">`;
-    qfHtml += `<div class="bracket-match-wrapper">${allMatchCards[pair[0]]}</div>`;
-    qfHtml += `<div class="bracket-match-wrapper">${allMatchCards[pair[1]]}</div>`;
-    qfHtml += `</div>`;
-  }
-  
-  qfHtml += `</div></div>`;
-
-  // Create SF column
-  let sfHtml = `
-    <div class="bracket-column bracket-column-sf">
-      <div class="bracket-column-header">
-        <span class="bracket-stage-label">Semifinal</span>
-        <span class="bracket-stage-count">2 matches</span>
-      </div>
-      <div class="bracket-column-content">
-  `;
-  
-  for (let i = 0; i < SF_POSITIONS.length; i++) {
-    sfHtml += `<div class="bracket-row-pair" data-pair="${i}">`;
-    sfHtml += `<div class="bracket-match-wrapper">${allMatchCards[SF_POSITIONS[i]]}</div>`;
-    sfHtml += `</div>`;
-  }
-  
-  sfHtml += `</div></div>`;
-
-  // Create Third/Final column
-  let thirdFinalHtml = `
-    <div class="bracket-column bracket-column-knockout-end">
-      <div class="bracket-column-header">
-        <span class="bracket-stage-label">Finals</span>
-        <span class="bracket-stage-count">2 matches</span>
-      </div>
-      <div class="bracket-column-content bracket-column-finals">
-  `;
-  
-  thirdFinalHtml += `<div class="bracket-row-pair bracket-third-pair" data-pair="0">`;
-  thirdFinalHtml += `<div class="bracket-match-wrapper">${allMatchCards[103]}</div>`;
-  thirdFinalHtml += `</div>`;
-  
-  thirdFinalHtml += `<div class="bracket-row-pair bracket-final-pair" data-pair="1">`;
-  thirdFinalHtml += `<div class="bracket-match-wrapper">${allMatchCards[104]}</div>`;
-  thirdFinalHtml += `</div>`;
-  
-  thirdFinalHtml += `</div></div>`;
-
-  // Combine all columns with connecting lines
+  // Combine all sections
   return `
-    <div class="bracket-visual-layout">
-      ${r32Html}
-      <div class="bracket-connector r32-to-r16"></div>
-      ${r16Html}
-      <div class="bracket-connector r16-to-qf"></div>
-      ${qfHtml}
-      <div class="bracket-connector qf-to-sf"></div>
-      ${sfHtml}
-      <div class="bracket-connector sf-to-final"></div>
-      ${thirdFinalHtml}
+    <div class="bracket-pathway-layout">
+      <div class="bracket-rounds-section">
+        ${buildColumn('Round of 32', 16, R32_BRACKET_ORDER, 'bracket-column-r32')}
+        <div class="bracket-connector-line"></div>
+        ${buildColumn('Round of 16', 8, R16_BRACKET_ORDER, 'bracket-column-r16')}
+        <div class="bracket-connector-line"></div>
+        ${buildColumn('Quarterfinal', 4, QF_BRACKET_ORDER, 'bracket-column-qf')}
+        <div class="bracket-connector-line"></div>
+        ${buildColumn('Semifinal', 2, SF_BRACKET_ORDER, 'bracket-column-sf')}
+      </div>
+      <div class="bracket-finals-divider"></div>
+      ${buildFinalSection()}
     </div>
   `;
 }
