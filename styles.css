@@ -1855,9 +1855,7 @@ tr.advancement-best-third td {
   border: 5px solid var(--match-header-color, var(--border));
   border-top: none;
   border-radius: 0 0 28px 28px;
-  padding: 12px 14px;
   background: var(--surface-soft);
-  min-height: 160px;
 }
 
 .bracket-match-node:hover {
@@ -2042,7 +2040,7 @@ tr.advancement-best-third td {
 .bracket-match-inner {
   display: flex;
   flex-direction: column;
-  height: calc(100% - 40px);
+  padding: 12px 14px;
 }
 
 /* Trophy Overlay for Final Match */
@@ -2147,7 +2145,7 @@ tr.advancement-best-third td {
 .bracket-match-meta {
   display: flex;
   flex-direction: column;
-  padding: 5px 12px 6px;
+  padding: 5px 14px 14px;
   font-size: 0.72rem;
   color: var(--muted);
   background: var(--surface);
