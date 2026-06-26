@@ -1308,7 +1308,7 @@ tr.advancement-best-third td {
 /* ── Bracket Grid Headers ──────────────────────────────────────────── */
 .bracket-grid-headers {
   display: grid;
-  grid-template-columns: 240px 240px 240px 240px minmax(260px, auto) 240px 240px 240px 240px;
+  grid-template-columns: 240px 240px 240px 240px 300px 240px 240px 240px 240px;
   gap: 0;
   padding: 20px 10px 0;
   margin-bottom: 0;
@@ -1344,7 +1344,7 @@ tr.advancement-best-third td {
 
 .bracket-grid-row {
   display: grid;
-  grid-template-columns: 240px 240px 240px 240px minmax(260px, auto) 240px 240px 240px 240px;
+  grid-template-columns: 240px 240px 240px 240px 300px 240px 240px 240px 240px;
   gap: 0;
   min-height: 120px;
   position: relative;
@@ -1425,7 +1425,7 @@ tr.advancement-best-third td {
   border-radius: 14px;
   margin: 4px 10px;
   min-height: 180px;
-  width: auto;
+  width: 280px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1874,8 +1874,8 @@ tr.advancement-best-third td {
 
 /* ── Special Match Cards (Final & Third Place) - Today's Match Style ─ */
 .bracket-special-match {
-  width: auto;
-  min-width: 240px;
+  width: 100%;
+  max-width: 280px;
   border-radius: 14px;
   background: var(--surface-soft);
   border: none;
