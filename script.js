@@ -3215,6 +3215,29 @@ function buildVisualBracket(rankings, thirdPlaceTeams, knockoutMap, assignments,
   }
   html += `</div>`;
   
+  // Add winner row in column 5 (index 4) - OUTSIDE of any bracket cell
+  const winnerMatchData = scheduleData.knockoutMatches.find(m => m.matchNo === 104);
+  if (winnerMatchData) {
+    const winnerTeam = getWinnerTeam(104, rankings, thirdPlaceTeams, assignments, allGroupsComplete);
+    html += `<div class="bracket-grid-row bracket-winner-row">`;
+    for (let col = 0; col < 9; col++) {
+      if (col === 4) {
+        html += `<div class="bracket-grid-cell bracket-winner-cell">
+          <div class="bracket-winner-section">
+            <div class="bracket-winner-label">WINNER</div>
+            <div class="bracket-winner-card">
+              <div class="bracket-winner-flag">${winnerTeam.flag}</div>
+              <div class="bracket-winner-name">${winnerTeam.name}</div>
+            </div>
+          </div>
+        </div>`;
+      } else {
+        html += `<div class="bracket-grid-cell bracket-cell-empty"></div>`;
+      }
+    }
+    html += `</div>`;
+  }
+  
   // Build each row of the grid
   BRACKET_GRID_LAYOUT.forEach((rowConfig, rowIndex) => {
     html += `<div class="bracket-grid-row" data-row="${rowIndex}">`;
@@ -3226,21 +3249,7 @@ function buildVisualBracket(rankings, thirdPlaceTeams, knockoutMap, assignments,
       
       if (cellMatch) {
         const matchData = scheduleData.knockoutMatches.find(m => m.matchNo === cellMatch.match);
-        let cellContent = allMatchCards[cellMatch.match] || '';
-        
-        // Add Winner section above Final match card (M104)
-        if (cellMatch.type === 'final' && matchData) {
-          const winnerTeam = getWinnerTeam(matchData.matchNo, rankings, thirdPlaceTeams, assignments, allGroupsComplete);
-          cellContent = `
-            <div class="bracket-winner-section">
-              <div class="bracket-winner-label">WINNER</div>
-              <div class="bracket-winner-card">
-                <div class="bracket-winner-flag">${winnerTeam.flag}</div>
-                <div class="bracket-winner-name">${winnerTeam.name}</div>
-              </div>
-            </div>
-          ` + cellContent;
-        }
+        const cellContent = allMatchCards[cellMatch.match] || '';
         
         const cellClass = cellMatch.type === 'final' ? 'bracket-cell-final' : 
                           cellMatch.type === 'third' ? 'bracket-cell-third' : 

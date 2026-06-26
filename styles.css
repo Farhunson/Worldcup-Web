@@ -1452,6 +1452,19 @@ tr.advancement-best-third td {
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4)) brightness(1.2);
 }
 
+/* Winner Row */
+.bracket-winner-row {
+  min-height: auto !important;
+  padding: 10px 10px !important;
+}
+
+.bracket-winner-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+}
+
 .bracket-grid-row {
   display: grid;
   grid-template-columns: 240px 240px 240px 240px 500px 240px 240px 240px 240px;
