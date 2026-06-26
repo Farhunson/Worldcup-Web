@@ -1342,35 +1342,6 @@ tr.advancement-best-third td {
   background: var(--surface-2);
 }
 
-/* Trophy Logo in bracket header */
-.bracket-header-logo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 8px;
-}
-
-.bracket-trophy-logo {
-  width: 100px;
-  height: auto;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
-  animation: trophyFloat 3s ease-in-out infinite;
-}
-
-@keyframes trophyFloat {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-5px);
-  }
-}
-
-/* Dark theme trophy */
-:root[data-theme="dark"] .bracket-trophy-logo {
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4)) brightness(1.2);
-}
-
 /* Winner Section */
 .bracket-winner-section {
   text-align: center;
@@ -1445,6 +1416,40 @@ tr.advancement-best-third td {
 :root[data-theme="dark"] .bracket-winner-card {
   background: linear-gradient(135deg, #2a2a4a 0%, #1a1a3e 100%);
   border-color: #EFBF04;
+}
+
+/* Logo Row */
+.bracket-logo-row {
+  min-height: auto !important;
+  padding: 10px 10px !important;
+}
+
+.bracket-logo-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+}
+
+.bracket-logo-cell .bracket-trophy-logo {
+  width: 80px;
+  height: auto;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+  animation: trophyFloat 3s ease-in-out infinite;
+}
+
+@keyframes trophyFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+/* Dark theme trophy */
+:root[data-theme="dark"] .bracket-logo-cell .bracket-trophy-logo {
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4)) brightness(1.2);
 }
 
 .bracket-grid-row {
