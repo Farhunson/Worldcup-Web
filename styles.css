@@ -1874,8 +1874,7 @@ tr.advancement-best-third td {
 
 /* ── Special Match Cards (Final & Third Place) - Today's Match Style ─ */
 .bracket-special-match {
-  width: 100%;
-  max-width: 280px;
+  width: auto;
   border-radius: 14px;
   background: var(--surface-soft);
   border: none;
