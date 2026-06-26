@@ -1342,6 +1342,111 @@ tr.advancement-best-third td {
   background: var(--surface-2);
 }
 
+/* Trophy Logo in bracket header */
+.bracket-header-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+}
+
+.bracket-trophy-logo {
+  width: 100px;
+  height: auto;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+  animation: trophyFloat 3s ease-in-out infinite;
+}
+
+@keyframes trophyFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+/* Dark theme trophy */
+:root[data-theme="dark"] .bracket-trophy-logo {
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4)) brightness(1.2);
+}
+
+/* Winner Section */
+.bracket-winner-section {
+  text-align: center;
+  margin-bottom: 12px;
+  animation: winnerReveal 0.6s ease-out backwards;
+  animation-delay: 0.3s;
+}
+
+@keyframes winnerReveal {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.bracket-winner-label {
+  font-family: 'FWC2026Condensed', 'FWC2026', Inter, system-ui, sans-serif;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #EFBF04;
+  margin-bottom: 6px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.bracket-winner-card {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border: 2px solid #EFBF04;
+  border-radius: 12px;
+  padding: 12px 16px;
+  box-shadow: 0 4px 20px rgba(239, 191, 4, 0.3);
+  animation: winnerPulse 2s ease-in-out infinite;
+}
+
+@keyframes winnerPulse {
+  0%, 100% {
+    box-shadow: 0 4px 20px rgba(239, 191, 4, 0.3);
+  }
+  50% {
+    box-shadow: 0 4px 30px rgba(239, 191, 4, 0.5);
+  }
+}
+
+.bracket-winner-flag {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 6px;
+}
+
+.bracket-winner-flag img {
+  width: 64px;
+  height: auto;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.bracket-winner-name {
+  font-family: 'FWC2026Condensed', 'FWC2026', Inter, system-ui, sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Dark theme winner card */
+:root[data-theme="dark"] .bracket-winner-card {
+  background: linear-gradient(135deg, #2a2a4a 0%, #1a1a3e 100%);
+  border-color: #EFBF04;
+}
+
 .bracket-grid-row {
   display: grid;
   grid-template-columns: 240px 240px 240px 240px 500px 240px 240px 240px 240px;

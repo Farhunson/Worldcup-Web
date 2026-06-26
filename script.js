@@ -3191,7 +3191,14 @@ function buildVisualBracket(rankings, thirdPlaceTeams, knockoutMap, assignments,
   html += `<div class="bracket-grid-headers">`;
   for (let col = 0; col < 9; col++) {
     const stageInfo = STAGE_COLUMNS[col];
-    html += `<div class="bracket-grid-header">${stageInfo.title}</div>`;
+    if (col === 4) {
+      // Column 5: Logo section
+      html += `<div class="bracket-grid-header bracket-header-logo">
+        <img class="bracket-trophy-logo" src="assets/images/fifa-world-cup-2026-logo.png" alt="World Cup Trophy">
+      </div>`;
+    } else {
+      html += `<div class="bracket-grid-header">${stageInfo.title}</div>`;
+    }
   }
   html += `</div>`;
   
@@ -3205,11 +3212,26 @@ function buildVisualBracket(rankings, thirdPlaceTeams, knockoutMap, assignments,
       const cellMatch = rowConfig.matches.find(m => m.col === col);
       
       if (cellMatch) {
-        const matchCard = allMatchCards[cellMatch.match] || '';
+        let cellContent = allMatchCards[cellMatch.match] || '';
+        
+        // Add Winner section above Final match card (M104)
+        if (cellMatch.type === 'final') {
+          const winnerTeam = getWinnerTeam(match.matchNo, rankings, thirdPlaceTeams, assignments, allGroupsComplete);
+          cellContent = `
+            <div class="bracket-winner-section">
+              <div class="bracket-winner-label">WINNER</div>
+              <div class="bracket-winner-card">
+                <div class="bracket-winner-flag">${winnerTeam.flag}</div>
+                <div class="bracket-winner-name">${winnerTeam.name}</div>
+              </div>
+            </div>
+          ` + cellContent;
+        }
+        
         const cellClass = cellMatch.type === 'final' ? 'bracket-cell-final' : 
                           cellMatch.type === 'third' ? 'bracket-cell-third' : 
                           getBracketCellClass(col);
-        html += `<div class="bracket-grid-cell ${cellClass}">${matchCard}</div>`;
+        html += `<div class="bracket-grid-cell ${cellClass}">${cellContent}</div>`;
       } else {
         html += `<div class="bracket-grid-cell bracket-cell-empty"></div>`;
       }
@@ -3220,6 +3242,66 @@ function buildVisualBracket(rankings, thirdPlaceTeams, knockoutMap, assignments,
   
   html += `</div>`;
   return html;
+}
+
+// Helper function to get the winner team of a match
+function getWinnerTeam(matchNo, rankings, thirdPlaceTeams, assignments, allGroupsComplete) {
+  const match = scheduleData.knockoutMatches.find(m => m.matchNo === matchNo);
+  if (!match) return { name: 'TBD', flag: '<span class="team-flag">🏳️</span>' };
+  
+  const score = state.scores[matchNo];
+  if (!score || score.score1 === '' || score.score2 === '') {
+    return { name: 'TBD', flag: '<span class="team-flag">🏳️</span>' };
+  }
+  
+  const score1 = parseInt(score.score1) || 0;
+  const score2 = parseInt(score.score2) || 0;
+  
+  let winnerName;
+  if (score1 > score2) {
+    winnerName = match.team1 || resolveTeamFromPosition(match.pos1, rankings, thirdPlaceTeams, assignments, allGroupsComplete);
+  } else if (score2 > score1) {
+    winnerName = match.team2 || resolveTeamFromPosition(match.pos2, rankings, thirdPlaceTeams, assignments, allGroupsComplete);
+  } else {
+    // Handle penalties or default to team1
+    winnerName = match.team1 || resolveTeamFromPosition(match.pos1, rankings, thirdPlaceTeams, assignments, allGroupsComplete);
+  }
+  
+  if (winnerName === 'TBD') {
+    return { name: 'TBD', flag: '<span class="team-flag">🏳️</span>' };
+  }
+  
+  return { name: winnerName, flag: formatFlag(winnerName) };
+}
+
+// Helper function to resolve team from position
+function resolveTeamFromPosition(pos, rankings, thirdPlaceTeams, assignments, allGroupsComplete) {
+  if (!pos) return 'TBD';
+  
+  // Check if it's a third place team reference
+  if (pos.startsWith('3rd-')) {
+    const thirdGroup = pos.replace('3rd-', '');
+    const thirdTeam = thirdPlaceTeams[thirdGroup];
+    return thirdTeam || 'TBD';
+  }
+  
+  // Check if it's a group position
+  const groupMatch = pos.match(/^([A-L])(\d)$/);
+  if (groupMatch) {
+    const group = groupMatch[1];
+    const position = parseInt(groupMatch[2]);
+    const groupRankings = rankings[group];
+    if (groupRankings && groupRankings[position - 1]) {
+      return groupRankings[position - 1].team;
+    }
+  }
+  
+  // Check if it's an assignment (knockout match winner)
+  if (assignments && assignments[pos]) {
+    return assignments[pos];
+  }
+  
+  return 'TBD';
 }
 
 // Helper function to get CSS class for bracket cell based on column
