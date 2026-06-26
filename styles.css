@@ -1342,16 +1342,12 @@ tr.advancement-best-third td {
   background: var(--surface-2);
 }
 
-/* Top Section Row (above bracket-cell-final) */
-.bracket-top-section-row {
-  min-height: auto !important;
-  padding: 10px 10px !important;
-}
-
+/* Top Section Cell (row 6, col 5) */
 .bracket-top-section-cell {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
+  padding: 8px;
 }
 
 /* Final Column Header Section */
