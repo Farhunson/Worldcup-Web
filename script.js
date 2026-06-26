@@ -3200,31 +3200,6 @@ function buildVisualBracket(rankings, thirdPlaceTeams, knockoutMap, assignments,
   }
   html += `</div>`;
   
-  // Add top section row (logo + winner) - separate from bracket-cell-final
-  const currentTheme = document.documentElement.getAttribute('data-theme') || 'color';
-  const logoSrc = THEME_LOGOS[currentTheme] || THEME_LOGOS['color'];
-  const winnerTeam = getWinnerTeam(104, rankings, thirdPlaceTeams, assignments, allGroupsComplete);
-  html += `<div class="bracket-grid-row bracket-top-section-row">`;
-  for (let col = 0; col < 9; col++) {
-    if (col === 4) {
-      html += `<div class="bracket-grid-cell bracket-top-section-cell">
-        <div class="bracket-final-header">
-          <img class="bracket-trophy-logo" src="${logoSrc}" alt="World Cup Trophy">
-          <div class="bracket-winner-section">
-            <div class="bracket-winner-label">WINNER</div>
-            <div class="bracket-winner-card">
-              <div class="bracket-winner-flag">${winnerTeam.flag}</div>
-              <div class="bracket-winner-name">${winnerTeam.name}</div>
-            </div>
-          </div>
-        </div>
-      </div>`;
-    } else {
-      html += `<div class="bracket-grid-cell bracket-cell-empty"></div>`;
-    }
-  }
-  html += `</div>`;
-  
   // Build each row of the grid
   BRACKET_GRID_LAYOUT.forEach((rowConfig, rowIndex) => {
     html += `<div class="bracket-grid-row" data-row="${rowIndex}">`;
@@ -3241,6 +3216,23 @@ function buildVisualBracket(rankings, thirdPlaceTeams, knockoutMap, assignments,
                           cellMatch.type === 'third' ? 'bracket-cell-third' : 
                           getBracketCellClass(col);
         html += `<div class="bracket-grid-cell ${cellClass}">${cellContent}</div>`;
+      } else if (rowConfig.row === 6 && col === 4) {
+        // Row 6, Column 5: Add logo and winner section
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'color';
+        const logoSrc = THEME_LOGOS[currentTheme] || THEME_LOGOS['color'];
+        const winnerTeam = getWinnerTeam(104, rankings, thirdPlaceTeams, assignments, allGroupsComplete);
+        html += `<div class="bracket-grid-cell bracket-top-section-cell">
+          <div class="bracket-final-header">
+            <img class="bracket-trophy-logo" src="${logoSrc}" alt="World Cup Trophy">
+            <div class="bracket-winner-section">
+              <div class="bracket-winner-label">WINNER</div>
+              <div class="bracket-winner-card">
+                <div class="bracket-winner-flag">${winnerTeam.flag}</div>
+                <div class="bracket-winner-name">${winnerTeam.name}</div>
+              </div>
+            </div>
+          </div>
+        </div>`;
       } else {
         html += `<div class="bracket-grid-cell bracket-cell-empty"></div>`;
       }
