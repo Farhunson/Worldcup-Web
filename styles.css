@@ -1342,10 +1342,39 @@ tr.advancement-best-third td {
   background: var(--surface-2);
 }
 
+/* Final Column Header Section */
+.bracket-final-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.bracket-final-header .bracket-trophy-logo {
+  width: 60px;
+  height: auto;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+  animation: trophyFloat 3s ease-in-out infinite;
+}
+
+@keyframes trophyFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+/* Dark theme trophy */
+:root[data-theme="dark"] .bracket-final-header .bracket-trophy-logo {
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4)) brightness(1.2);
+}
+
 /* Winner Section */
 .bracket-winner-section {
   text-align: center;
-  margin-bottom: 12px;
   animation: winnerReveal 0.6s ease-out backwards;
   animation-delay: 0.3s;
 }
@@ -1416,53 +1445,6 @@ tr.advancement-best-third td {
 :root[data-theme="dark"] .bracket-winner-card {
   background: linear-gradient(135deg, #2a2a4a 0%, #1a1a3e 100%);
   border-color: #EFBF04;
-}
-
-/* Logo Row */
-.bracket-logo-row {
-  min-height: auto !important;
-  padding: 10px 10px !important;
-}
-
-.bracket-logo-cell {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 8px;
-}
-
-.bracket-logo-cell .bracket-trophy-logo {
-  width: 80px;
-  height: auto;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
-  animation: trophyFloat 3s ease-in-out infinite;
-}
-
-@keyframes trophyFloat {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-5px);
-  }
-}
-
-/* Dark theme trophy */
-:root[data-theme="dark"] .bracket-logo-cell .bracket-trophy-logo {
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4)) brightness(1.2);
-}
-
-/* Winner Row */
-.bracket-winner-row {
-  min-height: auto !important;
-  padding: 10px 10px !important;
-}
-
-.bracket-winner-cell {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 8px;
 }
 
 .bracket-grid-row {
