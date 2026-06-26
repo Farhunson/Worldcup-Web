@@ -3200,44 +3200,6 @@ function buildVisualBracket(rankings, thirdPlaceTeams, knockoutMap, assignments,
   }
   html += `</div>`;
   
-  // Add logo row in column 5 (index 4)
-  const currentTheme = document.documentElement.getAttribute('data-theme') || 'color';
-  const logoSrc = THEME_LOGOS[currentTheme] || THEME_LOGOS['color'];
-  html += `<div class="bracket-grid-row bracket-logo-row">`;
-  for (let col = 0; col < 9; col++) {
-    if (col === 4) {
-      html += `<div class="bracket-grid-cell bracket-logo-cell">
-        <img class="bracket-trophy-logo" src="${logoSrc}" alt="World Cup Trophy">
-      </div>`;
-    } else {
-      html += `<div class="bracket-grid-cell bracket-cell-empty"></div>`;
-    }
-  }
-  html += `</div>`;
-  
-  // Add winner row in column 5 (index 4) - OUTSIDE of any bracket cell
-  const winnerMatchData = scheduleData.knockoutMatches.find(m => m.matchNo === 104);
-  if (winnerMatchData) {
-    const winnerTeam = getWinnerTeam(104, rankings, thirdPlaceTeams, assignments, allGroupsComplete);
-    html += `<div class="bracket-grid-row bracket-winner-row">`;
-    for (let col = 0; col < 9; col++) {
-      if (col === 4) {
-        html += `<div class="bracket-grid-cell bracket-winner-cell">
-          <div class="bracket-winner-section">
-            <div class="bracket-winner-label">WINNER</div>
-            <div class="bracket-winner-card">
-              <div class="bracket-winner-flag">${winnerTeam.flag}</div>
-              <div class="bracket-winner-name">${winnerTeam.name}</div>
-            </div>
-          </div>
-        </div>`;
-      } else {
-        html += `<div class="bracket-grid-cell bracket-cell-empty"></div>`;
-      }
-    }
-    html += `</div>`;
-  }
-  
   // Build each row of the grid
   BRACKET_GRID_LAYOUT.forEach((rowConfig, rowIndex) => {
     html += `<div class="bracket-grid-row" data-row="${rowIndex}">`;
@@ -3249,7 +3211,27 @@ function buildVisualBracket(rankings, thirdPlaceTeams, knockoutMap, assignments,
       
       if (cellMatch) {
         const matchData = scheduleData.knockoutMatches.find(m => m.matchNo === cellMatch.match);
-        const cellContent = allMatchCards[cellMatch.match] || '';
+        let cellContent = allMatchCards[cellMatch.match] || '';
+        
+        // For the Final row (row 8, col 4), add logo and winner above the match card
+        if (cellMatch.type === 'final' && matchData) {
+          const currentTheme = document.documentElement.getAttribute('data-theme') || 'color';
+          const logoSrc = THEME_LOGOS[currentTheme] || THEME_LOGOS['color'];
+          const winnerTeam = getWinnerTeam(matchData.matchNo, rankings, thirdPlaceTeams, assignments, allGroupsComplete);
+          
+          cellContent = `
+            <div class="bracket-final-header">
+              <img class="bracket-trophy-logo" src="${logoSrc}" alt="World Cup Trophy">
+              <div class="bracket-winner-section">
+                <div class="bracket-winner-label">WINNER</div>
+                <div class="bracket-winner-card">
+                  <div class="bracket-winner-flag">${winnerTeam.flag}</div>
+                  <div class="bracket-winner-name">${winnerTeam.name}</div>
+                </div>
+              </div>
+            </div>
+          ` + cellContent;
+        }
         
         const cellClass = cellMatch.type === 'final' ? 'bracket-cell-final' : 
                           cellMatch.type === 'third' ? 'bracket-cell-third' : 
