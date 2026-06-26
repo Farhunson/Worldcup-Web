@@ -1425,7 +1425,7 @@ tr.advancement-best-third td {
   border-radius: 14px;
   margin: 4px 10px;
   min-height: 180px;
-  width: 280px;
+  width: auto;
   display: flex;
   align-items: center;
   justify-content: center;
