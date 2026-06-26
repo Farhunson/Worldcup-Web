@@ -3196,15 +3196,21 @@ function buildVisualBracket(rankings, thirdPlaceTeams, knockoutMap, assignments,
   html += `<div class="bracket-grid-headers">`;
   for (let col = 0; col < 9; col++) {
     const stageInfo = STAGE_COLUMNS[col];
+    html += `<div class="bracket-grid-header">${stageInfo.title}</div>`;
+  }
+  html += `</div>`;
+  
+  // Add logo row in column 5 (index 4)
+  const currentTheme = document.documentElement.getAttribute('data-theme') || 'color';
+  const logoSrc = THEME_LOGOS[currentTheme] || THEME_LOGOS['color'];
+  html += `<div class="bracket-grid-row bracket-logo-row">`;
+  for (let col = 0; col < 9; col++) {
     if (col === 4) {
-      // Column 5: Logo section with theme-aware logo
-      const currentTheme = document.documentElement.getAttribute('data-theme') || 'color';
-      const logoSrc = THEME_LOGOS[currentTheme] || THEME_LOGOS['color'];
-      html += `<div class="bracket-grid-header bracket-header-logo">
+      html += `<div class="bracket-grid-cell bracket-logo-cell">
         <img class="bracket-trophy-logo" src="${logoSrc}" alt="World Cup Trophy">
       </div>`;
     } else {
-      html += `<div class="bracket-grid-header">${stageInfo.title}</div>`;
+      html += `<div class="bracket-grid-cell bracket-cell-empty"></div>`;
     }
   }
   html += `</div>`;
