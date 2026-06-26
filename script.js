@@ -642,6 +642,11 @@ function applyTheme(theme) {
   if (heroLogo && THEME_LOGOS[theme]) {
     heroLogo.src = THEME_LOGOS[theme];
   }
+  // Update bracket trophy logo
+  const bracketTrophyLogo = document.querySelector('.bracket-trophy-logo');
+  if (bracketTrophyLogo && THEME_LOGOS[theme]) {
+    bracketTrophyLogo.src = THEME_LOGOS[theme];
+  }
 }
 
 applyTheme(savedTheme);
@@ -3192,9 +3197,11 @@ function buildVisualBracket(rankings, thirdPlaceTeams, knockoutMap, assignments,
   for (let col = 0; col < 9; col++) {
     const stageInfo = STAGE_COLUMNS[col];
     if (col === 4) {
-      // Column 5: Logo section
+      // Column 5: Logo section with theme-aware logo
+      const currentTheme = document.documentElement.getAttribute('data-theme') || 'color';
+      const logoSrc = THEME_LOGOS[currentTheme] || THEME_LOGOS['color'];
       html += `<div class="bracket-grid-header bracket-header-logo">
-        <img class="bracket-trophy-logo" src="assets/images/fifa-world-cup-2026-logo.png" alt="World Cup Trophy">
+        <img class="bracket-trophy-logo" src="${logoSrc}" alt="World Cup Trophy">
       </div>`;
     } else {
       html += `<div class="bracket-grid-header">${stageInfo.title}</div>`;
@@ -3212,11 +3219,12 @@ function buildVisualBracket(rankings, thirdPlaceTeams, knockoutMap, assignments,
       const cellMatch = rowConfig.matches.find(m => m.col === col);
       
       if (cellMatch) {
+        const matchData = scheduleData.knockoutMatches.find(m => m.matchNo === cellMatch.match);
         let cellContent = allMatchCards[cellMatch.match] || '';
         
         // Add Winner section above Final match card (M104)
-        if (cellMatch.type === 'final') {
-          const winnerTeam = getWinnerTeam(match.matchNo, rankings, thirdPlaceTeams, assignments, allGroupsComplete);
+        if (cellMatch.type === 'final' && matchData) {
+          const winnerTeam = getWinnerTeam(matchData.matchNo, rankings, thirdPlaceTeams, assignments, allGroupsComplete);
           cellContent = `
             <div class="bracket-winner-section">
               <div class="bracket-winner-label">WINNER</div>
