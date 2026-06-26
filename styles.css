@@ -1342,13 +1342,24 @@ tr.advancement-best-third td {
   background: var(--surface-2);
 }
 
+/* Top Section Row (above bracket-cell-final) */
+.bracket-top-section-row {
+  min-height: auto !important;
+  padding: 10px 10px !important;
+}
+
+.bracket-top-section-cell {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
 /* Final Column Header Section */
 .bracket-final-header {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 12px;
-  margin-bottom: 16px;
 }
 
 .bracket-final-header .bracket-trophy-logo {
