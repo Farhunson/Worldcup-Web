@@ -1356,10 +1356,11 @@ tr.advancement-best-third td {
   flex-direction: column;
   align-items: center;
   gap: 12px;
+  width: 100%;
 }
 
 .bracket-final-header .bracket-trophy-logo {
-  width: 60px;
+  width: 80px;
   height: auto;
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
   animation: trophyFloat 3s ease-in-out infinite;
@@ -1399,12 +1400,12 @@ tr.advancement-best-third td {
 
 .bracket-winner-label {
   font-family: 'FWC2026Condensed', 'FWC2026', Inter, system-ui, sans-serif;
-  font-size: 0.7rem;
+  font-size: 1rem;
   font-weight: 800;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
   color: #EFBF04;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
@@ -1412,9 +1413,10 @@ tr.advancement-best-third td {
   background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
   border: 2px solid #EFBF04;
   border-radius: 12px;
-  padding: 12px 16px;
+  padding: 16px 20px;
   box-shadow: 0 4px 20px rgba(239, 191, 4, 0.3);
   animation: winnerPulse 2s ease-in-out infinite;
+  min-width: 180px;
 }
 
 @keyframes winnerPulse {
@@ -1429,11 +1431,11 @@ tr.advancement-best-third td {
 .bracket-winner-flag {
   display: flex;
   justify-content: center;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 .bracket-winner-flag img {
-  width: 64px;
+  width: 80px;
   height: auto;
   border-radius: 4px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
@@ -1441,7 +1443,7 @@ tr.advancement-best-third td {
 
 .bracket-winner-name {
   font-family: 'FWC2026Condensed', 'FWC2026', Inter, system-ui, sans-serif;
-  font-size: 0.85rem;
+  font-size: 1rem;
   font-weight: 700;
   color: #FFFFFF;
   text-transform: uppercase;
