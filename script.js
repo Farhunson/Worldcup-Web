@@ -71,10 +71,47 @@ const projectToApiNameMap = Object.entries(apiTeamNameMap).reduce((acc, [api, pr
 
 // API Configuration
 const API_URL = 'https://worldcup26.ir/get/games';
+const KNOCKOUT_API_URL = 'https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json';
 const API_REFRESH_INTERVAL = 30000; // 30 seconds
 const API_SYNC_COOLDOWN = 10000; // 10 seconds cooldown between manual syncs
 let apiRefreshTimer = null;
 let lastSyncTime = 0; // Track last sync timestamp
+
+// Team name mapping for openfootball API (knockout API) to project names
+const knockoutApiTeamMap = {
+  'South Africa': 'South Africa',
+  'Canada': 'Canada',
+  'Germany': 'Germany',
+  'Paraguay': 'Paraguay',
+  'Netherlands': 'Netherlands',
+  'Morocco': 'Morocco',
+  'Brazil': 'Brazil',
+  'Japan': 'Japan',
+  'France': 'France',
+  'Sweden': 'Sweden',
+  'Mexico': 'Mexico',
+  'Ecuador': 'Ecuador',
+  'USA': 'USA',
+  'Belgium': 'Belgium',
+  'Senegal': 'Senegal',
+  'Portugal': 'Portugal',
+  'Colombia': 'Colombia',
+  'England': 'England',
+  'DR Congo': 'DR Congo',
+  'Argentina': 'Argentina',
+  'Croatia': 'Croatia',
+  'Ghana': 'Ghana',
+  'Spain': 'Spain',
+  'Ivory Coast': 'Ivory Coast',
+  'Switzerland': 'Switzerland',
+  'Norway': 'Norway',
+  'Australia': 'Australia',
+  'Austria': 'Austria',
+  'Algeria': 'Algeria',
+  'Egypt': 'Egypt',
+  'Cape Verde': 'Cape Verde',
+  'Uruguay': 'Uruguay',
+};
 
 const flagCodeMap = {
   'Mexico': 'mx',
@@ -2315,7 +2352,10 @@ async function updatePortraitsFromAPI() {
 
 function startAutoRefresh() {
   if (apiRefreshTimer) clearInterval(apiRefreshTimer);
-  apiRefreshTimer = setInterval(fetchLiveScores, API_REFRESH_INTERVAL);
+  apiRefreshTimer = setInterval(() => {
+    fetchLiveScores();
+    fetchKnockoutScores(); // Also fetch knockout stage data
+  }, API_REFRESH_INTERVAL);
 }
 
 function toTeamLabel(team) {
@@ -3606,6 +3646,7 @@ document.addEventListener('DOMContentLoaded', () => {
   startAutoRefresh();
   // Initial fetch on page load
   fetchLiveScores();
+  fetchKnockoutScores(); // Also fetch knockout stage data from openfootball API
   
   // Event delegation for scorers toggle
   document.addEventListener('click', (e) => {
@@ -3618,3 +3659,72 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 render();
+// Fetch knockout stage scores from openfootball API
+async function fetchKnockoutScores() {
+  try {
+    const response = await fetch(KNOCKOUT_API_URL);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+    const data = await response.json();
+    const knockoutMatches = (data.matches || []).filter(m => {
+      return m.num && m.num >= 73 && m.num <= 104;
+    });
+
+    let updatedCount = 0;
+
+    knockoutMatches.forEach(match => {
+      const matchNo = match.num;
+      const score = match.score;
+      const goals1 = match.goals1 || [];
+      const goals2 = match.goals2 || [];
+
+      if (!score || !score.ft) return;
+
+      const homeScore = score.ft[0];
+      const awayScore = score.ft[1];
+
+      if (homeScore === 0 && awayScore === 0 && goals1.length === 0 && goals2.length === 0) return;
+
+      const currentScore = state.scores[matchNo];
+      if (!currentScore ||
+        parseInt(currentScore.score1) !== homeScore ||
+        parseInt(currentScore.score2) !== awayScore) {
+        state.scores[matchNo] = { score1: String(homeScore), score2: String(awayScore) };
+        updatedCount++;
+      }
+
+      const homeScorers = goals1.map(g => ({
+        name: g.name,
+        minute: g.minute,
+        penalty: g.penalty || false,
+        owngoal: g.owngoal || false
+      }));
+
+      const awayScorers = goals2.map(g => ({
+        name: g.name,
+        minute: g.minute,
+        penalty: g.penalty || false,
+        owngoal: g.owngoal || false
+      }));
+
+      state.apiScorers[matchNo] = {
+        home: homeScorers,
+        away: awayScorers
+      };
+
+      if (homeScore > 0 || awayScore > 0) {
+        state.finishedMatches[matchNo] = true;
+        state.apiSourcedMatches[matchNo] = true;
+      }
+    });
+
+    if (updatedCount > 0) {
+      saveState();
+      render();
+      console.log(`Knockout scores synced: ${updatedCount} match(es) updated`);
+    }
+
+  } catch (error) {
+    console.error('Failed to fetch knockout scores:', error);
+  }
+}
