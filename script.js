@@ -177,6 +177,7 @@ const teamInitialMap = {
 };
 
 function getTeamInitials(team) {
+  if (!team) return '???';
   return teamInitialMap[team] || team.split(/[^A-Za-z0-9]+/).map((part) => part[0]).join('').slice(0, 3).toUpperCase();
 }
 
